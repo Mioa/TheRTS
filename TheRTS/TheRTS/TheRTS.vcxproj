@@ -22,6 +22,7 @@
     <ClInclude Include="Source\EntityManager.h" />
     <ClInclude Include="Source\Game.h" />
     <ClInclude Include="Source\Graphics.h" />
+    <ClInclude Include="Source\GraphicsDatastructures.h" />
     <ClInclude Include="Source\Input.h" />
     <ClInclude Include="Source\RenderQueue.h" />
     <ClInclude Include="Source\ResourceManager.h" />

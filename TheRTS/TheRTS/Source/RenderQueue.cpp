@@ -9,6 +9,8 @@ HRESULT	RenderQueue::Initialize()
 	dynamicMeshes	= new RI_DynamicMesh[RQ_MAX_DYNAMIC_MESH];
 	pointLights		= new RI_PointLight[RQ_MAX_POINT_LIGHT];
 	dirLights		= new RI_DirLight[RQ_MAX_DIRECTIONAL_LIGHT];
+
+	return S_OK;
 }
 
 void RenderQueue::Release()

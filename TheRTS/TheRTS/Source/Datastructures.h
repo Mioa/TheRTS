@@ -2,6 +2,7 @@
 #define DATASTRUCTURES_H
 
 #include <DirectXMath.h>
+#include "GraphicsDatastructures.h"
 #include <Windows.h>
 
 struct RI_Sprite
