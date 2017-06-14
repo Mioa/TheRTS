@@ -1,24 +1,6 @@
 #include "System.h"
 #include "Input.h"
 
-int	System::Run()
-{
-	MSG msg = { 0 };
-
-	while( WM_QUIT != msg.message )
-	{
-		if( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
-		{
-			TranslateMessage( &msg );
-			DispatchMessage( &msg );
-		}
-		else
-		{
-		}
-	}
-	return (int)msg.wParam;
-}
-
 HRESULT System::Initialize( HINSTANCE hInstance_, int nCmdShow_ )
 {
 	windowWidth		= 960;
@@ -69,6 +51,24 @@ System::System()
 System::~System()
 {
 
+}
+
+int	System::Run()
+{
+	MSG msg = { 0 };
+
+	while( WM_QUIT != msg.message )
+	{
+		if( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
+		{
+			TranslateMessage( &msg );
+			DispatchMessage( &msg );
+		}
+		else
+		{
+		}
+	}
+	return (int)msg.wParam;
 }
 
 LRESULT CALLBACK System::WndProc( HWND hWnd_, UINT uMsg_, WPARAM wParam_, LPARAM lParam_ )
