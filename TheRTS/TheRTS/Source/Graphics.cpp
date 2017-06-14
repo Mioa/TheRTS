@@ -32,7 +32,7 @@ Graphics::~Graphics()
 HRESULT Graphics::InitSwapChain()
 {
 	DXGI_SWAP_CHAIN_DESC scd;
-	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
+	ZeroMemory( &scd, sizeof( DXGI_SWAP_CHAIN_DESC ) );
 
 	scd.BufferCount		  = 1;
 	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -43,7 +43,8 @@ HRESULT Graphics::InitSwapChain()
 	scd.SampleDesc.Count  = 1;
 	scd.Windowed		  = TRUE;
 
-	hr = D3D11CreateDeviceAndSwapChain(NULL,
+	hr = D3D11CreateDeviceAndSwapChain(
+		NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
 		D3D11_CREATE_DEVICE_DEBUG,
@@ -54,14 +55,15 @@ HRESULT Graphics::InitSwapChain()
 		&swapChain,
 		&device,
 		NULL,
-		&deviceContext);
+		&deviceContext
+		);
 
-	if (SUCCEEDED(hr))
+	if ( SUCCEEDED( hr ) )
 	{
 		ID3D11Texture2D* pBackBuffer = nullptr;
-		swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+		swapChain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), (LPVOID*)&pBackBuffer );
 
-		hr = device->CreateRenderTargetView(pBackBuffer, NULL, &defaultRTV);
+		hr = device->CreateRenderTargetView( pBackBuffer, NULL, &defaultRTV );
 		pBackBuffer->Release();
 	}
 
@@ -95,40 +97,36 @@ HRESULT Graphics::InitDepthBuffers()
 	ID3D11Texture2D* texture;
 
 	D3D11_TEXTURE2D_DESC depthMapDesc;
-	ZeroMemory(&depthMapDesc, sizeof(D3D11_TEXTURE2D_DESC));
+	ZeroMemory( &depthMapDesc, sizeof( D3D11_TEXTURE2D_DESC ) );
+	depthMapDesc.Width				= windowWidth;
+	depthMapDesc.Height				= windowHeight;
+	depthMapDesc.MipLevels			= 1;
+	depthMapDesc.ArraySize			= 1;
+	depthMapDesc.Format				= DXGI_FORMAT_R32_TYPELESS;;
+	depthMapDesc.SampleDesc.Count	= 1;
+	depthMapDesc.Usage				= D3D11_USAGE_DEFAULT;
+	depthMapDesc.BindFlags			= D3D11_BIND_DEPTH_STENCIL;
 
-	depthMapDesc.Width = windowWidth;
-	depthMapDesc.Height = windowHeight;
-	depthMapDesc.MipLevels = 1;
-	depthMapDesc.ArraySize = 1;
-	depthMapDesc.Format = DXGI_FORMAT_R32_TYPELESS;;
-	depthMapDesc.SampleDesc.Count = 1;
-	depthMapDesc.SampleDesc.Quality = 0;
-	depthMapDesc.Usage = D3D11_USAGE_DEFAULT;
-	depthMapDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	depthMapDesc.CPUAccessFlags = 0;
-	depthMapDesc.MiscFlags = 0;
+	hr = device->CreateTexture2D( &depthMapDesc, nullptr, &texture );
 
-	hr = device->CreateTexture2D(&depthMapDesc, nullptr, &texture);
-
-	if(!SUCCEEDED(hr))
+	if( !SUCCEEDED( hr ) )
 	{
-		OutputDebugString(L"Depth texture creation failed!");
+		OutputDebugString( L"Depth texture creation failed!" );
 		return hr;
 	}
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
-	ZeroMemory(&descDSV, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
-	descDSV.Format = DXGI_FORMAT_D32_FLOAT;
-	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	descDSV.Texture2D.MipSlice = 0;
-	descDSV.Flags = 0;
+	ZeroMemory( &descDSV, sizeof( D3D11_DEPTH_STENCIL_VIEW_DESC ) );
+	descDSV.Format				= DXGI_FORMAT_D32_FLOAT;
+	descDSV.ViewDimension		= D3D11_DSV_DIMENSION_TEXTURE2D;
+	descDSV.Texture2D.MipSlice	= 0;
+	descDSV.Flags				= 0;
 
-	device->CreateDepthStencilView(texture, &descDSV, &defaultDSV);
+	device->CreateDepthStencilView( texture, &descDSV, &defaultDSV );
 
-	if(!SUCCEEDED(hr))
+	if( !SUCCEEDED( hr ) )
 	{
-		OutputDebugString(L"DSV creation failed!");
+		OutputDebugString( L"DSV creation failed!" );
 		return hr;
 	}
 

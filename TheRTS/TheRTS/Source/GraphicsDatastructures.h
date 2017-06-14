@@ -4,8 +4,8 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 
-#pragma comment (lib, "d3d11.lib")
-#pragma comment (lib, "d3dcompiler.lib")
+#pragma comment ( lib, "d3d11.lib" )
+#pragma comment ( lib, "d3dcompiler.lib" )
 
 enum InputLayouts
 {
@@ -28,7 +28,7 @@ enum ShaderFlags
 
 struct Vertex_POS3
 {
-	DirectX::XMFLOAT3 position = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+	DirectX::XMFLOAT3 position = DirectX::XMFLOAT3( 0.0f, 0.0f, 0.0f );
 };
 
 struct ShaderGroup
@@ -62,8 +62,8 @@ struct ShaderGroup
 
 			hr = device_->CreateVertexShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &vertexShader );
 
-			if(!SUCCEEDED(hr))
-				OutputDebugString(L"VS compile failed!");
+			if( !SUCCEEDED( hr ) )
+				OutputDebugString( L"VS compile failed!" );
 
 			switch ( inputLayout_ )
 			{
@@ -72,7 +72,7 @@ struct ShaderGroup
 					D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
 						{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 					};
-					hr = device_->CreateInputLayout( inputDesc, ARRAYSIZE(inputDesc), pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &inputLayout );
+					hr = device_->CreateInputLayout( inputDesc, ARRAYSIZE( inputDesc ), pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &inputLayout );
 					break;
 				}
 				case IL_POS3_NOR3_UV2:
@@ -82,15 +82,15 @@ struct ShaderGroup
 						{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 						{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 					};
-					hr = device_->CreateInputLayout( inputDesc, ARRAYSIZE(inputDesc), pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &inputLayout );
+					hr = device_->CreateInputLayout( inputDesc, ARRAYSIZE( inputDesc ), pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &inputLayout );
 					break;
 				}
 				default:
 					break;
 			}
 
-			if(!SUCCEEDED(hr))
-				OutputDebugString(L"InputLayout creation failed!");
+			if( !SUCCEEDED( hr ) )
+				OutputDebugString( L"InputLayout creation failed!" );
 
 			pBlob->Release();
 		}
@@ -111,8 +111,8 @@ struct ShaderGroup
 
 			hr = device_->CreateGeometryShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &geometryShader );
 
-			if(!SUCCEEDED(hr))
-				OutputDebugString(L"GS compile failed!");
+			if( !SUCCEEDED( hr ) )
+				OutputDebugString( L"GS compile failed!" );
 
 			pBlob->Release();
 		}
@@ -133,8 +133,8 @@ struct ShaderGroup
 
 			hr = device_->CreatePixelShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pixelShader );
 
-			if(!SUCCEEDED(hr))
-				OutputDebugString(L"PS compile failed!");
+			if( !SUCCEEDED( hr ) )
+				OutputDebugString( L"PS compile failed!" );
 
 			pBlob->Release();
 		}

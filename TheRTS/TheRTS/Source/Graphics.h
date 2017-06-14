@@ -31,8 +31,8 @@ class Graphics
 		HRESULT hr = S_OK;
 
 		float  clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-		UINT32 vertexSize	= sizeof(Vertex_POS3);
-		UINT32 offset		= 0;
+		UINT32 vertexSize	 = sizeof( Vertex_POS3 );
+		UINT32 offset		 = 0;
 
 	//Functions
 	public:
@@ -52,6 +52,6 @@ class Graphics
 		HRESULT InitDepthBuffers();
 		HRESULT InitConstantBuffers();
 
-		void UpdateConstantBuffer( UINT size, void* data );
+		void UpdateConstantBuffer( UINT size_, void* data_ );
 };
 #endif
