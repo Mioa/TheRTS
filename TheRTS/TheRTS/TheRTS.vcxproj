@@ -19,15 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Components.h" />
     <ClInclude Include="Source\EntityManager.h" />
     <ClInclude Include="Source\Game.h" />
     <ClInclude Include="Source\Graphics.h" />
+    <ClInclude Include="Source\GraphicsDatastructures.h" />
     <ClInclude Include="Source\Input.h" />
     <ClInclude Include="Source\RenderQueue.h" />
     <ClInclude Include="Source\ResourceManager.h" />
+    <ClInclude Include="Source\SignatureFunctions.h" />
     <ClInclude Include="Source\System.h" />
+    <ClInclude Include="Source\Definitions.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Datastructures.h" />
     <ClCompile Include="Source\EntityManager.cpp" />
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\Graphics.cpp" />
