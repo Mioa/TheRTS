@@ -2,6 +2,24 @@
 
 using namespace DirectX;
 
+HRESULT	RenderQueue::Initialize()
+{
+	sprites			= new RI_Sprite[RQ_MAX_SPRITE];
+	staticMeshes	= new RI_StaticMesh[RQ_MAX_STATIC_MESH];
+	dynamicMeshes	= new RI_DynamicMesh[RQ_MAX_DYNAMIC_MESH];
+	pointLights		= new RI_PointLight[RQ_MAX_POINT_LIGHT];
+	dirLights		= new RI_DirLight[RQ_MAX_DIRECTIONAL_LIGHT];
+}
+
+void RenderQueue::Release()
+{
+	delete[] sprites;
+	delete[] staticMeshes;
+	delete[] dynamicMeshes;
+	delete[] pointLights;
+	delete[] dirLights;
+}
+
 void RenderQueue::RenderSprite( 
 	UINT resourceID_, 
 	XMFLOAT4 pos_	= XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 

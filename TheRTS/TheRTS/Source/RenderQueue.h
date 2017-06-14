@@ -15,15 +15,19 @@ class RenderQueue
 		UINT pointLightIndex	= 0;
 		UINT dirLightIndex		= 0;
 
-		RI_Sprite*		sprites			= new RI_Sprite[RQ_MAX_SPRITE];
-		RI_StaticMesh*	staticMeshes	= new RI_StaticMesh[RQ_MAX_STATIC_MESH];
-		RI_DynamicMesh*	dynamicMeshes	= new RI_DynamicMesh[RQ_MAX_DYNAMIC_MESH];
-		RI_PointLight*	pointLights		= new RI_PointLight[RQ_MAX_POINT_LIGHT];
-		RI_DirLight*	dirLights		= new RI_DirLight[RQ_MAX_DIRECTIONAL_LIGHT];
+		RI_Sprite*		sprites;
+		RI_StaticMesh*	staticMeshes;
+		RI_DynamicMesh*	dynamicMeshes;
+		RI_PointLight*	pointLights;
+		RI_DirLight*	dirLights;
+
 	private:
 
 	//Functions
 	public:
+		HRESULT	Initialize();
+		void	Release();
+
 		static RenderQueue* GetInstance()
 		{
 			static RenderQueue* instance = new RenderQueue();
