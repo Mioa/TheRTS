@@ -16,7 +16,19 @@ HRESULT Graphics::Initialize( HWND windowHandle_, LONG windowWidth_, LONG window
 
 void Graphics::Release()
 {
+	if( swapChain )		swapChain->Release();
+	if( device )		device->Release();
+	if( deviceContext )	deviceContext->Release();
 
+	if( defaultRS )		defaultRS->Release();
+
+	if( defaultRTV )	defaultRTV->Release();
+	if( defaultDSV )	defaultDSV->Release();
+
+	if( frameCB )		frameCB->Release();
+	if( objectCB )		objectCB->Release();
+
+	defaultShaders.Release();
 }
 
 Graphics::Graphics()

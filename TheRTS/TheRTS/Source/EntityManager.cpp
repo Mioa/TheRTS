@@ -11,6 +11,8 @@ HRESULT EntityManager::Initialize()
 	ZeroMemory( mesh, sizeof( C_Mesh ) * EM_MAX_ENTITIES );
 
 	renderSignatures.push_back( new SR_RenderMesh( this ) );
+
+	return S_OK;
 }
 
 void EntityManager::Release()
@@ -71,6 +73,8 @@ HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_Position info_ )
 	entity[entityIndex_].active		= true;
 	entity[entityIndex_].resting	= false;
 	position[entityIndex_].position = info_.position;
+
+	return S_OK;
 }
 
 HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_Mesh info_ )
@@ -78,4 +82,6 @@ HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_Mesh info_ )
 	entity[entityIndex_].active		= true;
 	entity[entityIndex_].resting	= false;
 	mesh[entityIndex_].resource		= info_.resource;
+
+	return S_OK;
 }
