@@ -1,7 +1,6 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-#include "Datastructures.h"
 #include "RenderQueue.h"
 #include "ResourceManager.h"
 
@@ -10,6 +9,7 @@ class Graphics
 	//Variables
 	public:
 	private:
+		// D3D
 		IDXGISwapChain*			swapChain		= nullptr;
 		ID3D11Device*			device			= nullptr;
 		ID3D11DeviceContext*	deviceContext	= nullptr;
@@ -22,16 +22,20 @@ class Graphics
 		ID3D11Buffer* frameCB	= nullptr;
 		ID3D11Buffer* objectCB	= nullptr;
 
+		// Shaders
 		ShaderGroup defaultShaders;
 
+		// Misc
 		HWND windowHandle;
-		LONG windowWidth	= 0;
-		LONG windowHeight	= 0;
+		LONG windowWidth;
+		LONG windowHeight;
 
-		HRESULT hr = S_OK;
+		HRESULT hr;
+
+		ResourceManager* resourceManager;
 
 		float  clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-		UINT32 vertexSize	 = sizeof( Vertex_POS3 );
+		UINT32 vSize_POS3	 = sizeof( Vertex_POS3 );
 		UINT32 offset		 = 0;
 
 	//Functions
@@ -51,7 +55,9 @@ class Graphics
 		HRESULT InitRenderTargets();
 		HRESULT InitDepthBuffers();
 		HRESULT InitConstantBuffers();
+		HRESULT InitRasterStates();
 
+		void SetViewport( float windowWidth_, float windowHeight_ ); 
 		void UpdateConstantBuffer( UINT size_, void* data_ );
 };
 #endif

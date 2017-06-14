@@ -73,7 +73,6 @@ HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_Position info_ )
 	entity[entityIndex_].active		= true;
 	entity[entityIndex_].resting	= false;
 	position[entityIndex_].position = info_.position;
-
 	return S_OK;
 }
 
@@ -82,6 +81,5 @@ HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_Mesh info_ )
 	entity[entityIndex_].active		= true;
 	entity[entityIndex_].resting	= false;
 	mesh[entityIndex_].resource		= info_.resource;
-
 	return S_OK;
 }

@@ -35,12 +35,14 @@ HRESULT System::Initialize( HINSTANCE hInstance_, int nCmdShow_ )
 	if( windowHandle )
 		ShowWindow( windowHandle, nCmdShow_ );
 
+	game.Initialize( windowHandle, windowWidth, windowHeight );
+
 	return S_OK;
 }
 
 void System::Release()
 {
-
+	game.Release();
 }
 
 System::System()
@@ -66,6 +68,8 @@ int	System::Run()
 		}
 		else
 		{
+			game.Update( 1.0f );
+			game.Render();
 		}
 	}
 	return (int)msg.wParam;

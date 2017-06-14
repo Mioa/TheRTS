@@ -10,6 +10,14 @@ HRESULT Graphics::Initialize( HWND windowHandle_, LONG windowWidth_, LONG window
 	InitShaders();
 	InitRenderTargets();
 	InitDepthBuffers();
+	InitRasterStates();
+
+	resourceManager = new ResourceManager();
+	resourceManager->Initialize( device );
+
+	// Temporary
+	SetViewport( (float)windowWidth, (float)windowHeight );
+	deviceContext->RSSetState(defaultRS);
 
 	return S_OK;
 }
@@ -29,6 +37,9 @@ void Graphics::Release()
 	if( objectCB )		objectCB->Release();
 
 	defaultShaders.Release();
+
+	resourceManager->Release();
+	delete resourceManager;
 }
 
 Graphics::Graphics()
@@ -84,12 +95,27 @@ HRESULT Graphics::InitSwapChain()
 
 void Graphics::BeginScene()
 {
-
+	// Load resources based on queue
 }
 
 void Graphics::EndScene()
 {
+	deviceContext->ClearRenderTargetView(defaultRTV, clearColor);
+	deviceContext->ClearDepthStencilView(defaultDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+	deviceContext->OMSetRenderTargets(1, &defaultRTV, defaultDSV);
+
+	deviceContext->VSSetShader(defaultShaders.vertexShader, nullptr, 0);
+	deviceContext->PSSetShader(defaultShaders.pixelShader, nullptr, 0);
+
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetInputLayout(defaultShaders.inputLayout);
+	deviceContext->IASetVertexBuffers(0, 1, &resourceManager->vertexBuffers[0], &vSize_POS3, &offset);
+
+	deviceContext->Draw(3, 0);
+
+	swapChain->Present(0, 0);
+	RenderQueue::GetInstance()->ResetQueue();
 }
 
 HRESULT Graphics::InitShaders()
@@ -134,13 +160,15 @@ HRESULT Graphics::InitDepthBuffers()
 	descDSV.Texture2D.MipSlice	= 0;
 	descDSV.Flags				= 0;
 
-	device->CreateDepthStencilView( texture, &descDSV, &defaultDSV );
-
+	hr = device->CreateDepthStencilView( texture, &descDSV, &defaultDSV );
+	
 	if( !SUCCEEDED( hr ) )
 	{
 		OutputDebugString( L"DSV creation failed!" );
 		return hr;
 	}
+
+	texture->Release();
 
 	return hr;
 }
@@ -148,6 +176,34 @@ HRESULT Graphics::InitDepthBuffers()
 HRESULT Graphics::InitConstantBuffers()
 {
 	return S_OK;
+}
+
+HRESULT Graphics::InitRasterStates()
+{
+	D3D11_RASTERIZER_DESC rasterizerState;
+	ZeroMemory( &rasterizerState, sizeof( D3D11_RASTERIZER_DESC ) );
+	rasterizerState.FillMode		= D3D11_FILL_SOLID;
+	rasterizerState.CullMode		= D3D11_CULL_FRONT;
+	rasterizerState.DepthClipEnable = true;
+
+	if( defaultRS ) defaultRS->Release();
+
+	hr = device->CreateRasterizerState(&rasterizerState, &defaultRS);
+
+	return hr;
+}
+
+void Graphics::SetViewport( float windowWidth_, float windowHeight_ )
+{
+	D3D11_VIEWPORT vp;
+	vp.Width	= windowWidth_;
+	vp.Height	= windowHeight_;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+
+	deviceContext->RSSetViewports(1, &vp);
 }
 
 void Graphics::UpdateConstantBuffer( UINT size, void* data )
