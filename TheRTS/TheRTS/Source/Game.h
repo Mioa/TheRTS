@@ -9,10 +9,18 @@ class Game
 	//Variables
 	public:
 	private:
+		EntityManager* mainManager;
 
 	//Functions
 	public:
+		HRESULT Initialize();
+		void	Release();
+
+				Game();
+				~Game();
 	public:
+		void	Update( float deltaTime );
+		void	Render();
 	private:
 };
 #endif
