@@ -26,8 +26,10 @@
     <ClInclude Include="Source\RenderQueue.h" />
     <ClInclude Include="Source\ResourceManager.h" />
     <ClInclude Include="Source\System.h" />
+    <ClInclude Include="Source\Definitions.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Datastructures.h" />
     <ClCompile Include="Source\EntityManager.cpp" />
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\Graphics.cpp" />
