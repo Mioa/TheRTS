@@ -48,6 +48,12 @@
     <ClInclude Include="Source\Definitions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Components.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SignatureFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Main.cpp">
