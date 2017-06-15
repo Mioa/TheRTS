@@ -11,6 +11,8 @@ HRESULT EntityManager::Initialize()
 	ZeroMemory( mesh, sizeof( C_Mesh ) * EM_MAX_ENTITIES );
 
 	renderSignatures.push_back( new SR_RenderMesh( this ) );
+
+	return S_OK;
 }
 
 void EntityManager::Release()

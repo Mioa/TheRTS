@@ -9,11 +9,16 @@ class Game
 	//Variables
 	public:
 	private:
-		EntityManager* mainManager;
+		HWND windowHandle;
+		LONG windowWidth;
+		LONG windowHeight;
+
+		EntityManager*	mainManager;
+		Graphics*		graphicsManager;
 
 	//Functions
 	public:
-		HRESULT Initialize();
+		HRESULT Initialize( HWND windowHandle, LONG windowWidth, LONG windowHeight );
 		void	Release();
 
 				Game();

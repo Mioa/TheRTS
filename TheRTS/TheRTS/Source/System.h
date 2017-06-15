@@ -12,6 +12,7 @@ class System
 		HWND	windowHandle;
 		LONG	windowWidth;
 		LONG	windowHeight;
+		Game	game;
 
 	//Functions
 	public:
