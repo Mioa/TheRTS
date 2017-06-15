@@ -15,6 +15,8 @@ HRESULT Graphics::Initialize( HWND windowHandle_, LONG windowWidth_, LONG window
 	resourceManager = new ResourceManager();
 	resourceManager->Initialize( device );
 
+	RenderQueue::GetInstance()->Initialize();
+
 	// Temporary
 	SetViewport( (float)windowWidth, (float)windowHeight );
 	deviceContext->RSSetState(defaultRS);
@@ -100,21 +102,28 @@ void Graphics::BeginScene()
 
 void Graphics::EndScene()
 {
-	deviceContext->ClearRenderTargetView(defaultRTV, clearColor);
-	deviceContext->ClearDepthStencilView(defaultDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	deviceContext->ClearRenderTargetView( defaultRTV, clearColor );
+	deviceContext->ClearDepthStencilView( defaultDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
 
-	deviceContext->OMSetRenderTargets(1, &defaultRTV, defaultDSV);
+	deviceContext->OMSetRenderTargets( 1, &defaultRTV, defaultDSV );
 
-	deviceContext->VSSetShader(defaultShaders.vertexShader, nullptr, 0);
-	deviceContext->PSSetShader(defaultShaders.pixelShader, nullptr, 0);
+	deviceContext->VSSetShader( defaultShaders.vertexShader, nullptr, 0 );
+	deviceContext->PSSetShader( defaultShaders.pixelShader, nullptr, 0 );
 
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	deviceContext->IASetInputLayout(defaultShaders.inputLayout);
-	deviceContext->IASetVertexBuffers(0, 1, &resourceManager->vertexBuffers[0], &vSize_POS3, &offset);
+	deviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+	deviceContext->IASetInputLayout( defaultShaders.inputLayout );
 
-	deviceContext->Draw(3, 0);
+	for( UINT type = 0; type < RES_SM_COUNT; type++ )
+	{
+		UINT count = RenderQueue::GetInstance()->staticMeshCount[type];
+		for( UINT index = 0; index < count; index++ )
+		{
+			deviceContext->IASetVertexBuffers( 0, 1, &resourceManager->meshes[type], &vSize_POS3, &offset );
+			deviceContext->Draw( 3, 0 );
+		}
+	}
 
-	swapChain->Present(0, 0);
+	swapChain->Present( 0, 0 );
 	RenderQueue::GetInstance()->ResetQueue();
 }
 
@@ -188,7 +197,7 @@ HRESULT Graphics::InitRasterStates()
 
 	if( defaultRS ) defaultRS->Release();
 
-	hr = device->CreateRasterizerState(&rasterizerState, &defaultRS);
+	hr = device->CreateRasterizerState( &rasterizerState, &defaultRS );
 
 	return hr;
 }
@@ -203,10 +212,15 @@ void Graphics::SetViewport( float windowWidth_, float windowHeight_ )
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 
-	deviceContext->RSSetViewports(1, &vp);
+	deviceContext->RSSetViewports( 1, &vp );
 }
 
 void Graphics::UpdateConstantBuffer( UINT size, void* data )
 {
 
+}
+
+ResourceManager* Graphics::GetResourceManager()
+{
+	return resourceManager;
 }

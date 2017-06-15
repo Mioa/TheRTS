@@ -4,22 +4,18 @@ using namespace DirectX;
 
 HRESULT	RenderQueue::Initialize()
 {
-	sprites			= new RI_Sprite[RQ_MAX_SPRITE];
-	staticMeshes	= new RI_StaticMesh[RQ_MAX_STATIC_MESH];
-	dynamicMeshes	= new RI_DynamicMesh[RQ_MAX_DYNAMIC_MESH];
-	pointLights		= new RI_PointLight[RQ_MAX_POINT_LIGHT];
-	dirLights		= new RI_DirLight[RQ_MAX_DIRECTIONAL_LIGHT];
+	ZeroMemory( spriteCount, sizeof( UINT ) * RES_SP_COUNT );
+	ZeroMemory( staticMeshCount, sizeof( UINT ) * RES_SM_COUNT );
+	ZeroMemory( dynamicMeshCount, sizeof( UINT ) * RES_DM_COUNT );
+	pointLightCount = 0;
+	dirLightCount   = 0;
 
 	return S_OK;
 }
 
 void RenderQueue::Release()
 {
-	delete[] sprites;
-	delete[] staticMeshes;
-	delete[] dynamicMeshes;
-	delete[] pointLights;
-	delete[] dirLights;
+
 }
 
 void RenderQueue::RenderSprite( 
@@ -38,8 +34,8 @@ void RenderQueue::RenderSprite(
 		XMLoadFloat4( &pos_ )
 	);
 
-	sprites[spriteIndex].id	= resourceID_;
-	XMStoreFloat4x4( &sprites[spriteIndex].transform, transformation );
+	XMStoreFloat4x4( &sprites[resourceID_][spriteCount[resourceID_]].transform, transformation );
+	spriteCount[resourceID_]++;
 }
 
 void RenderQueue::RenderStaticMesh( 
@@ -58,8 +54,8 @@ void RenderQueue::RenderStaticMesh(
 		XMLoadFloat4( &pos_ )
 	);
 
-	sprites[spriteIndex].id	= resourceID_;
-	XMStoreFloat4x4( &sprites[spriteIndex].transform, transformation );
+	XMStoreFloat4x4( &staticMeshes[resourceID_][staticMeshCount[resourceID_]].transform, transformation );
+	staticMeshCount[resourceID_]++;
 }
 
 void RenderQueue::RenderDynamicMesh( 
@@ -78,8 +74,8 @@ void RenderQueue::RenderDynamicMesh(
 		XMLoadFloat4( &pos_ )
 	);
 
-	sprites[spriteIndex].id	= resourceID_;
-	XMStoreFloat4x4( &sprites[spriteIndex].transform, transformation );
+	XMStoreFloat4x4( &dynamicMeshes[resourceID_][dynamicMeshCount[resourceID_]].transform, transformation );
+	dynamicMeshCount[resourceID_]++;
 }
 
 void RenderQueue::RenderPointLight( 
@@ -88,9 +84,11 @@ void RenderQueue::RenderPointLight(
 	XMFLOAT4 radius_	= XMFLOAT4( 1.0f, 1.0f, 1.0f, 0.0f ) 
 	)
 {
-	pointLights[pointLightIndex].position	= pos_;
-	pointLights[pointLightIndex].color		= color_;
-	pointLights[pointLightIndex].radius		= radius_;
+	pointLights[pointLightCount].position	= pos_;
+	pointLights[pointLightCount].color		= color_;
+	pointLights[pointLightCount].radius		= radius_;
+
+	pointLightCount++;
 }
 
 void RenderQueue::RenderDirLight( 
@@ -98,15 +96,15 @@ void RenderQueue::RenderDirLight(
 	XMFLOAT4 color_		= XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f )
 	)
 {
-	dirLights[dirLightIndex].direction	= direction_;
-	dirLights[dirLightIndex].color		= color_;
+	dirLights[dirLightCount].direction	= direction_;
+	dirLights[dirLightCount].color		= color_;
 }
 
 void RenderQueue::ResetQueue()
 {
-	spriteIndex			= 0;
-	staticMeshIndex		= 0;
-	dynamicMeshIndex	= 0;
-	pointLightIndex		= 0;
-	dirLightIndex		= 0;
+	ZeroMemory( spriteCount, sizeof( UINT ) * RES_SP_COUNT );
+	ZeroMemory( staticMeshCount, sizeof( UINT ) * RES_SM_COUNT );
+	ZeroMemory( dynamicMeshCount, sizeof( UINT ) * RES_DM_COUNT );
+	pointLightCount = 0;
+	dirLightCount   = 0;
 }
