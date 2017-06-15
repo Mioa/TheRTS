@@ -37,6 +37,8 @@ HRESULT System::Initialize( HINSTANCE hInstance_, int nCmdShow_ )
 
 	game.Initialize( windowHandle, windowWidth, windowHeight );
 
+	Input::GetInstance()->Initialize();
+
 	return S_OK;
 }
 
@@ -68,6 +70,9 @@ int	System::Run()
 		}
 		else
 		{
+			Input::GetInstance()->Update();
+			Input::GetInstance()->Clear();
+
 			game.Update( 1.0f );
 			game.Render();
 		}
@@ -80,8 +85,26 @@ LRESULT CALLBACK System::WndProc( HWND hWnd_, UINT uMsg_, WPARAM wParam_, LPARAM
 	switch (uMsg_) 
 	{
 		case WM_KEYDOWN:
-			if( wParam_ == VK_ESCAPE )
-				PostQuitMessage( 0 );
+			switch( wParam_ )
+			{
+				case 'A': Input::GetInstance()->pressFrame[I_KEY::A]	= true; break;
+				case 'D': Input::GetInstance()->pressFrame[I_KEY::D]	= true; break;
+				case 'S': Input::GetInstance()->pressFrame[I_KEY::S]	= true; break;
+				case 'W': Input::GetInstance()->pressFrame[I_KEY::W]	= true; break;
+				case VK_ESCAPE:
+					PostQuitMessage( 0 );
+					break;
+			}
+			break;
+
+		case WM_KEYUP:
+			switch( wParam_ )
+			{
+				case 'A': Input::GetInstance()->releaseFrame[I_KEY::A]	= true; break;
+				case 'D': Input::GetInstance()->releaseFrame[I_KEY::D]	= true; break;
+				case 'S': Input::GetInstance()->releaseFrame[I_KEY::S]	= true; break;
+				case 'W': Input::GetInstance()->releaseFrame[I_KEY::W]	= true; break;
+			}
 			break;
 		case WM_DESTROY:
 			PostQuitMessage( 0 );
