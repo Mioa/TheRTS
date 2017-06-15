@@ -2,24 +2,25 @@
 
 HRESULT	ResourceManager::Initialize( ID3D11Device* device_ )
 {
+	ZeroMemory( meshes, sizeof( ID3D11Buffer* ) * ASSET_COUNT );
+	ZeroMemory( textures, sizeof( ID3D11ShaderResourceView* ) * ASSET_COUNT );
+	ZeroMemory( resources, sizeof( Resource* ) * ( RES_SP_COUNT + RES_SM_COUNT + RES_DM_COUNT ) );
+
 	device = device_;
-
-	// Temporary
-	Vertex_POS3 vertices[3] = {
-		DirectX::XMFLOAT3(0.5f, -0.5f, 0.0f),
-		DirectX::XMFLOAT3(0.0f, 0.5f, 0.0f),
-		DirectX::XMFLOAT3(-0.5f, -0.5f, 0.0f)
-		};
-
-	CreateVertexBuffer( sizeof( Vertex_POS3 ) * 3, vertices );
 
 	return S_OK;
 }
 
 void ResourceManager::Release()
 {
-	for( UINT i = 0; i < vertexBuffers.size(); i++ )
-		if( vertexBuffers[i] ) vertexBuffers[i]->Release();
+	for( UINT i = 0; i < ASSET_COUNT; i++ )
+		if( meshes[i] ) meshes[i]->Release();
+
+	for( UINT i = 0; i < ASSET_COUNT; i++ )
+		if( textures[i] ) textures[i]->Release();
+
+	for( UINT i = 0; i < RES_SP_COUNT + RES_SM_COUNT + RES_DM_COUNT; i++ )
+		if( resources[i] != nullptr ) delete resources[i];
 }
 
 ResourceManager::ResourceManager()
@@ -32,7 +33,29 @@ ResourceManager::~ResourceManager()
 
 }
 
-HRESULT ResourceManager::CreateVertexBuffer( UINT size, void* data )
+void ResourceManager::LoadStaticMesh( UINT staticMeshIndex_, char* filePath_ )
+{
+	// Temporary
+	Vertex_POS3 vertices[3] = {
+		DirectX::XMFLOAT3( 0.5f, -0.5f, 0.0f ),
+		DirectX::XMFLOAT3( 0.0f, 0.5f, 0.0f ),
+		DirectX::XMFLOAT3( -0.5f, -0.5f, 0.0f )
+		};
+
+	meshes[staticMeshIndex_] = CreateVertexBuffer( sizeof( Vertex_POS3 ) * 3, vertices );
+}
+
+void ResourceManager::LoadTexture( UINT textureIndex_, char* filePath_ )
+{
+	textures[textureIndex_] = nullptr;
+}
+
+void ResourceManager::CreateStaticMesh( UINT resourceIndex_, UINT meshIndex_, UINT textureIndex_ )
+{
+	resources[resourceIndex_] = new StaticMeshResource( meshIndex_, textureIndex_ );
+}
+
+ID3D11Buffer* ResourceManager::CreateVertexBuffer( UINT size, void* data )
 {
 	ID3D11Buffer* buffer;
 
@@ -45,9 +68,7 @@ HRESULT ResourceManager::CreateVertexBuffer( UINT size, void* data )
 	D3D11_SUBRESOURCE_DATA vertexData;
 	vertexData.pSysMem = data;
 
-	device->CreateBuffer(&vertexDesc, &vertexData, &buffer);
+	device->CreateBuffer( &vertexDesc, &vertexData, &buffer );
 
-	vertexBuffers.push_back(buffer);
-
-	return S_OK;
+	return buffer;
 }

@@ -21,11 +21,10 @@ class EntityManager
 
 	//Variables
 	public:
-	private:
 		Entity*			entity		= nullptr;
 		C_Position*		position	= nullptr;
 		C_Mesh*			mesh		= nullptr;
-
+	private:
 		int				firstAvailableEntityIndex	= 0;
 		UINT			numActiveEntities			= 0;
 

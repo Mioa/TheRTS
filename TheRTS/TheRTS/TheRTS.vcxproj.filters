@@ -49,12 +49,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\GraphicsDatastructures.h">
-	  <Filter>Header Files</Filter>
-	</ClInclude>
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Components.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\SignatureFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

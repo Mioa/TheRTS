@@ -49,6 +49,8 @@ class Graphics
 		void BeginScene();
 		void EndScene();
 
+		ResourceManager* GetResourceManager();
+
 	private:
 		HRESULT InitSwapChain();
 		HRESULT InitShaders();

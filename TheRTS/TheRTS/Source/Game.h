@@ -13,7 +13,7 @@ class Game
 		LONG windowWidth;
 		LONG windowHeight;
 
-		EntityManager*	mainManager;
+		EntityManager*	entityManager;
 		Graphics*		graphicsManager;
 
 	//Functions
@@ -26,6 +26,10 @@ class Game
 	public:
 		void	Update( float deltaTime );
 		void	Render();
+
 	private:
+		void LoadAssets();
+		void CreateResources();
+		void CreateEntities();
 };
 #endif

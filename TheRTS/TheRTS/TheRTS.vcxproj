@@ -27,6 +27,7 @@
     <ClInclude Include="Source\Input.h" />
     <ClInclude Include="Source\RenderQueue.h" />
     <ClInclude Include="Source\ResourceManager.h" />
+    <ClInclude Include="Source\Resources.h" />
     <ClInclude Include="Source\SignatureFunctions.h" />
     <ClInclude Include="Source\System.h" />
     <ClInclude Include="Source\Definitions.h" />
