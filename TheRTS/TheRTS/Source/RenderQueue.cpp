@@ -18,12 +18,7 @@ void RenderQueue::Release()
 
 }
 
-void RenderQueue::RenderSprite( 
-	UINT resourceID_, 
-	XMFLOAT4 pos_	= XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 
-	XMFLOAT4 rot_	= XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 
-	XMFLOAT4 scale_ = XMFLOAT4( 1.0f, 1.0f, 1.0f, 0.0f ) 
-	)
+void RenderQueue::RenderSprite( UINT resourceID_, XMFLOAT4 pos_, XMFLOAT4 rot_, XMFLOAT4 scale_ )
 {
 	XMMATRIX transformation = XMMatrixTransformation(
 		XMVectorSet( 0.0f, 0.0f, 0.0f, 1.0f ),
@@ -34,16 +29,11 @@ void RenderQueue::RenderSprite(
 		XMLoadFloat4( &pos_ )
 	);
 
-	XMStoreFloat4x4( &sprites[resourceID_][spriteCount[resourceID_]].transform, transformation );
+	XMStoreFloat4x4( &sprites[resourceID_][spriteCount[resourceID_]].transform, DirectX::XMMatrixTranspose( transformation ) );
 	spriteCount[resourceID_]++;
 }
 
-void RenderQueue::RenderStaticMesh( 
-	UINT resourceID_, 
-	XMFLOAT4 pos_	= XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 
-	XMFLOAT4 rot_	= XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 
-	XMFLOAT4 scale_ = XMFLOAT4( 1.0f, 1.0f, 1.0f, 0.0f ) 
-	)
+void RenderQueue::RenderStaticMesh( UINT resourceID_, XMFLOAT4 pos_, XMFLOAT4 rot_, XMFLOAT4 scale_ )
 {
 	XMMATRIX transformation = XMMatrixTransformation(
 		XMVectorSet( 0.0f, 0.0f, 0.0f, 1.0f ),
@@ -54,16 +44,11 @@ void RenderQueue::RenderStaticMesh(
 		XMLoadFloat4( &pos_ )
 	);
 
-	XMStoreFloat4x4( &staticMeshes[resourceID_][staticMeshCount[resourceID_]].transform, transformation );
+	XMStoreFloat4x4( &staticMeshes[resourceID_][staticMeshCount[resourceID_]].transform, DirectX::XMMatrixTranspose( transformation ) );
 	staticMeshCount[resourceID_]++;
 }
 
-void RenderQueue::RenderDynamicMesh( 
-	UINT resourceID_, 
-	XMFLOAT4 pos_	= XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 
-	XMFLOAT4 rot_	= XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 
-	XMFLOAT4 scale_ = XMFLOAT4( 1.0f, 1.0f, 1.0f, 0.0f ) 
-	)
+void RenderQueue::RenderDynamicMesh( UINT resourceID_, XMFLOAT4 pos_, XMFLOAT4 rot_, XMFLOAT4 scale_ )
 {
 	XMMATRIX transformation = XMMatrixTransformation(
 		XMVectorSet( 0.0f, 0.0f, 0.0f, 1.0f ),
@@ -74,15 +59,11 @@ void RenderQueue::RenderDynamicMesh(
 		XMLoadFloat4( &pos_ )
 	);
 
-	XMStoreFloat4x4( &dynamicMeshes[resourceID_][dynamicMeshCount[resourceID_]].transform, transformation );
+	XMStoreFloat4x4( &dynamicMeshes[resourceID_][dynamicMeshCount[resourceID_]].transform, DirectX::XMMatrixTranspose( transformation ) );
 	dynamicMeshCount[resourceID_]++;
 }
 
-void RenderQueue::RenderPointLight( 
-	XMFLOAT4 pos_		= XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 
-	XMFLOAT4 color_		= XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 
-	XMFLOAT4 radius_	= XMFLOAT4( 1.0f, 1.0f, 1.0f, 0.0f ) 
-	)
+void RenderQueue::RenderPointLight( XMFLOAT4 pos_, XMFLOAT4 color_, XMFLOAT4 radius_ )
 {
 	pointLights[pointLightCount].position	= pos_;
 	pointLights[pointLightCount].color		= color_;
@@ -91,13 +72,12 @@ void RenderQueue::RenderPointLight(
 	pointLightCount++;
 }
 
-void RenderQueue::RenderDirLight( 
-	XMFLOAT4 direction_ = XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 
-	XMFLOAT4 color_		= XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f )
-	)
+void RenderQueue::RenderDirLight( XMFLOAT4 direction_, XMFLOAT4 color_	)
 {
 	dirLights[dirLightCount].direction	= direction_;
 	dirLights[dirLightCount].color		= color_;
+
+	dirLightCount++;
 }
 
 void RenderQueue::ResetQueue()

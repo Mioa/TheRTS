@@ -41,12 +41,42 @@ class RenderQueue
 		RenderQueue() {}
 
 	public:
-		void RenderSprite( UINT resourceID_, DirectX::XMFLOAT4 pos_, DirectX::XMFLOAT4 rot_, DirectX::XMFLOAT4 scale_ );
-		void RenderStaticMesh( UINT resourceID_, DirectX::XMFLOAT4 pos_, DirectX::XMFLOAT4 rot_, DirectX::XMFLOAT4 scale_ );
-		void RenderDynamicMesh( UINT resourceID_, DirectX::XMFLOAT4 pos_, DirectX::XMFLOAT4 rot_, DirectX::XMFLOAT4 scale_ );
-		void RenderPointLight( DirectX::XMFLOAT4 pos_, DirectX::XMFLOAT4 color_, DirectX::XMFLOAT4 radius_ );
-		void RenderDirLight( DirectX::XMFLOAT4 direction_, DirectX::XMFLOAT4 color_ );
+		void RenderSprite( 
+			UINT resourceID_, 
+			DirectX::XMFLOAT4 pos_   = DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ), 
+			DirectX::XMFLOAT4 rot_   = DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 
+			DirectX::XMFLOAT4 scale_ = DirectX::XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f )
+			);
+
+		void RenderStaticMesh( 
+			UINT resourceID_, 
+			DirectX::XMFLOAT4 pos_   = DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ), 
+			DirectX::XMFLOAT4 rot_   = DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 
+			DirectX::XMFLOAT4 scale_ = DirectX::XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f )
+			);
+
+		void RenderDynamicMesh( 
+			UINT resourceID_, 
+			DirectX::XMFLOAT4 pos_   = DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ), 
+			DirectX::XMFLOAT4 rot_   = DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 
+			DirectX::XMFLOAT4 scale_ = DirectX::XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f )
+			);
+
+		void RenderPointLight( 
+			DirectX::XMFLOAT4 pos_    = DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ), 
+			DirectX::XMFLOAT4 color_  = DirectX::XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ), 
+			DirectX::XMFLOAT4 radius_ = DirectX::XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) 
+			);
+
+		void RenderDirLight( 
+			DirectX::XMFLOAT4 direction_ = DirectX::XMFLOAT4( 0.0f, -1.0f, 0.0f, 0.0f ), 
+			DirectX::XMFLOAT4 color_     = DirectX::XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f )
+			);
+
 		void ResetQueue();
 
 };
 #endif
+
+
+
