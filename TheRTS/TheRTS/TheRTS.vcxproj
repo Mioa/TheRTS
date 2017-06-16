@@ -43,6 +43,11 @@
     <ClCompile Include="Source\ResourceManager.cpp" />
     <ClCompile Include="Source\System.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Shaders\defaultShaders.hlsl">
+      <FileType>Document</FileType>
+    </Text>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{47A66D9A-BDE0-4DB6-8A96-5042E80C5FE8}</ProjectGuid>

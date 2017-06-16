@@ -2,6 +2,11 @@
 //##								 VERTEX SHADER										##
 //########################################################################################
 
+cbuffer objectCB : register(b0)
+{
+	float4x4 world;
+};
+
 struct VS_IN
 {
 	float3 Pos : POSITION;
@@ -16,7 +21,7 @@ VS_OUT VS_main(VS_IN input)
 {
 	VS_OUT output = (VS_OUT)0;
 
-	output.Pos = float4(input.Pos, 1.0f);
+	output.Pos = mul(float4(input.Pos, 1.0f), world);
 
 	return output;
 }

@@ -1,6 +1,9 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+// General
+#define MAX_PLAYERS 8
+
 // EntityManager
 #define EM_MAX_ENTITIES	10000
 

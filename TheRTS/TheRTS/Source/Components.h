@@ -8,6 +8,7 @@ enum ComponentTypes
 {
 	C_POSITION,
 	C_MESH,
+	C_PLAYERINPUT,
 	C_COUNT
 };
 
@@ -31,6 +32,17 @@ struct C_Mesh
 struct CI_Mesh
 {
 	UINT resource;
+};
+
+
+struct C_PlayerInput
+{
+	UINT playerIndex;
+};
+
+struct CI_PlayerInput
+{
+	UINT playerIndex;
 };
 
 #endif
