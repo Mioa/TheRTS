@@ -18,6 +18,9 @@ HRESULT Game::Initialize( HWND windowHandle_, LONG windowWidth_, LONG windowHeig
 	CreateResources();
 	CreateEntities();
 
+	network = new Network;
+	network->Initialize();
+
 	return S_OK;
 }
 
@@ -28,6 +31,9 @@ void Game::Release()
 
 	graphicsManager->Release();
 	delete graphicsManager;
+
+	network->Release();
+	delete network;
 }
 
 Game::Game()
@@ -43,6 +49,26 @@ Game::~Game()
 void Game::Update( float deltaTime )
 {
 	entityManager->Update( deltaTime );
+
+	if( Input_KeyPressed( I_KEY::H ) && !isGameHost )
+	{
+		hostThread = std::thread( &Network::StartHostSession, network );
+		isGameHost = true;
+	}
+
+	if( Input_KeyPressed( I_KEY::J ) )
+		network->AddConnection();
+
+
+	if( receiveThread.joinable() )
+		receiveThread.join();
+	else
+		receiveThread	= std::thread( &Network::ReceiveData, network );
+
+	if( sendThread.joinable() )
+		sendThread.join();
+	else
+		sendThread		= std::thread( &Network::SendData, network );
 }
 
 void Game::Render()

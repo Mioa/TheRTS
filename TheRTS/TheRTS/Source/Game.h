@@ -1,8 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "Network.h"
 #include "EntityManager.h"
 #include "Graphics.h"
+#include "Input.h"
 
 class Game
 {
@@ -15,6 +17,11 @@ class Game
 
 		EntityManager*	entityManager;
 		Graphics*		graphicsManager;
+		Network*		network;
+		bool			isGameHost = false;
+		std::thread		hostThread;
+		std::thread		receiveThread;
+		std::thread		sendThread;
 
 	//Functions
 	public:
