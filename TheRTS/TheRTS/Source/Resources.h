@@ -5,7 +5,8 @@
 
 enum Assets
 {
-	ASSET_TRIANGLE,
+	ASSET_CUBE,
+	ASSET_FLOOR,
 	ASSET_COUNT
 };
 
@@ -17,7 +18,8 @@ enum Res_Sprite
 
 enum Res_StaticMesh
 {
-	RES_SM_TRIANGLE,
+	RES_SM_CUBE,
+	RES_SM_FLOOR,
 	RES_SM_COUNT
 };
 
@@ -63,17 +65,17 @@ struct RI_DynamicMesh
 	DirectX::XMFLOAT4X4 transform;
 };
 
-struct RI_DirLight
-{
-	DirectX::XMFLOAT4 direction = { 0.0f, 0.0f, 0.0f, 0.0f };
-	DirectX::XMFLOAT4 color		= { 0.0f, 0.0f, 0.0f, 0.0f };
-};
-
 struct RI_PointLight
 {
 	DirectX::XMFLOAT4 position	= { 0.0f, 0.0f, 0.0f, 0.0f };
 	DirectX::XMFLOAT4 color		= { 0.0f, 0.0f, 0.0f, 0.0f };
 	DirectX::XMFLOAT4 radius	= { 0.0f, 0.0f, 0.0f, 0.0f };
+};
+
+struct RI_DirLight
+{
+	DirectX::XMFLOAT4 direction = { 0.0f, 0.0f, 0.0f, 0.0f };
+	DirectX::XMFLOAT4 color		= { 0.0f, 0.0f, 0.0f, 0.0f };
 };
 
 #endif

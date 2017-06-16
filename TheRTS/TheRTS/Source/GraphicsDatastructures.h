@@ -31,6 +31,12 @@ struct Vertex_POS3
 	DirectX::XMFLOAT3 position = DirectX::XMFLOAT3( 0.0f, 0.0f, 0.0f );
 };
 
+struct StaticMeshBuffer
+{
+	ID3D11Buffer* buffer;
+	UINT vertexCount;
+};
+
 struct ShaderGroup
 {
 	ID3D11InputLayout*		inputLayout		= nullptr;

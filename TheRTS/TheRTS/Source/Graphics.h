@@ -19,8 +19,8 @@ class Graphics
 		ID3D11RenderTargetView* defaultRTV		= nullptr;
 		ID3D11DepthStencilView* defaultDSV		= nullptr;
 
-		ID3D11Buffer* frameCB	= nullptr;
-		ID3D11Buffer* objectCB	= nullptr;
+		ID3D11Buffer* frameCB		= nullptr;
+		ID3D11Buffer* objectCB		= nullptr;
 
 		// Shaders
 		ShaderGroup defaultShaders;
@@ -33,6 +33,10 @@ class Graphics
 		HRESULT hr;
 
 		ResourceManager* resourceManager;
+
+		Camera camera;
+		DirectX::XMFLOAT4 cameraPos;
+		DirectX::XMFLOAT4 cameraFocus;
 
 		float  clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		UINT32 vSize_POS3	 = sizeof( Vertex_POS3 );
@@ -50,16 +54,16 @@ class Graphics
 		void EndScene();
 
 		ResourceManager* GetResourceManager();
+		void UpdateCamera( DirectX::XMFLOAT4 position_ );
 
 	private:
 		HRESULT InitSwapChain();
 		HRESULT InitShaders();
-		HRESULT InitRenderTargets();
 		HRESULT InitDepthBuffers();
 		HRESULT InitConstantBuffers();
 		HRESULT InitRasterStates();
+		void	InitCamera();
 
-		void SetViewport( float windowWidth_, float windowHeight_ ); 
-		void UpdateConstantBuffer( ID3D11Buffer* buffer_, UINT size_, void* data_ );
+		void SetViewport( float windowWidth_, float windowHeight_ );
 };
 #endif

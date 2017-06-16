@@ -91,8 +91,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\defaultShaders.hlsl">
+    <Text Include="Shaders\defaultShaders.hlsl">
       <Filter>Resource Files</Filter>
-    </FxCompile>
+    </Text>
   </ItemGroup>
 </Project>

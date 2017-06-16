@@ -69,16 +69,16 @@ struct SU_MovePlayer : public SignatureFunction
 
 			// Temporary
 			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::W] )
-				manager->position[entID].position.y = min(1.0f, manager->position[entID].position.y + 0.001f);
+				manager->position[entID].position.z = manager->position[entID].position.z + 0.001f;
 
 			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::A] )
-				manager->position[entID].position.x = max(-1.0f, manager->position[entID].position.x - 0.001f);
+				manager->position[entID].position.x = manager->position[entID].position.x - 0.001f;
 
 			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::S] )
-				manager->position[entID].position.y = max(-1.0f, manager->position[entID].position.y - 0.001f);
+				manager->position[entID].position.z = manager->position[entID].position.z - 0.001f;
 
 			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::D] )
-				manager->position[entID].position.x = min(1.0f, manager->position[entID].position.x + 0.001f);
+				manager->position[entID].position.x = manager->position[entID].position.x + 0.001f;
 			//
 		}
 	}

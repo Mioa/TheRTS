@@ -29,10 +29,10 @@ class EntityManager
 
 	//Variables
 	public:
-		Entity*			entity		= nullptr;
-		C_Position*		position	= nullptr;
-		C_Mesh*			mesh		= nullptr;
-		C_PlayerInput*	playerInput	= nullptr;
+		Entity*				entity		= nullptr;
+		C_Position*			position	= nullptr;
+		C_Mesh*				mesh		= nullptr;
+		C_PlayerInput*		playerInput	= nullptr;
 
 		PlayerKeystates keyStates;
 
