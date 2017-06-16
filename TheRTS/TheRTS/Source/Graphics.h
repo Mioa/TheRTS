@@ -60,6 +60,6 @@ class Graphics
 		HRESULT InitRasterStates();
 
 		void SetViewport( float windowWidth_, float windowHeight_ ); 
-		void UpdateConstantBuffer( UINT size_, void* data_ );
+		void UpdateConstantBuffer( ID3D11Buffer* buffer_, UINT size_, void* data_ );
 };
 #endif

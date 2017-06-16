@@ -9,8 +9,11 @@ HRESULT EntityManager::Initialize()
 	ZeroMemory( position, sizeof( C_Position ) * EM_MAX_ENTITIES );
 	mesh		= new C_Mesh[EM_MAX_ENTITIES];
 	ZeroMemory( mesh, sizeof( C_Mesh ) * EM_MAX_ENTITIES );
+	playerInput	= new C_PlayerInput[EM_MAX_ENTITIES];
+	ZeroMemory( playerInput, sizeof( C_PlayerInput ) * EM_MAX_ENTITIES );
 
 	renderSignatures.push_back( new SR_RenderMesh( this ) );
+	updateSignatures.push_back( new SU_MovePlayer( this ) );
 
 	return S_OK;
 }
@@ -20,6 +23,7 @@ void EntityManager::Release()
 	delete[] entity;
 	delete[] position;
 	delete[] mesh;
+	delete[] playerInput;
 }
 
 EntityManager::EntityManager()
@@ -34,7 +38,8 @@ EntityManager::~EntityManager()
 
 void EntityManager::Update( float deltaTime )
 {
-
+	for( int i = 0; i < updateSignatures.size(); i++ )
+		updateSignatures[i]->Function();
 }
 
 void EntityManager::Render()
@@ -84,6 +89,16 @@ HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_Mesh info_ )
 	entity[entityIndex_].resting				= false;
 	entity[entityIndex_].signature[C_MESH]		= true;
 	mesh[entityIndex_].resource					= info_.resource;
+
+	return S_OK;
+}
+
+HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_PlayerInput info_ )
+{
+	entity[entityIndex_].active						= true;
+	entity[entityIndex_].resting					= false;
+	entity[entityIndex_].signature[C_PLAYERINPUT]	= true;
+	playerInput[entityIndex_].playerIndex			= info_.playerIndex;
 
 	return S_OK;
 }
