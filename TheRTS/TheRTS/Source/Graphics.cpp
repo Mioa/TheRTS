@@ -11,6 +11,7 @@ HRESULT Graphics::Initialize( HWND windowHandle_, LONG windowWidth_, LONG window
 	InitRenderTargets();
 	InitDepthBuffers();
 	InitRasterStates();
+	InitConstantBuffers();
 
 	resourceManager = new ResourceManager();
 	resourceManager->Initialize( device );
@@ -20,6 +21,7 @@ HRESULT Graphics::Initialize( HWND windowHandle_, LONG windowWidth_, LONG window
 	// Temporary
 	SetViewport( (float)windowWidth, (float)windowHeight );
 	deviceContext->RSSetState(defaultRS);
+	//
 
 	return S_OK;
 }
@@ -119,6 +121,10 @@ void Graphics::EndScene()
 		for( UINT index = 0; index < count; index++ )
 		{
 			deviceContext->IASetVertexBuffers( 0, 1, &resourceManager->meshes[type], &vSize_POS3, &offset );
+
+			deviceContext->UpdateSubresource( objectCB, 0, nullptr, &RenderQueue::GetInstance()->staticMeshes[type][index].transform, sizeof ( DirectX::XMFLOAT4X4 ), 0 ); 
+			deviceContext->VSSetConstantBuffers( 0, 1, &objectCB );
+
 			deviceContext->Draw( 3, 0 );
 		}
 	}
@@ -184,7 +190,15 @@ HRESULT Graphics::InitDepthBuffers()
 
 HRESULT Graphics::InitConstantBuffers()
 {
-	return S_OK;
+	D3D11_BUFFER_DESC desc;
+	ZeroMemory( &desc, sizeof( D3D11_BUFFER_DESC ) );
+	desc.ByteWidth		= sizeof( DirectX::XMFLOAT4X4 );
+	desc.Usage			= D3D11_USAGE_DEFAULT;
+	desc.BindFlags		= D3D11_BIND_CONSTANT_BUFFER;
+
+	hr = device->CreateBuffer( &desc, nullptr, &objectCB );
+
+	return hr;
 }
 
 HRESULT Graphics::InitRasterStates()
@@ -215,9 +229,9 @@ void Graphics::SetViewport( float windowWidth_, float windowHeight_ )
 	deviceContext->RSSetViewports( 1, &vp );
 }
 
-void Graphics::UpdateConstantBuffer( UINT size, void* data )
+void Graphics::UpdateConstantBuffer( ID3D11Buffer* buffer_, UINT size_, void* data_ )
 {
-
+	
 }
 
 ResourceManager* Graphics::GetResourceManager()

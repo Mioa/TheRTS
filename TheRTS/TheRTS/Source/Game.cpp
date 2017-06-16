@@ -42,6 +42,13 @@ Game::~Game()
 
 void Game::Update( float deltaTime )
 {
+	// Temporary
+	entityManager->keyStates.keyDown[0][I_KEY::W] = Input_KeyDown(I_KEY::W);
+	entityManager->keyStates.keyDown[0][I_KEY::A] = Input_KeyDown(I_KEY::A);
+	entityManager->keyStates.keyDown[0][I_KEY::S] = Input_KeyDown(I_KEY::S);
+	entityManager->keyStates.keyDown[0][I_KEY::D] = Input_KeyDown(I_KEY::D);
+	//
+
 	entityManager->Update( deltaTime );
 }
 
@@ -65,6 +72,7 @@ void Game::CreateResources()
 void Game::CreateEntities()
 {
 	UINT triangle = entityManager->AddEntity();
-	entityManager->AddComponent( triangle, CI_Position{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ) } );
+	entityManager->AddComponent( triangle, CI_Position{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );
 	entityManager->AddComponent( triangle, CI_Mesh{ RES_SM_TRIANGLE } );
+	entityManager->AddComponent( triangle, CI_PlayerInput{ 0 } );
 }

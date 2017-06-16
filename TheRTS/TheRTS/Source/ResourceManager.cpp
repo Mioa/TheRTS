@@ -43,6 +43,7 @@ void ResourceManager::LoadStaticMesh( UINT staticMeshIndex_, char* filePath_ )
 		};
 
 	meshes[staticMeshIndex_] = CreateVertexBuffer( sizeof( Vertex_POS3 ) * 3, vertices );
+	//
 }
 
 void ResourceManager::LoadTexture( UINT textureIndex_, char* filePath_ )
