@@ -17,6 +17,10 @@ namespace I_KEY
 		J,
 		S,
 		W,
+		ARROW_LEFT,
+		ARROW_RIGHT,
+		ARROW_DOWN,
+		ARROW_UP,
 		COUNT
 	};
 }

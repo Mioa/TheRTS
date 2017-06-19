@@ -90,12 +90,16 @@ LRESULT CALLBACK System::WndProc( HWND hWnd_, UINT uMsg_, WPARAM wParam_, LPARAM
 		case WM_KEYDOWN:
 			switch( wParam_ )
 			{
-				case 'A': Input::GetInstance()->pressFrame[I_KEY::A]	= true; break;
-				case 'D': Input::GetInstance()->pressFrame[I_KEY::D]	= true; break;
-				case 'J': Input::GetInstance()->pressFrame[I_KEY::J]	= true; break;
-				case 'H': Input::GetInstance()->pressFrame[I_KEY::H]	= true; break;
-				case 'S': Input::GetInstance()->pressFrame[I_KEY::S]	= true; break;
-				case 'W': Input::GetInstance()->pressFrame[I_KEY::W]	= true; break;
+				case 'A'		: Input::GetInstance()->pressFrame[I_KEY::A]			= true; break;
+				case 'D'		: Input::GetInstance()->pressFrame[I_KEY::D]			= true; break;
+				case 'H'		: Input::GetInstance()->pressFrame[I_KEY::H]			= true; break;
+				case 'J'		: Input::GetInstance()->pressFrame[I_KEY::J]			= true; break;
+				case 'S'		: Input::GetInstance()->pressFrame[I_KEY::S]			= true; break;
+				case 'W'		: Input::GetInstance()->pressFrame[I_KEY::W]			= true; break;
+				case VK_LEFT	: Input::GetInstance()->pressFrame[I_KEY::ARROW_LEFT]	= true; break;
+				case VK_RIGHT	: Input::GetInstance()->pressFrame[I_KEY::ARROW_RIGHT]	= true; break;
+				case VK_DOWN	: Input::GetInstance()->pressFrame[I_KEY::ARROW_DOWN]	= true; break;
+				case VK_UP		: Input::GetInstance()->pressFrame[I_KEY::ARROW_UP]		= true; break;
 				case VK_ESCAPE:
 					PostQuitMessage( 0 );
 					break;
@@ -105,12 +109,16 @@ LRESULT CALLBACK System::WndProc( HWND hWnd_, UINT uMsg_, WPARAM wParam_, LPARAM
 		case WM_KEYUP:
 			switch( wParam_ )
 			{
-				case 'A': Input::GetInstance()->releaseFrame[I_KEY::A]	= true; break;
-				case 'D': Input::GetInstance()->releaseFrame[I_KEY::D]	= true; break;
-				case 'J': Input::GetInstance()->releaseFrame[I_KEY::J]	= true; break;
-				case 'H': Input::GetInstance()->releaseFrame[I_KEY::H]	= true; break;
-				case 'S': Input::GetInstance()->releaseFrame[I_KEY::S]	= true; break;
-				case 'W': Input::GetInstance()->releaseFrame[I_KEY::W]	= true; break;
+				case 'A'		: Input::GetInstance()->releaseFrame[I_KEY::A]				= true; break;
+				case 'D'		: Input::GetInstance()->releaseFrame[I_KEY::D]				= true; break;
+				case 'H'		: Input::GetInstance()->releaseFrame[I_KEY::H]				= true; break;
+				case 'J'		: Input::GetInstance()->releaseFrame[I_KEY::J]				= true; break;
+				case 'S'		: Input::GetInstance()->releaseFrame[I_KEY::S]				= true; break;
+				case 'W'		: Input::GetInstance()->releaseFrame[I_KEY::W]				= true; break;
+				case VK_LEFT	: Input::GetInstance()->releaseFrame[I_KEY::ARROW_LEFT]		= true; break;
+				case VK_RIGHT	: Input::GetInstance()->releaseFrame[I_KEY::ARROW_RIGHT]	= true; break;
+				case VK_DOWN	: Input::GetInstance()->releaseFrame[I_KEY::ARROW_DOWN]		= true; break;
+				case VK_UP		: Input::GetInstance()->releaseFrame[I_KEY::ARROW_UP]		= true; break;
 			}
 			break;
 		case WM_DESTROY:

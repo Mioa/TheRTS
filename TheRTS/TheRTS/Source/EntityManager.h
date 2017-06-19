@@ -29,10 +29,11 @@ class EntityManager
 
 	//Variables
 	public:
-		Entity*			entity		= nullptr;
-		C_Position*		position	= nullptr;
-		C_Mesh*			mesh		= nullptr;
-		C_PlayerInput*	playerInput	= nullptr;
+		Entity*				entity		= nullptr;
+		C_Position*			position	= nullptr;
+		C_Transform*		transform	= nullptr;
+		C_Mesh*				mesh		= nullptr;
+		C_PlayerInput*		playerInput	= nullptr;
 
 		PlayerKeystates keyStates;
 
@@ -57,8 +58,10 @@ class EntityManager
 
 		int		AddEntity();
 		HRESULT	AddComponent( UINT entityIndex_, CI_Position info_ );
+		HRESULT AddComponent( UINT entityIndex_, CI_Transform info_ );
 		HRESULT	AddComponent( UINT entityIndex_, CI_Mesh info_ );
 		HRESULT AddComponent( UINT entityIndex_, CI_PlayerInput info_ );
+
 	private:
 };
 #endif

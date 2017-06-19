@@ -35,6 +35,8 @@ class Game
 		bool			playerInputData[NE_MAX_SOCKETS][I_KEY::COUNT][GA_SYNC_WINDOW_SIZE];
 
 
+		float cameraSpeed;
+
 	//Functions
 	public:
 		HRESULT Initialize( HWND windowHandle, LONG windowWidth, LONG windowHeight );
