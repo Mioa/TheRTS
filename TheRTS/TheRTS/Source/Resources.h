@@ -41,6 +41,16 @@ struct Resource
 	UINT test;
 };
 
+struct SpriteResource : public Resource
+{
+	UINT textureIndex = 0;
+
+	SpriteResource( UINT textureIndex_ )
+	{
+		textureIndex = textureIndex_;
+	}
+};
+
 struct StaticMeshResource : public Resource
 {
 	UINT meshIndex	  = 0;
@@ -57,22 +67,17 @@ struct StaticMeshResource : public Resource
 
 struct RI_Sprite
 {
-	DirectX::XMFLOAT4X4 transform;
-	UINT textureID = 0;
+	DirectX::XMFLOAT4 rect; // X, Y, Width, Height
 };
 
 struct RI_StaticMesh
 {
 	DirectX::XMFLOAT4X4 transform;
-	UINT meshID;
-	UINT textureID;
 };
 
 struct RI_DynamicMesh
 {
 	DirectX::XMFLOAT4X4 transform;
-	UINT meshID;
-	UINT textureID;
 };
 
 struct RI_PointLight

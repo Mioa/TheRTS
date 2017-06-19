@@ -81,6 +81,7 @@ void Game::CreateResources()
 	macResourceManager->CreateStaticMesh( RES_SM_CUBE, ASSET_MESH_DEFAULT, ASSET_TEXTURE_DEFAULT );
 	macResourceManager->CreateStaticMesh( RES_SM_FLOOR, ASSET_MESH_FLOOR, ASSET_TEXTURE_SPHERE );
 	macResourceManager->CreateStaticMesh( RES_SM_SPHERE, ASSET_MESH_SPHERE, ASSET_TEXTURE_DEFAULT );
+	macResourceManager->CreateSprite( RES_SP_DEFAULT, ASSET_TEXTURE_DEFAULT );
 }
 
 void Game::CreateEntities()
@@ -110,4 +111,9 @@ void Game::CreateEntities()
 			entityManager->AddComponent( cube, CI_Mesh{ RES_SM_CUBE } );
 		}
 	}
+
+	// In progress TODO!
+	UINT sprite = entityManager->AddEntity();
+	entityManager->AddComponent( sprite, CI_Position{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.5f, 0.5f ) } );
+	entityManager->AddComponent( sprite, CI_Texture{ RES_SP_DEFAULT } );
 }

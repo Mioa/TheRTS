@@ -40,23 +40,15 @@ void Graphics::Release()
 
 	if( frameCB )		frameCB->Release();
 	if( objectCB )		objectCB->Release();
+	if( spriteCB )		spriteCB->Release();
 
 	if( linearSamp )	linearSamp->Release();
 
 	defaultShaders.Release();
+	spriteShaders.Release();
 
 	resourceManager->Release();
 	delete resourceManager;
-}
-
-Graphics::Graphics()
-{
-
-}
-
-Graphics::~Graphics()
-{
-
 }
 
 HRESULT Graphics::InitSwapChain()
@@ -100,53 +92,10 @@ HRESULT Graphics::InitSwapChain()
 	return hr;
 }
 
-void Graphics::BeginScene()
-{
-	deviceContext->ClearRenderTargetView( defaultRTV, clearColor );
-	deviceContext->ClearDepthStencilView( defaultDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
-}
-
-void Graphics::EndScene()
-{
-	deviceContext->OMSetRenderTargets( 1, &defaultRTV, defaultDSV );
-
-	deviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-	deviceContext->IASetInputLayout( defaultShaders.inputLayout );
-
-	deviceContext->VSSetShader( defaultShaders.vertexShader, nullptr, 0 );
-	deviceContext->PSSetShader( defaultShaders.pixelShader, nullptr, 0 );
-
-	deviceContext->VSSetConstantBuffers( 0, 1, &frameCB );
-
-	deviceContext->PSSetSamplers( 0, 1, &linearSamp );
-
-	for( UINT type = 0; type < RES_SM_COUNT; type++ )
-	{
-		UINT count = RenderQueue::GetInstance()->staticMeshCount[type];
-
-		if( count > 0)
-		{
-			deviceContext->IASetVertexBuffers( 0, 1, &resourceManager->meshes[((StaticMeshResource*)(resourceManager->resources[type]))->meshIndex].buffer, &vSize_POS3_NOR3_UV2, &offset );
-			deviceContext->PSSetShaderResources( 0, 1, &resourceManager->textures[((StaticMeshResource*)(resourceManager->resources[type]))->textureIndex] );
-
-			for( UINT index = 0; index < count; index++ )
-			{
-				deviceContext->UpdateSubresource( objectCB, 0, nullptr, &RenderQueue::GetInstance()->staticMeshes[type][index].transform, sizeof ( DirectX::XMFLOAT4X4 ), 0 ); 
-				deviceContext->VSSetConstantBuffers( 1, 1, &objectCB );
-
-				deviceContext->Draw( resourceManager->meshes[((StaticMeshResource*)(resourceManager->resources[type]))->meshIndex].vertexCount, 0 );
-			}
-		}
-	}
-
-	swapChain->Present( 0, 0 );
-	RenderQueue::GetInstance()->ResetQueue();
-}
-
 HRESULT Graphics::InitShaders()
 {
 	hr = defaultShaders.Initialize( device, L"Shaders/defaultShaders.hlsl", IL_POS3_NOR3_UV2, SHADERFLAG_VP );
-
+	hr = spriteShaders.Initialize( device, L"Shaders/spriteShaders.hlsl", IL_POS3, SHADERFLAG_VP );
 	return hr;
 }
 
@@ -206,6 +155,9 @@ HRESULT Graphics::InitConstantBuffers()
 	desc.ByteWidth		= sizeof( Camera );
 	hr = device->CreateBuffer( &desc, nullptr, &frameCB );
 
+	desc.ByteWidth		= sizeof( DirectX::XMFLOAT4 ) * GR_MAX_SPRITES_BUFFER;
+	hr = device->CreateBuffer( &desc, nullptr, &spriteCB );
+
 	return hr;
 }
 
@@ -264,17 +216,117 @@ void Graphics::InitCamera()
 	DirectX::XMStoreFloat4x4( &camera.projection, DirectX::XMMatrixTranspose( projection ) );
 }
 
-void Graphics::SetViewport( float windowWidth_, float windowHeight_ )
+void Graphics::SetPipeline( UINT pipeline_ )
 {
-	D3D11_VIEWPORT vp;
-	vp.Width	= windowWidth_;
-	vp.Height	= windowHeight_;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
+	switch( pipeline_ )
+	{
+		case PIPELINE_SPRITE:
+		{
+			deviceContext->OMSetRenderTargets( 1, &defaultRTV, defaultDSV );
 
-	deviceContext->RSSetViewports( 1, &vp );
+			deviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+			deviceContext->IASetInputLayout( defaultShaders.inputLayout );
+
+			deviceContext->VSSetShader( spriteShaders.vertexShader, nullptr, 0 );
+			deviceContext->PSSetShader( spriteShaders.pixelShader, nullptr, 0 );
+
+			deviceContext->VSSetConstantBuffers( 0, 1, &spriteCB );
+
+			deviceContext->PSSetSamplers( 0, 1, &linearSamp );
+
+			deviceContext->IASetVertexBuffers(0, 0, NULL, 0, 0);
+			deviceContext->IASetVertexBuffers(1, 0, NULL, 0, 0);
+			deviceContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
+			deviceContext->IASetInputLayout(NULL);
+
+			break;
+		}
+		case PIPELINE_STATIC_MESH:
+		{
+			deviceContext->OMSetRenderTargets( 1, &defaultRTV, defaultDSV );
+
+			deviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+			deviceContext->IASetInputLayout( defaultShaders.inputLayout );
+
+			deviceContext->VSSetShader( defaultShaders.vertexShader, nullptr, 0 );
+			deviceContext->PSSetShader( defaultShaders.pixelShader, nullptr, 0 );
+
+			deviceContext->VSSetConstantBuffers( 0, 1, &frameCB );
+
+			deviceContext->PSSetSamplers( 0, 1, &linearSamp );
+
+			break;
+		}
+		default:
+			break;
+	}
+}
+
+void Graphics::DrawSprites()
+{
+	for( UINT type = 0; type < RES_SP_COUNT; type++ )
+	{
+		UINT counter = RenderQueue::GetInstance()->spriteCount[type];
+		deviceContext->PSSetShaderResources( 0, 1, &resourceManager->textures[((SpriteResource*)(resourceManager->resources[type]))->textureIndex] );
+
+		while( counter > 0 )
+		{
+			UINT numSprites = min(counter, GR_MAX_SPRITES_BUFFER);
+			
+			deviceContext->UpdateSubresource( 
+				spriteCB, 
+				0, 
+				nullptr, 
+				&RenderQueue::GetInstance()->staticMeshes[type][RenderQueue::GetInstance()->spriteCount[type] - counter], 
+				sizeof ( DirectX::XMFLOAT4X4 ) * numSprites,
+				0
+				); 
+
+			counter -= numSprites;
+
+			deviceContext->Draw(6 * numSprites, 0 );
+		}
+	}
+}
+
+void Graphics::DrawStaticMeshes()
+{
+	for( UINT type = 0; type < RES_SM_COUNT; type++ )
+	{
+		UINT count = RenderQueue::GetInstance()->staticMeshCount[type];
+
+		if( count > 0)
+		{
+			deviceContext->IASetVertexBuffers( 0, 1, &resourceManager->meshes[((StaticMeshResource*)(resourceManager->resources[type]))->meshIndex].buffer, &vSize_POS3_NOR3_UV2, &offset );
+			deviceContext->PSSetShaderResources( 0, 1, &resourceManager->textures[((StaticMeshResource*)(resourceManager->resources[type]))->textureIndex] );
+
+			for( UINT index = 0; index < count; index++ )
+			{
+				// Temporary. Batch later!
+				deviceContext->UpdateSubresource( objectCB, 0, nullptr, &RenderQueue::GetInstance()->staticMeshes[type][index].transform, sizeof ( DirectX::XMFLOAT4X4 ), 0 ); 
+				deviceContext->VSSetConstantBuffers( 1, 1, &objectCB );
+		
+				deviceContext->Draw( resourceManager->meshes[((StaticMeshResource*)(resourceManager->resources[type]))->meshIndex].vertexCount, 0 );
+			}
+		}
+	}
+}
+
+void Graphics::BeginScene()
+{
+	deviceContext->ClearRenderTargetView( defaultRTV, clearColor );
+	deviceContext->ClearDepthStencilView( defaultDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
+}
+
+void Graphics::EndScene()
+{
+	SetPipeline( PIPELINE_STATIC_MESH );
+	DrawStaticMeshes();
+	SetPipeline( PIPELINE_SPRITE );
+	DrawSprites();
+
+	swapChain->Present( 0, 0 );
+	RenderQueue::GetInstance()->ResetQueue();
 }
 
 ResourceManager* Graphics::GetResourceManager()
@@ -296,4 +348,17 @@ void Graphics::UpdateCamera( DirectX::XMFLOAT4 position_ )
 	DirectX::XMStoreFloat4x4( &camera.view, DirectX::XMMatrixTranspose( view ) );
 
 	deviceContext->UpdateSubresource( frameCB, 0, nullptr, &camera, sizeof ( Camera ), 0 ); 
+}
+
+void Graphics::SetViewport( float windowWidth_, float windowHeight_ )
+{
+	D3D11_VIEWPORT vp;
+	vp.Width	= windowWidth_;
+	vp.Height	= windowHeight_;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+
+	deviceContext->RSSetViewports( 1, &vp );
 }

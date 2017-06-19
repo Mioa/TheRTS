@@ -29,6 +29,7 @@ class ResourceManager
 		void LoadStaticMesh(  UINT staticMeshIndex_, std::string filePath_ );
 		void LoadTexture(  UINT textureIndex_, std::string filePath_ );
 
+		void CreateSprite( UINT resourceIndex_, UINT textureIndex_ );
 		void CreateStaticMesh( UINT resourceIndex_, UINT meshIndex_, UINT textureIndex_ );
 
 	private:

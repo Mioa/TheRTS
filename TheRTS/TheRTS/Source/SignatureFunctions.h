@@ -48,6 +48,34 @@ struct SR_RenderMesh : public SignatureFunction
 	}
 };
 
+struct SR_RenderTexture : public SignatureFunction
+{
+	SR_RenderTexture( EntityManager* manager_ )
+	{
+		manager					= manager_;
+		signature[C_POSITION]	= true;
+		signature[C_TEXTURE]	= true;
+	}
+	void Function()
+	{
+		numActive = 0;
+
+		for( UINT entID = 0; entID < EM_MAX_ENTITIES; entID++ )
+			if( manager->entity[entID].active && ( signature & manager->entity[entID].signature ) == signature )
+				currentActive[numActive++] = entID;
+
+		for( UINT i = 0; i < numActive; i++ )
+		{
+			UINT entID = currentActive[i];
+
+			macRenderQueue->RenderSprite( 
+				manager->texture[entID].resource, 
+				manager->transform[entID].position
+				);
+		}
+	}
+};
+
 struct SU_MovePlayer : public SignatureFunction
 {
 	SU_MovePlayer( EntityManager* manager_ )

@@ -75,6 +75,11 @@ void ResourceManager::LoadTexture( UINT textureIndex_, std::string filePath_ )
 		}
 }
 
+void ResourceManager::CreateSprite( UINT resourceIndex_, UINT textureIndex_ )
+{
+	resources[resourceIndex_] = new SpriteResource( textureIndex_ );
+}
+
 void ResourceManager::CreateStaticMesh( UINT resourceIndex_, UINT meshIndex_, UINT textureIndex_ )
 {
 	resources[resourceIndex_] = new StaticMeshResource( meshIndex_, textureIndex_ );

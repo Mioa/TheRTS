@@ -49,18 +49,9 @@ void RenderQueue::Release()
 	delete dirLights;
 }
 
-void RenderQueue::RenderSprite( UINT resourceID_, XMFLOAT4 pos_, XMFLOAT4 rot_, XMFLOAT4 scale_ )
+void RenderQueue::RenderSprite( UINT resourceID_, XMFLOAT4 rect_ )
 {
-	XMMATRIX transformation = XMMatrixTransformation(
-		XMVectorSet( 0.0f, 0.0f, 0.0f, 1.0f ),
-		XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f ),
-		XMLoadFloat4( &scale_ ),
-		XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f ),
-		XMLoadFloat4( &rot_ ),
-		XMLoadFloat4( &pos_ )
-	);
-
-	XMStoreFloat4x4( &sprites[resourceID_][spriteCount[resourceID_]].transform, DirectX::XMMatrixTranspose( transformation ) );
+	sprites[resourceID_][spriteCount[resourceID_]].rect = rect_;
 
 	spriteCount[resourceID_]++;
 }

@@ -43,9 +43,7 @@ class RenderQueue
 	public:
 		void RenderSprite( 
 			UINT resourceID_, 
-			DirectX::XMFLOAT4 pos_   = DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ), 
-			DirectX::XMFLOAT4 rot_   = DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ), 
-			DirectX::XMFLOAT4 scale_ = DirectX::XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f )
+			DirectX::XMFLOAT4 rect_  = DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f )
 			);
 
 		void RenderStaticMesh( 

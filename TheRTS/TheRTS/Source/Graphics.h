@@ -21,11 +21,13 @@ class Graphics
 
 		ID3D11Buffer* frameCB		= nullptr;
 		ID3D11Buffer* objectCB		= nullptr;
+		ID3D11Buffer* spriteCB		= nullptr;
 
 		ID3D11SamplerState*	linearSamp = nullptr;
 
 		// Shaders
 		ShaderGroup defaultShaders;
+		ShaderGroup spriteShaders;
 
 		// Misc
 		HWND windowHandle;
@@ -50,8 +52,8 @@ class Graphics
 		HRESULT	Initialize( HWND windowHandle_, LONG windowWidth_, LONG windowHeight_ );
 		void	Release();
 
-				Graphics();
-				~Graphics();
+		Graphics() {}
+		~Graphics() {}
 	public:
 		void BeginScene();
 		void EndScene();
@@ -67,6 +69,11 @@ class Graphics
 		HRESULT InitRasterStates();
 		HRESULT InitSamplers();
 		void	InitCamera();
+
+		void SetPipeline( UINT pipeline_ );
+
+		void DrawSprites();
+		void DrawStaticMeshes();
 
 		void SetViewport( float windowWidth_, float windowHeight_ );
 };
