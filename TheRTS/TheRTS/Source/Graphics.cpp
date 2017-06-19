@@ -8,10 +8,11 @@ HRESULT Graphics::Initialize( HWND windowHandle_, LONG windowWidth_, LONG window
 
 	InitSwapChain();
 	InitShaders();
-	InitRenderTargets();
 	InitDepthBuffers();
 	InitRasterStates();
 	InitConstantBuffers();
+	InitSamplers();
+	InitCamera();
 
 	resourceManager = new ResourceManager();
 	resourceManager->Initialize( device );
@@ -39,6 +40,8 @@ void Graphics::Release()
 
 	if( frameCB )		frameCB->Release();
 	if( objectCB )		objectCB->Release();
+
+	if( linearSamp )	linearSamp->Release();
 
 	defaultShaders.Release();
 
@@ -99,33 +102,40 @@ HRESULT Graphics::InitSwapChain()
 
 void Graphics::BeginScene()
 {
-	// Load resources based on queue
+	deviceContext->ClearRenderTargetView( defaultRTV, clearColor );
+	deviceContext->ClearDepthStencilView( defaultDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
 }
 
 void Graphics::EndScene()
 {
-	deviceContext->ClearRenderTargetView( defaultRTV, clearColor );
-	deviceContext->ClearDepthStencilView( defaultDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
-
 	deviceContext->OMSetRenderTargets( 1, &defaultRTV, defaultDSV );
-
-	deviceContext->VSSetShader( defaultShaders.vertexShader, nullptr, 0 );
-	deviceContext->PSSetShader( defaultShaders.pixelShader, nullptr, 0 );
 
 	deviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 	deviceContext->IASetInputLayout( defaultShaders.inputLayout );
 
+	deviceContext->VSSetShader( defaultShaders.vertexShader, nullptr, 0 );
+	deviceContext->PSSetShader( defaultShaders.pixelShader, nullptr, 0 );
+
+	deviceContext->VSSetConstantBuffers( 0, 1, &frameCB );
+
+	deviceContext->PSSetSamplers( 0, 1, &linearSamp );
+
 	for( UINT type = 0; type < RES_SM_COUNT; type++ )
 	{
 		UINT count = RenderQueue::GetInstance()->staticMeshCount[type];
-		for( UINT index = 0; index < count; index++ )
+
+		if( count > 0)
 		{
-			deviceContext->IASetVertexBuffers( 0, 1, &resourceManager->meshes[type], &vSize_POS3, &offset );
+			deviceContext->IASetVertexBuffers( 0, 1, &resourceManager->meshes[((StaticMeshResource*)(resourceManager->resources[type]))->meshIndex].buffer, &vSize_POS3_NOR3_UV2, &offset );
+			deviceContext->PSSetShaderResources( 0, 1, &resourceManager->textures[((StaticMeshResource*)(resourceManager->resources[type]))->textureIndex] );
 
-			deviceContext->UpdateSubresource( objectCB, 0, nullptr, &RenderQueue::GetInstance()->staticMeshes[type][index].transform, sizeof ( DirectX::XMFLOAT4X4 ), 0 ); 
-			deviceContext->VSSetConstantBuffers( 0, 1, &objectCB );
+			for( UINT index = 0; index < count; index++ )
+			{
+				deviceContext->UpdateSubresource( objectCB, 0, nullptr, &RenderQueue::GetInstance()->staticMeshes[type][index].transform, sizeof ( DirectX::XMFLOAT4X4 ), 0 ); 
+				deviceContext->VSSetConstantBuffers( 1, 1, &objectCB );
 
-			deviceContext->Draw( 3, 0 );
+				deviceContext->Draw( resourceManager->meshes[((StaticMeshResource*)(resourceManager->resources[type]))->meshIndex].vertexCount, 0 );
+			}
 		}
 	}
 
@@ -135,14 +145,9 @@ void Graphics::EndScene()
 
 HRESULT Graphics::InitShaders()
 {
-	hr = defaultShaders.Initialize( device, L"Shaders/defaultShaders.hlsl", IL_POS3, SHADERFLAG_VP );
+	hr = defaultShaders.Initialize( device, L"Shaders/defaultShaders.hlsl", IL_POS3_NOR3_UV2, SHADERFLAG_VP );
 
 	return hr;
-}
-
-HRESULT Graphics::InitRenderTargets()
-{
-	return S_OK;
 }
 
 HRESULT Graphics::InitDepthBuffers()
@@ -198,6 +203,9 @@ HRESULT Graphics::InitConstantBuffers()
 
 	hr = device->CreateBuffer( &desc, nullptr, &objectCB );
 
+	desc.ByteWidth		= sizeof( Camera );
+	hr = device->CreateBuffer( &desc, nullptr, &frameCB );
+
 	return hr;
 }
 
@@ -206,7 +214,7 @@ HRESULT Graphics::InitRasterStates()
 	D3D11_RASTERIZER_DESC rasterizerState;
 	ZeroMemory( &rasterizerState, sizeof( D3D11_RASTERIZER_DESC ) );
 	rasterizerState.FillMode		= D3D11_FILL_SOLID;
-	rasterizerState.CullMode		= D3D11_CULL_FRONT;
+	rasterizerState.CullMode		= D3D11_CULL_BACK;
 	rasterizerState.DepthClipEnable = true;
 
 	if( defaultRS ) defaultRS->Release();
@@ -214,6 +222,46 @@ HRESULT Graphics::InitRasterStates()
 	hr = device->CreateRasterizerState( &rasterizerState, &defaultRS );
 
 	return hr;
+}
+
+HRESULT Graphics::InitSamplers()
+{
+	D3D11_SAMPLER_DESC desc;
+	ZeroMemory( &desc, sizeof( D3D11_SAMPLER_DESC ) );
+	desc.Filter			= D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	desc.AddressU		= D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.AddressV		= D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.AddressW		= D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.MaxAnisotropy	= 1;
+	desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+
+	hr = device->CreateSamplerState( &desc, &linearSamp );
+	
+	return hr;
+}
+
+void Graphics::InitCamera()
+{
+	cameraPos	= DirectX::XMFLOAT4( 0.0f, 10.0f, -2.0f, 1.0f );
+	cameraFocus = DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f );
+
+	// View
+	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(
+		DirectX::XMLoadFloat4( &cameraPos ),
+		DirectX::XMLoadFloat4( &cameraFocus ),
+		DirectX::XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f )
+		);
+
+	DirectX::XMStoreFloat4x4( &camera.view, DirectX::XMMatrixTranspose( view ) );
+
+	// Projection
+	DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(
+		float(DirectX::XM_PI / 180.0f) * 45.0f, 
+		(float)windowWidth / (float)windowHeight, 
+		0.1f, 
+		2000.0f);
+
+	DirectX::XMStoreFloat4x4( &camera.projection, DirectX::XMMatrixTranspose( projection ) );
 }
 
 void Graphics::SetViewport( float windowWidth_, float windowHeight_ )
@@ -229,12 +277,23 @@ void Graphics::SetViewport( float windowWidth_, float windowHeight_ )
 	deviceContext->RSSetViewports( 1, &vp );
 }
 
-void Graphics::UpdateConstantBuffer( ID3D11Buffer* buffer_, UINT size_, void* data_ )
-{
-	
-}
-
 ResourceManager* Graphics::GetResourceManager()
 {
 	return resourceManager;
+}
+
+void Graphics::UpdateCamera( DirectX::XMFLOAT4 position_ )
+{
+	DirectX::XMStoreFloat4(&cameraPos, DirectX::XMVectorAdd( DirectX::XMLoadFloat4( &cameraPos ), DirectX::XMLoadFloat4( &position_ ) ));
+	DirectX::XMStoreFloat4(&cameraFocus, DirectX::XMVectorAdd( DirectX::XMLoadFloat4( &cameraFocus ), DirectX::XMLoadFloat4( &position_ ) ));
+
+	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(
+		DirectX::XMLoadFloat4( &cameraPos ),
+		DirectX::XMLoadFloat4( &cameraFocus ),
+		DirectX::XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f )
+		);
+
+	DirectX::XMStoreFloat4x4( &camera.view, DirectX::XMMatrixTranspose( view ) );
+
+	deviceContext->UpdateSubresource( frameCB, 0, nullptr, &camera, sizeof ( Camera ), 0 ); 
 }
