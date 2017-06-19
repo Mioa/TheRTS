@@ -6,6 +6,7 @@
 
 // EntityManager
 #define EM_MAX_ENTITIES	10000
+#define EM_TIME_STEP	1.0f
 
 // RenderQueue
 #define RQ_MAX_SPRITE				1000

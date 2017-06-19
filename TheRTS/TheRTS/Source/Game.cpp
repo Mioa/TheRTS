@@ -38,7 +38,8 @@ void Game::Release()
 
 Game::Game()
 {
-
+	ZeroMemory( playerFrameReceived, sizeof( playerFrameReceived ) );
+	ZeroMemory( playerInputData, sizeof( playerInputData ) );
 }
 
 Game::~Game()
@@ -48,34 +49,57 @@ Game::~Game()
 
 void Game::Update( float deltaTime )
 {
-	// Temporary
-	entityManager->keyStates.keyDown[0][I_KEY::W] = Input_KeyDown(I_KEY::W);
-	entityManager->keyStates.keyDown[0][I_KEY::A] = Input_KeyDown(I_KEY::A);
-	entityManager->keyStates.keyDown[0][I_KEY::S] = Input_KeyDown(I_KEY::S);
-	entityManager->keyStates.keyDown[0][I_KEY::D] = Input_KeyDown(I_KEY::D);
-	//
-
-	entityManager->Update( deltaTime );
-
-	if( Input_KeyPressed( I_KEY::H ) && !isGameHost )
+	accumulatedTime += deltaTime;
+	if( accumulatedTime > EM_TIME_STEP )
 	{
-		hostThread = std::thread( &Network::StartHostSession, network );
-		isGameHost = true;
+		accumulatedTime -= EM_TIME_STEP;
+		Input::GetInstance()->Update();
+		Input::GetInstance()->Clear();
+
+		// Temporary
+		entityManager->keyStates.keyDown[0][I_KEY::W] = Input_KeyDown(I_KEY::W);
+		entityManager->keyStates.keyDown[0][I_KEY::A] = Input_KeyDown(I_KEY::A);
+		entityManager->keyStates.keyDown[0][I_KEY::S] = Input_KeyDown(I_KEY::S);
+		entityManager->keyStates.keyDown[0][I_KEY::D] = Input_KeyDown(I_KEY::D);
+		//
+
+		entityManager->Update();
+
+		if( Input_KeyPressed( I_KEY::H ) && !isGameHost && !isSyncingNetwork )
+		{
+			hostThread			= std::thread( &Network::StartHostSession, network );
+			isGameHost			= true;
+			isSyncingNetwork	= true;
+		}
+
+		if( Input_KeyPressed( I_KEY::J ) && !isSyncingNetwork )
+		{
+			network->AddConnection();
+			isSyncingNetwork = true;
+		}
+
+
 	}
+	//if( receiveThread.joinable() )
+	//	receiveThread.join();
+	//else
+	if( isSyncingNetwork )
+		accumulatedNetworkTime += deltaTime;
 
-	if( Input_KeyPressed( I_KEY::J ) )
-		network->AddConnection();
+	if( isSyncingNetwork && accumulatedNetworkTime > GA_NET_SYNC_TIME )
+	{
+		accumulatedNetworkTime -= GA_NET_SYNC_TIME;
+		if( !network->receiveThreadRunning )
+			receiveThread = std::thread( &Network::ReceiveData, network );
 
-
-	if( receiveThread.joinable() )
-		receiveThread.join();
-	else
-		receiveThread	= std::thread( &Network::ReceiveData, network );
-
-	if( sendThread.joinable() )
-		sendThread.join();
-	else
-		sendThread		= std::thread( &Network::SendData, network );
+		if( sendThread.joinable() )
+			sendThread.join();
+		else
+		{
+			network->sendMsgBuffer	= std::to_string( currentSyncedFrame );
+			sendThread				= std::thread( &Network::SendData, network );
+		}
+	}
 }
 
 void Game::Render()

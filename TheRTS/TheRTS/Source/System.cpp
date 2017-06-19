@@ -61,6 +61,8 @@ int	System::Run()
 {
 	MSG msg = { 0 };
 
+
+	timer.Start();
 	while( WM_QUIT != msg.message )
 	{
 		if( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
@@ -70,10 +72,11 @@ int	System::Run()
 		}
 		else
 		{
-			Input::GetInstance()->Update();
-			Input::GetInstance()->Clear();
+			timer.Stop();
+			float deltaTime = (float)timer.GetTime(); 
+			timer.Start();
 
-			game.Update( 1.0f );
+			game.Update( deltaTime );
 			game.Render();
 		}
 	}

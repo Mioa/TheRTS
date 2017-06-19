@@ -36,7 +36,7 @@ EntityManager::~EntityManager()
 
 }
 
-void EntityManager::Update( float deltaTime )
+void EntityManager::Update()
 {
 	for( int i = 0; i < updateSignatures.size(); i++ )
 		updateSignatures[i]->Function();

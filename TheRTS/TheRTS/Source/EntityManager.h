@@ -52,7 +52,7 @@ class EntityManager
 				EntityManager();
 				~EntityManager();
 	public:
-		void	Update( float deltaTime );
+		void	Update();
 		void	Render();
 
 		int		AddEntity();

@@ -13,13 +13,23 @@
 #define NE_DEFAULT_BUFLEN	512
 #define NE_DEFAULT_PORT		27015
 
+#define NE_MSG_WELCOME	1
+#define NE_MSG_INPUT	2
+
 class Network
 {
 	public:
+		UINT		numConnections			= 0;
+		int			mySocketIndex			= -1;
+
+		bool		receiveThreadRunning	= false;
+		bool		sendThreadRunning		= false;
+		std::string sendMsgBuffer			= "";
+		std::string	receiveMsgBuffer		= "";
+
 	private:
 		bool	isHosting = false;
 		SOCKET	clientSockets[NE_MAX_SOCKETS];
-		UINT	numConnections = 0;
 	
 	public:
 		HRESULT Initialize();
@@ -33,6 +43,8 @@ class Network
 
 		HRESULT	ReceiveData();
 		HRESULT SendData();
+
+		HRESULT SendWelcomeMessage( UINT socketIndex_ );
 
 	private:
 };
