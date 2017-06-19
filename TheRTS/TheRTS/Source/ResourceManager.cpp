@@ -82,6 +82,7 @@ void ResourceManager::CreateStaticMesh( UINT resourceIndex_, UINT meshIndex_, UI
 
 void ResourceManager::InitDefaultData()
 {
+	// Texture
 	UINT color = 0xFFFFFFFF;
 	ID3D11Texture2D* texture;
 
@@ -112,6 +113,49 @@ void ResourceManager::InitDefaultData()
 	hr = device->CreateShaderResourceView(texture, &srvDesc, &textures[ASSET_TEXTURE_DEFAULT]);
 
 	texture->Release();
+
+	// Static mesh
+	Vertex_POS3_NOR3_UV2 vertices[36] = {
+		DirectX::XMFLOAT3( -0.5f, -0.5f,  0.5f ), DirectX::XMFLOAT3(  0.0f,  0.0f,  1.0f ), DirectX::XMFLOAT2( 0.375f,  0.0f ),
+		DirectX::XMFLOAT3(  0.5f, -0.5f,  0.5f ), DirectX::XMFLOAT3(  0.0f,  0.0f,  1.0f ), DirectX::XMFLOAT2( 0.625f,  0.0f ),
+		DirectX::XMFLOAT3( -0.5f,  0.5f,  0.5f ), DirectX::XMFLOAT3(  0.0f,  0.0f,  1.0f ), DirectX::XMFLOAT2( 0.375f,  0.25f ),
+		DirectX::XMFLOAT3( -0.5f,  0.5f,  0.5f ), DirectX::XMFLOAT3(  0.0f,  0.0f,  1.0f ), DirectX::XMFLOAT2( 0.375f,  0.25f ),
+		DirectX::XMFLOAT3(  0.5f, -0.5f,  0.5f ), DirectX::XMFLOAT3(  0.0f,  0.0f,  1.0f ), DirectX::XMFLOAT2( 0.625f,  0.0f ),
+		DirectX::XMFLOAT3(  0.5f,  0.5f,  0.5f ), DirectX::XMFLOAT3(  0.0f,  0.0f,  1.0f ), DirectX::XMFLOAT2( 0.625f,  0.25f ),
+		DirectX::XMFLOAT3( -0.5f,  0.5f,  0.5f ), DirectX::XMFLOAT3(  0.0f,  1.0f,  0.0f ), DirectX::XMFLOAT2( 0.375f,  0.25f ),
+		DirectX::XMFLOAT3(  0.5f,  0.5f,  0.5f ), DirectX::XMFLOAT3(  0.0f,  1.0f,  0.0f ), DirectX::XMFLOAT2( 0.625f,  0.25f ),
+		DirectX::XMFLOAT3( -0.5f,  0.5f, -0.5f ), DirectX::XMFLOAT3(  0.0f,  1.0f,  0.0f ), DirectX::XMFLOAT2( 0.375f,  0.5f ),
+		DirectX::XMFLOAT3( -0.5f,  0.5f, -0.5f ), DirectX::XMFLOAT3(  0.0f,  1.0f,  0.0f ), DirectX::XMFLOAT2( 0.375f,  0.5f ),
+		DirectX::XMFLOAT3(  0.5f,  0.5f,  0.5f ), DirectX::XMFLOAT3(  0.0f,  1.0f,  0.0f ), DirectX::XMFLOAT2( 0.625f,  0.25f ),
+		DirectX::XMFLOAT3(  0.5f,  0.5f, -0.5f ), DirectX::XMFLOAT3(  0.0f,  1.0f,  0.0f ), DirectX::XMFLOAT2( 0.625f,  0.5f ),
+		DirectX::XMFLOAT3( -0.5f,  0.5f, -0.5f ), DirectX::XMFLOAT3(  0.0f,  0.0f, -1.0f ), DirectX::XMFLOAT2( 0.375f,  0.5f ),
+		DirectX::XMFLOAT3(  0.5f,  0.5f, -0.5f ), DirectX::XMFLOAT3(  0.0f,  0.0f, -1.0f ), DirectX::XMFLOAT2( 0.625f,  0.5f ),
+		DirectX::XMFLOAT3( -0.5f, -0.5f, -0.5f ), DirectX::XMFLOAT3(  0.0f,  0.0f, -1.0f ), DirectX::XMFLOAT2( 0.375f,  0.75f ),
+		DirectX::XMFLOAT3( -0.5f, -0.5f, -0.5f ), DirectX::XMFLOAT3(  0.0f,  0.0f, -1.0f ), DirectX::XMFLOAT2( 0.375f,  0.75f ),
+		DirectX::XMFLOAT3(  0.5f,  0.5f, -0.5f ), DirectX::XMFLOAT3(  0.0f,  0.0f, -1.0f ), DirectX::XMFLOAT2( 0.625f,  0.5f ),
+		DirectX::XMFLOAT3(  0.5f, -0.5f, -0.5f ), DirectX::XMFLOAT3(  0.0f,  0.0f, -1.0f ), DirectX::XMFLOAT2( 0.625f,  0.75f ),
+		DirectX::XMFLOAT3( -0.5f, -0.5f, -0.5f ), DirectX::XMFLOAT3(  0.0f, -1.0f,  0.0f ), DirectX::XMFLOAT2( 0.375f,  0.75f ),
+		DirectX::XMFLOAT3(  0.5f, -0.5f, -0.5f ), DirectX::XMFLOAT3(  0.0f, -1.0f,  0.0f ), DirectX::XMFLOAT2( 0.625f,  0.75f ),
+		DirectX::XMFLOAT3( -0.5f, -0.5f,  0.5f ), DirectX::XMFLOAT3(  0.0f, -1.0f,  0.0f ), DirectX::XMFLOAT2( 0.375f,  1.0f ),
+		DirectX::XMFLOAT3( -0.5f, -0.5f,  0.5f ), DirectX::XMFLOAT3(  0.0f, -1.0f,  0.0f ), DirectX::XMFLOAT2( 0.375f,  1.0f ),
+		DirectX::XMFLOAT3(  0.5f, -0.5f, -0.5f ), DirectX::XMFLOAT3(  0.0f, -1.0f,  0.0f ), DirectX::XMFLOAT2( 0.625f,  0.75f ),
+		DirectX::XMFLOAT3(  0.5f, -0.5f,  0.5f ), DirectX::XMFLOAT3(  0.0f, -1.0f,  0.0f ), DirectX::XMFLOAT2( 0.625f,  1.0f ),
+		DirectX::XMFLOAT3(  0.5f, -0.5f,  0.5f ), DirectX::XMFLOAT3(  1.0f,  0.0f,  0.0f ), DirectX::XMFLOAT2( 0.625f,  0.0f ),
+		DirectX::XMFLOAT3(  0.5f, -0.5f, -0.5f ), DirectX::XMFLOAT3(  1.0f,  0.0f,  0.0f ), DirectX::XMFLOAT2( 0.875f,  0.0f ),
+		DirectX::XMFLOAT3(  0.5f,  0.5f,  0.5f ), DirectX::XMFLOAT3(  1.0f,  0.0f,  0.0f ), DirectX::XMFLOAT2( 0.625f,  0.25f ),
+		DirectX::XMFLOAT3(  0.5f,  0.5f,  0.5f ), DirectX::XMFLOAT3(  1.0f,  0.0f,  0.0f ), DirectX::XMFLOAT2( 0.625f,  0.25f ),
+		DirectX::XMFLOAT3(  0.5f, -0.5f, -0.5f ), DirectX::XMFLOAT3(  1.0f,  0.0f,  0.0f ), DirectX::XMFLOAT2( 0.875f,  0.0f ),
+		DirectX::XMFLOAT3(  0.5f,  0.5f, -0.5f ), DirectX::XMFLOAT3(  1.0f,  0.0f,  0.0f ), DirectX::XMFLOAT2( 0.875f,  0.25f ),
+		DirectX::XMFLOAT3( -0.5f, -0.5f, -0.5f ), DirectX::XMFLOAT3( -1.0f,  0.0f,  0.0f ), DirectX::XMFLOAT2( 0.125f,  0.0f ),
+		DirectX::XMFLOAT3( -0.5f, -0.5f,  0.5f ), DirectX::XMFLOAT3( -1.0f,  0.0f,  0.0f ), DirectX::XMFLOAT2( 0.375f,  0.0f ),
+		DirectX::XMFLOAT3( -0.5f,  0.5f, -0.5f ), DirectX::XMFLOAT3( -1.0f,  0.0f,  0.0f ), DirectX::XMFLOAT2( 0.125f,  0.25f ),
+		DirectX::XMFLOAT3( -0.5f,  0.5f, -0.5f ), DirectX::XMFLOAT3( -1.0f,  0.0f,  0.0f ), DirectX::XMFLOAT2( 0.125f,  0.25f ),
+		DirectX::XMFLOAT3( -0.5f, -0.5f,  0.5f ), DirectX::XMFLOAT3( -1.0f,  0.0f,  0.0f ), DirectX::XMFLOAT2( 0.375f,  0.0f ),
+		DirectX::XMFLOAT3( -0.5f,  0.5f,  0.5f ), DirectX::XMFLOAT3( -1.0f,  0.0f,  0.0f ), DirectX::XMFLOAT2( 0.375f,  0.25f ),
+	};
+
+	meshes[ASSET_MESH_DEFAULT].buffer = CreateVertexBuffer( sizeof( Vertex_POS3_NOR3_UV2 ) * 36, vertices );
+	meshes[ASSET_MESH_DEFAULT].vertexCount = 36;
 }
 
 ID3D11Buffer* ResourceManager::CreateVertexBuffer( UINT size, void* data )

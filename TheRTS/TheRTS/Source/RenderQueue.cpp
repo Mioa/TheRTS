@@ -4,18 +4,49 @@ using namespace DirectX;
 
 HRESULT	RenderQueue::Initialize()
 {
+	spriteCount			= new UINT[RES_SP_COUNT];
+	staticMeshCount		= new UINT[RES_SM_COUNT];
+	dynamicMeshCount	= new UINT[RES_DM_COUNT];
+
 	ZeroMemory( spriteCount, sizeof( UINT ) * RES_SP_COUNT );
 	ZeroMemory( staticMeshCount, sizeof( UINT ) * RES_SM_COUNT );
 	ZeroMemory( dynamicMeshCount, sizeof( UINT ) * RES_DM_COUNT );
 	pointLightCount = 0;
 	dirLightCount   = 0;
 
+	sprites = new RI_Sprite*[RES_SP_COUNT];
+	for( UINT i = 0; i < RES_SP_COUNT; i++ )
+		sprites[i] = new RI_Sprite[RQ_MAX_SPRITE];
+
+	staticMeshes = new RI_StaticMesh*[RES_SM_COUNT];
+	for( UINT i = 0; i < RES_SM_COUNT; i++ )
+		staticMeshes[i] = new RI_StaticMesh[RQ_MAX_STATIC_MESH];
+
+	dynamicMeshes = new RI_DynamicMesh*[RES_DM_COUNT];
+	for( UINT i = 0; i < RES_DM_COUNT; i++ )
+		dynamicMeshes[i] = new RI_DynamicMesh[RQ_MAX_DYNAMIC_MESH];
+
+	pointLights = new RI_PointLight[RQ_MAX_POINT_LIGHT];
+	dirLights = new RI_DirLight[RQ_MAX_DIRECTIONAL_LIGHT];
+
 	return S_OK;
 }
 
 void RenderQueue::Release()
 {
+	delete spriteCount;
+	delete staticMeshCount;
+	delete dynamicMeshCount;
 
+	for( UINT i = 0; i < RES_SP_COUNT; i++ )
+		delete sprites[i];
+	for( UINT i = 0; i < RES_SM_COUNT; i++ )
+		delete staticMeshes[i];
+	for( UINT i = 0; i < RES_DM_COUNT; i++ )
+		delete dynamicMeshes[i];
+	
+	delete pointLights;
+	delete dirLights;
 }
 
 void RenderQueue::RenderSprite( UINT resourceID_, XMFLOAT4 pos_, XMFLOAT4 rot_, XMFLOAT4 scale_ )

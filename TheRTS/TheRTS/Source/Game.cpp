@@ -78,7 +78,7 @@ void Game::LoadAssets()
 
 void Game::CreateResources()
 {
-	macResourceManager->CreateStaticMesh( RES_SM_CUBE, ASSET_MESH_CUBE, ASSET_TEXTURE_DEFAULT );
+	macResourceManager->CreateStaticMesh( RES_SM_CUBE, ASSET_MESH_DEFAULT, ASSET_TEXTURE_DEFAULT );
 	macResourceManager->CreateStaticMesh( RES_SM_FLOOR, ASSET_MESH_FLOOR, ASSET_TEXTURE_SPHERE );
 	macResourceManager->CreateStaticMesh( RES_SM_SPHERE, ASSET_MESH_SPHERE, ASSET_TEXTURE_DEFAULT );
 }
