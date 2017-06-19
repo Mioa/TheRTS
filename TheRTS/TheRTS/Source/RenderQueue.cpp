@@ -30,6 +30,7 @@ void RenderQueue::RenderSprite( UINT resourceID_, XMFLOAT4 pos_, XMFLOAT4 rot_, 
 	);
 
 	XMStoreFloat4x4( &sprites[resourceID_][spriteCount[resourceID_]].transform, DirectX::XMMatrixTranspose( transformation ) );
+
 	spriteCount[resourceID_]++;
 }
 
@@ -45,6 +46,7 @@ void RenderQueue::RenderStaticMesh( UINT resourceID_, XMFLOAT4 pos_, XMFLOAT4 ro
 	);
 
 	XMStoreFloat4x4( &staticMeshes[resourceID_][staticMeshCount[resourceID_]].transform, DirectX::XMMatrixTranspose( transformation ) );
+
 	staticMeshCount[resourceID_]++;
 }
 
@@ -60,6 +62,7 @@ void RenderQueue::RenderDynamicMesh( UINT resourceID_, XMFLOAT4 pos_, XMFLOAT4 r
 	);
 
 	XMStoreFloat4x4( &dynamicMeshes[resourceID_][dynamicMeshCount[resourceID_]].transform, DirectX::XMMatrixTranspose( transformation ) );
+
 	dynamicMeshCount[resourceID_]++;
 }
 

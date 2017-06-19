@@ -11,6 +11,7 @@ HRESULT Graphics::Initialize( HWND windowHandle_, LONG windowWidth_, LONG window
 	InitDepthBuffers();
 	InitRasterStates();
 	InitConstantBuffers();
+	InitSamplers();
 	InitCamera();
 
 	resourceManager = new ResourceManager();
@@ -39,6 +40,8 @@ void Graphics::Release()
 
 	if( frameCB )		frameCB->Release();
 	if( objectCB )		objectCB->Release();
+
+	if( linearSamp )	linearSamp->Release();
 
 	defaultShaders.Release();
 
@@ -99,14 +102,12 @@ HRESULT Graphics::InitSwapChain()
 
 void Graphics::BeginScene()
 {
-	// Load resources based on queue
+	deviceContext->ClearRenderTargetView( defaultRTV, clearColor );
+	deviceContext->ClearDepthStencilView( defaultDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
 }
 
 void Graphics::EndScene()
 {
-	deviceContext->ClearRenderTargetView( defaultRTV, clearColor );
-	deviceContext->ClearDepthStencilView( defaultDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0 );
-
 	deviceContext->OMSetRenderTargets( 1, &defaultRTV, defaultDSV );
 
 	deviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
@@ -117,17 +118,24 @@ void Graphics::EndScene()
 
 	deviceContext->VSSetConstantBuffers( 0, 1, &frameCB );
 
+	deviceContext->PSSetSamplers( 0, 1, &linearSamp );
+
 	for( UINT type = 0; type < RES_SM_COUNT; type++ )
 	{
 		UINT count = RenderQueue::GetInstance()->staticMeshCount[type];
-		for( UINT index = 0; index < count; index++ )
+
+		if( count > 0)
 		{
-			deviceContext->IASetVertexBuffers( 0, 1, &resourceManager->meshes[type].buffer, &vSize_POS3, &offset );
+			deviceContext->IASetVertexBuffers( 0, 1, &resourceManager->meshes[((StaticMeshResource*)(resourceManager->resources[type]))->meshIndex].buffer, &vSize_POS3_NOR3_UV2, &offset );
+			deviceContext->PSSetShaderResources( 0, 1, &resourceManager->textures[((StaticMeshResource*)(resourceManager->resources[type]))->textureIndex] );
 
-			deviceContext->UpdateSubresource( objectCB, 0, nullptr, &RenderQueue::GetInstance()->staticMeshes[type][index].transform, sizeof ( DirectX::XMFLOAT4X4 ), 0 ); 
-			deviceContext->VSSetConstantBuffers( 1, 1, &objectCB );
+			for( UINT index = 0; index < count; index++ )
+			{
+				deviceContext->UpdateSubresource( objectCB, 0, nullptr, &RenderQueue::GetInstance()->staticMeshes[type][index].transform, sizeof ( DirectX::XMFLOAT4X4 ), 0 ); 
+				deviceContext->VSSetConstantBuffers( 1, 1, &objectCB );
 
-			deviceContext->Draw( resourceManager->meshes[type].vertexCount, 0 );
+				deviceContext->Draw( resourceManager->meshes[((StaticMeshResource*)(resourceManager->resources[type]))->meshIndex].vertexCount, 0 );
+			}
 		}
 	}
 
@@ -137,7 +145,7 @@ void Graphics::EndScene()
 
 HRESULT Graphics::InitShaders()
 {
-	hr = defaultShaders.Initialize( device, L"Shaders/defaultShaders.hlsl", IL_POS3, SHADERFLAG_VP );
+	hr = defaultShaders.Initialize( device, L"Shaders/defaultShaders.hlsl", IL_POS3_NOR3_UV2, SHADERFLAG_VP );
 
 	return hr;
 }
@@ -206,13 +214,29 @@ HRESULT Graphics::InitRasterStates()
 	D3D11_RASTERIZER_DESC rasterizerState;
 	ZeroMemory( &rasterizerState, sizeof( D3D11_RASTERIZER_DESC ) );
 	rasterizerState.FillMode		= D3D11_FILL_SOLID;
-	rasterizerState.CullMode		= D3D11_CULL_NONE;
+	rasterizerState.CullMode		= D3D11_CULL_BACK;
 	rasterizerState.DepthClipEnable = true;
 
 	if( defaultRS ) defaultRS->Release();
 
 	hr = device->CreateRasterizerState( &rasterizerState, &defaultRS );
 
+	return hr;
+}
+
+HRESULT Graphics::InitSamplers()
+{
+	D3D11_SAMPLER_DESC desc;
+	ZeroMemory( &desc, sizeof( D3D11_SAMPLER_DESC ) );
+	desc.Filter			= D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	desc.AddressU		= D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.AddressV		= D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.AddressW		= D3D11_TEXTURE_ADDRESS_WRAP;
+	desc.MaxAnisotropy	= 1;
+	desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+
+	hr = device->CreateSamplerState( &desc, &linearSamp );
+	
 	return hr;
 }
 

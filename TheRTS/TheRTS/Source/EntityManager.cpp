@@ -7,6 +7,8 @@ HRESULT EntityManager::Initialize()
 	ZeroMemory( entity, sizeof( Entity ) * EM_MAX_ENTITIES );
 	position	= new C_Position[EM_MAX_ENTITIES];
 	ZeroMemory( position, sizeof( C_Position ) * EM_MAX_ENTITIES );
+	transform	= new C_Transform[EM_MAX_ENTITIES];
+	ZeroMemory( transform, sizeof( C_Transform ) * EM_MAX_ENTITIES );
 	mesh		= new C_Mesh[EM_MAX_ENTITIES];
 	ZeroMemory( mesh, sizeof( C_Mesh ) * EM_MAX_ENTITIES );
 	playerInput	= new C_PlayerInput[EM_MAX_ENTITIES];
@@ -22,6 +24,7 @@ void EntityManager::Release()
 {
 	delete[] entity;
 	delete[] position;
+	delete[] transform;
 	delete[] mesh;
 	delete[] playerInput;
 }
@@ -79,6 +82,18 @@ HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_Position info_ )
 	entity[entityIndex_].resting				= false;
 	entity[entityIndex_].signature[C_POSITION]	= true;
 	position[entityIndex_].position				= info_.position;
+
+	return S_OK;
+}
+
+HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_Transform info_ )
+{
+	entity[entityIndex_].active					= true;
+	entity[entityIndex_].resting				= false;
+	entity[entityIndex_].signature[C_TRANSFORM]	= true;
+	transform[entityIndex_].position			= info_.position;
+	transform[entityIndex_].rotation			= info_.rotation;
+	transform[entityIndex_].scale				= info_.scale;
 
 	return S_OK;
 }

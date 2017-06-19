@@ -26,12 +26,13 @@ class ResourceManager
 				~ResourceManager();
 
 	public:
-		void LoadStaticMesh(  UINT staticMeshIndex_, char* filePath_ );
-		void LoadTexture(  UINT textureIndex_, wchar_t* filePath_ );
+		void LoadStaticMesh(  UINT staticMeshIndex_, std::string filePath_ );
+		void LoadTexture(  UINT textureIndex_, std::string filePath_ );
 
 		void CreateStaticMesh( UINT resourceIndex_, UINT meshIndex_, UINT textureIndex_ );
 
 	private:
+		void InitDefaultData();
 		ID3D11Buffer* CreateVertexBuffer( UINT size, void* data );
 };
 #endif

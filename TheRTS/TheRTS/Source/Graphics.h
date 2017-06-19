@@ -22,6 +22,8 @@ class Graphics
 		ID3D11Buffer* frameCB		= nullptr;
 		ID3D11Buffer* objectCB		= nullptr;
 
+		ID3D11SamplerState*	linearSamp = nullptr;
+
 		// Shaders
 		ShaderGroup defaultShaders;
 
@@ -38,9 +40,10 @@ class Graphics
 		DirectX::XMFLOAT4 cameraPos;
 		DirectX::XMFLOAT4 cameraFocus;
 
-		float  clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-		UINT32 vSize_POS3	 = sizeof( Vertex_POS3 );
-		UINT32 offset		 = 0;
+		float  clearColor[4]		= { 0.2f, 0.2f, 0.2f, 1.0f };
+		UINT32 vSize_POS3			= sizeof( Vertex_POS3 );
+		UINT32 vSize_POS3_NOR3_UV2	= sizeof( Vertex_POS3_NOR3_UV2 );
+		UINT32 offset				= 0;
 
 	//Functions
 	public:
@@ -62,6 +65,7 @@ class Graphics
 		HRESULT InitDepthBuffers();
 		HRESULT InitConstantBuffers();
 		HRESULT InitRasterStates();
+		HRESULT InitSamplers();
 		void	InitCamera();
 
 		void SetViewport( float windowWidth_, float windowHeight_ );

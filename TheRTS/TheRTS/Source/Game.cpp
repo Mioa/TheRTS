@@ -70,24 +70,44 @@ void Game::Render()
 
 void Game::LoadAssets()
 {
-	macResourceManager->LoadStaticMesh( ASSET_CUBE, "cube.rtsa" );
-	macResourceManager->LoadStaticMesh( ASSET_FLOOR, "floor.rtsa" );
+	macResourceManager->LoadStaticMesh( ASSET_MESH_CUBE, "cube.rtsa" );
+	macResourceManager->LoadStaticMesh( ASSET_MESH_SPHERE, "sphere.rtsa" );
+	macResourceManager->LoadStaticMesh( ASSET_MESH_FLOOR, "floor.rtsa" );
+	macResourceManager->LoadTexture( ASSET_TEXTURE_SPHERE, "cubeTexture.dds" );
 }
 
 void Game::CreateResources()
 {
-	macResourceManager->CreateStaticMesh( RES_SM_CUBE, ASSET_CUBE, 0 );
-	macResourceManager->CreateStaticMesh( RES_SM_FLOOR, ASSET_FLOOR, 0 );
+	macResourceManager->CreateStaticMesh( RES_SM_CUBE, ASSET_MESH_CUBE, ASSET_TEXTURE_DEFAULT );
+	macResourceManager->CreateStaticMesh( RES_SM_FLOOR, ASSET_MESH_FLOOR, ASSET_TEXTURE_SPHERE );
+	macResourceManager->CreateStaticMesh( RES_SM_SPHERE, ASSET_MESH_SPHERE, ASSET_TEXTURE_DEFAULT );
 }
 
 void Game::CreateEntities()
 {
-	UINT triangle = entityManager->AddEntity();
-	entityManager->AddComponent( triangle, CI_Position{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );
-	entityManager->AddComponent( triangle, CI_Mesh{ RES_SM_CUBE } );
-	entityManager->AddComponent( triangle, CI_PlayerInput{ 0 } );
+	UINT player = entityManager->AddEntity();
+	entityManager->AddComponent( player, CI_Transform{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );
+	entityManager->AddComponent( player, CI_Mesh{ RES_SM_SPHERE } );
+	entityManager->AddComponent( player, CI_PlayerInput{ 0 } );
 
 	UINT floor = entityManager->AddEntity();
-	entityManager->AddComponent( floor, CI_Position{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );
+	entityManager->AddComponent( floor, CI_Transform{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );
 	entityManager->AddComponent( floor, CI_Mesh{ RES_SM_FLOOR } );
+
+	for( UINT x = 0; x < 20; x++ )
+	{
+		for( UINT z = 0; z < 20; z++ )
+		{
+			UINT cube = entityManager->AddEntity();
+			entityManager->AddComponent( 
+				cube, 
+				CI_Transform{ 
+					DirectX::XMFLOAT4( (float)x, 0.0f, (float)z, 1.0f ), 
+					DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f ),
+					DirectX::XMFLOAT4( 0.7f, 0.7f, 0.7f, 1.0f )
+					}
+				);
+			entityManager->AddComponent( cube, CI_Mesh{ RES_SM_CUBE } );
+		}
+	}
 }

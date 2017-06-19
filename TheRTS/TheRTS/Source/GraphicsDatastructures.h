@@ -31,6 +31,13 @@ struct Vertex_POS3
 	DirectX::XMFLOAT3 position = DirectX::XMFLOAT3( 0.0f, 0.0f, 0.0f );
 };
 
+struct Vertex_POS3_NOR3_UV2
+{
+	DirectX::XMFLOAT3 position = DirectX::XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	DirectX::XMFLOAT3 normal = DirectX::XMFLOAT3( 0.0f, 0.0f, 0.0f );
+	DirectX::XMFLOAT2 uv = DirectX::XMFLOAT2( 0.0f, 0.0f );
+};
+
 struct StaticMeshBuffer
 {
 	ID3D11Buffer* buffer;
@@ -51,10 +58,11 @@ struct ShaderGroup
 	HRESULT Initialize( ID3D11Device* device_, wchar_t* filePath_, InputLayouts inputLayout_, ShaderFlags shaderFlag_ )
 	{
 		ID3DBlob* pBlob = nullptr;
+		ID3DBlob* errBlob = nullptr;
 
 		if( shaderFlag_ & SHADERFLAG_V )
 		{
-			D3DCompileFromFile(
+			hr = D3DCompileFromFile(
 				filePath_,
 				nullptr,
 				nullptr,
@@ -63,13 +71,13 @@ struct ShaderGroup
 				0,
 				0,
 				&pBlob,
-				0
+				&errBlob
 				);
 
-			hr = device_->CreateVertexShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &vertexShader );
-
 			if( !SUCCEEDED( hr ) )
-				OutputDebugString( L"VS compile failed!" );
+				OutputDebugStringA( (char*)errBlob->GetBufferPointer() );
+
+			hr = device_->CreateVertexShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &vertexShader );
 
 			switch ( inputLayout_ )
 			{
@@ -96,7 +104,7 @@ struct ShaderGroup
 			}
 
 			if( !SUCCEEDED( hr ) )
-				OutputDebugString( L"InputLayout creation failed!" );
+				OutputDebugStringA( (char*)errBlob->GetBufferPointer() );
 
 			pBlob->Release();
 		}
@@ -112,13 +120,13 @@ struct ShaderGroup
 				0,
 				0,
 				&pBlob,
-				nullptr	
+				&errBlob	
 				);
 
 			hr = device_->CreateGeometryShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &geometryShader );
 
 			if( !SUCCEEDED( hr ) )
-				OutputDebugString( L"GS compile failed!" );
+				OutputDebugStringA( (char*)errBlob->GetBufferPointer() );
 
 			pBlob->Release();
 		}
@@ -134,13 +142,13 @@ struct ShaderGroup
 				0,
 				0,
 				&pBlob,
-				nullptr	
+				&errBlob	
 				);
 
 			hr = device_->CreatePixelShader( pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &pixelShader );
 
 			if( !SUCCEEDED( hr ) )
-				OutputDebugString( L"PS compile failed!" );
+				OutputDebugStringA( (char*)errBlob->GetBufferPointer() );
 
 			pBlob->Release();
 		}

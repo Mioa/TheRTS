@@ -23,7 +23,7 @@ struct SR_RenderMesh : public SignatureFunction
 	SR_RenderMesh( EntityManager* manager_ )
 	{
 		manager					= manager_;
-		signature[C_POSITION]	= true;
+		signature[C_TRANSFORM]	= true;
 		signature[C_MESH]		= true;
 	}
 	void Function()
@@ -40,7 +40,9 @@ struct SR_RenderMesh : public SignatureFunction
 
 			macRenderQueue->RenderStaticMesh( 
 				manager->mesh[entID].resource, 
-				manager->position[entID].position
+				manager->transform[entID].position,
+				manager->transform[entID].rotation,
+				manager->transform[entID].scale
 				);
 		}
 	}
@@ -51,7 +53,7 @@ struct SU_MovePlayer : public SignatureFunction
 	SU_MovePlayer( EntityManager* manager_ )
 	{
 		manager						= manager_;
-		signature[C_POSITION]		= true;
+		signature[C_TRANSFORM]		= true;
 		signature[C_MESH]			= true;
 		signature[C_PLAYERINPUT]	= true;
 	}
@@ -69,16 +71,16 @@ struct SU_MovePlayer : public SignatureFunction
 
 			// Temporary
 			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::W] )
-				manager->position[entID].position.z = manager->position[entID].position.z + 0.001f;
+				manager->transform[entID].position.z = manager->transform[entID].position.z + 0.001f;
 
 			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::A] )
-				manager->position[entID].position.x = manager->position[entID].position.x - 0.001f;
+				manager->transform[entID].position.x = manager->transform[entID].position.x - 0.001f;
 
 			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::S] )
-				manager->position[entID].position.z = manager->position[entID].position.z - 0.001f;
+				manager->transform[entID].position.z = manager->transform[entID].position.z - 0.001f;
 
 			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::D] )
-				manager->position[entID].position.x = manager->position[entID].position.x + 0.001f;
+				manager->transform[entID].position.x = manager->transform[entID].position.x + 0.001f;
 			//
 		}
 	}
