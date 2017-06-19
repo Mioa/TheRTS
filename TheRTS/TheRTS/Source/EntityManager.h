@@ -4,9 +4,17 @@
 #include <bitset>
 #include "Components.h"
 #include "Definitions.h"
+#include "Input.h"
 #include <vector>
 
 struct SignatureFunction; //Forward Declare
+
+struct PlayerKeystates
+{
+	bool keyDown[MAX_PLAYERS][I_KEY::COUNT];
+	bool keyPressed[MAX_PLAYERS][I_KEY::COUNT];
+	bool keyRelease[MAX_PLAYERS][I_KEY::COUNT];
+};
 
 class EntityManager
 {
@@ -21,9 +29,14 @@ class EntityManager
 
 	//Variables
 	public:
-		Entity*			entity		= nullptr;
-		C_Position*		position	= nullptr;
-		C_Mesh*			mesh		= nullptr;
+		Entity*				entity		= nullptr;
+		C_Position*			position	= nullptr;
+		C_Transform*		transform	= nullptr;
+		C_Mesh*				mesh		= nullptr;
+		C_PlayerInput*		playerInput	= nullptr;
+
+		PlayerKeystates keyStates;
+
 	private:
 		int				firstAvailableEntityIndex	= 0;
 		UINT			numActiveEntities			= 0;
@@ -45,7 +58,10 @@ class EntityManager
 
 		int		AddEntity();
 		HRESULT	AddComponent( UINT entityIndex_, CI_Position info_ );
+		HRESULT AddComponent( UINT entityIndex_, CI_Transform info_ );
 		HRESULT	AddComponent( UINT entityIndex_, CI_Mesh info_ );
+		HRESULT AddComponent( UINT entityIndex_, CI_PlayerInput info_ );
+
 	private:
 };
 #endif

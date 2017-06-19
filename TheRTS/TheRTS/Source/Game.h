@@ -16,6 +16,8 @@ class Game
 		EntityManager*	entityManager;
 		Graphics*		graphicsManager;
 
+		float cameraSpeed;
+
 	//Functions
 	public:
 		HRESULT Initialize( HWND windowHandle, LONG windowWidth, LONG windowHeight );

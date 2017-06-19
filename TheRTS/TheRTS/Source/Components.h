@@ -7,7 +7,9 @@
 enum ComponentTypes
 {
 	C_POSITION,
+	C_TRANSFORM,
 	C_MESH,
+	C_PLAYERINPUT,
 	C_COUNT
 };
 
@@ -22,6 +24,20 @@ struct CI_Position
 	DirectX::XMFLOAT4 position;
 };
 
+struct C_Transform
+{
+	DirectX::XMFLOAT4 position	{ 0.0f, 0.0f, 0.0f, 1.0f };
+	DirectX::XMFLOAT4 rotation	{ 0.0f, 0.0f, 0.0f, 0.0f };
+	DirectX::XMFLOAT4 scale		{ 1.0f, 1.0f, 1.0f, 1.0f };
+};
+
+struct CI_Transform
+{
+	DirectX::XMFLOAT4 position	{ 0.0f, 0.0f, 0.0f, 1.0f };
+	DirectX::XMFLOAT4 rotation	{ 0.0f, 0.0f, 0.0f, 0.0f };
+	DirectX::XMFLOAT4 scale		{ 1.0f, 1.0f, 1.0f, 1.0f };
+};
+
 
 struct C_Mesh
 {
@@ -31,6 +47,17 @@ struct C_Mesh
 struct CI_Mesh
 {
 	UINT resource;
+};
+
+
+struct C_PlayerInput
+{
+	UINT playerIndex;
+};
+
+struct CI_PlayerInput
+{
+	UINT playerIndex;
 };
 
 #endif

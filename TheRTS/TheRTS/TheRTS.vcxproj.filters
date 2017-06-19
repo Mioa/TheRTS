@@ -90,4 +90,9 @@
       <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Shaders\defaultShaders.hlsl">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

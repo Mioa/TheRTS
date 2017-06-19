@@ -9,7 +9,7 @@ class ResourceManager
 	//Variables
 	public:
 		ID3D11ShaderResourceView*	textures[ASSET_COUNT];
-		ID3D11Buffer*				meshes[ASSET_COUNT];
+		StaticMeshBuffer			meshes[ASSET_COUNT];
 
 		static const UINT resourceCount = RES_SP_COUNT + RES_SM_COUNT + RES_DM_COUNT;
 		Resource* resources[resourceCount];
@@ -26,12 +26,13 @@ class ResourceManager
 				~ResourceManager();
 
 	public:
-		void LoadStaticMesh(  UINT staticMeshIndex_, char* filePath_ );
-		void LoadTexture(  UINT textureIndex_, char* filePath_ );
+		void LoadStaticMesh(  UINT staticMeshIndex_, std::string filePath_ );
+		void LoadTexture(  UINT textureIndex_, std::string filePath_ );
 
 		void CreateStaticMesh( UINT resourceIndex_, UINT meshIndex_, UINT textureIndex_ );
 
 	private:
+		void InitDefaultData();
 		ID3D11Buffer* CreateVertexBuffer( UINT size, void* data );
 };
 #endif
