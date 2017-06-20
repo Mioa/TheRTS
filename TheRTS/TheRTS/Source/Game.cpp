@@ -14,7 +14,7 @@ HRESULT Game::Initialize( HWND windowHandle_, LONG windowWidth_, LONG windowHeig
 	graphicsManager = new Graphics;
 	graphicsManager->Initialize( windowHandle, windowWidth, windowHeight );
 
-	cameraSpeed = 0.001f;
+	cameraSpeed = 0.005f;
 
 	LoadAssets();
 	CreateResources();
@@ -82,6 +82,7 @@ void Game::LoadAssets()
 	macResourceManager->LoadStaticMesh( ASSET_MESH_SPHERE, "sphere.rtsa" );
 	macResourceManager->LoadStaticMesh( ASSET_MESH_FLOOR, "floor.rtsa" );
 	macResourceManager->LoadTexture( ASSET_TEXTURE_SPHERE, "cubeTexture.dds" );
+	macResourceManager->LoadTexture( ASSET_TEXTURE_GUI, "gui.dds" );
 }
 
 void Game::CreateResources()
@@ -89,6 +90,8 @@ void Game::CreateResources()
 	macResourceManager->CreateStaticMesh( RES_SM_CUBE, ASSET_MESH_DEFAULT, ASSET_TEXTURE_DEFAULT );
 	macResourceManager->CreateStaticMesh( RES_SM_FLOOR, ASSET_MESH_FLOOR, ASSET_TEXTURE_SPHERE );
 	macResourceManager->CreateStaticMesh( RES_SM_SPHERE, ASSET_MESH_SPHERE, ASSET_TEXTURE_DEFAULT );
+	macResourceManager->CreateSprite( RES_SP_DEFAULT, ASSET_TEXTURE_DEFAULT );
+	macResourceManager->CreateSprite( RES_SP_FLOWER, ASSET_TEXTURE_GUI );
 }
 
 void Game::CreateEntities()
@@ -123,4 +126,15 @@ void Game::CreateEntities()
 			entityManager->AddComponent( cube, CI_Mesh{ RES_SM_CUBE } );
 		}
 	}
+
+	for( UINT i = 0; i < 201; i++)
+	{
+		UINT sprite = entityManager->AddEntity();
+		entityManager->AddComponent( sprite, CI_Position{ DirectX::XMFLOAT4( i * 4.8f, 550.0f, 3.0f, 50.0f ) } );
+		entityManager->AddComponent( sprite, CI_Texture{ RES_SP_DEFAULT } );
+	}
+
+	UINT sprite2 = entityManager->AddEntity();
+	entityManager->AddComponent( sprite2, CI_Position{ DirectX::XMFLOAT4( 0.0f, 0.0f, 200.0f, 100.0f ) } );
+	entityManager->AddComponent( sprite2, CI_Texture{ RES_SP_FLOWER } );
 }

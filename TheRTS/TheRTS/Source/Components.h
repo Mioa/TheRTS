@@ -10,6 +10,7 @@ enum ComponentTypes
 	C_TRANSFORM,
 	C_MESH,
 	C_PLAYERINPUT,
+	C_TEXTURE,
 	C_COUNT
 };
 
@@ -58,6 +59,17 @@ struct C_PlayerInput
 struct CI_PlayerInput
 {
 	UINT playerIndex;
+};
+
+
+struct C_Texture
+{
+	UINT resource;
+};
+
+struct CI_Texture
+{
+	UINT resource;
 };
 
 #endif

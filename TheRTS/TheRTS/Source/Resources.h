@@ -6,21 +6,23 @@
 enum Assets
 {
 	ASSET_MESH_DEFAULT,
-	ASSET_TEXTURE_DEFAULT,
 	ASSET_MESH_CUBE,
 	ASSET_MESH_SPHERE,
 	ASSET_MESH_FLOOR,
+	ASSET_TEXTURE_DEFAULT,
 	ASSET_TEXTURE_SPHERE,
+	ASSET_TEXTURE_GUI,
 	ASSET_COUNT
 };
 
-enum Res_Sprite
+enum ResSprite
 {
-	RES_SP_DEFAULT, // To keep count higher than 0. Remove when resource is added.
+	RES_SP_DEFAULT,
+	RES_SP_FLOWER,
 	RES_SP_COUNT
 };
 
-enum Res_StaticMesh
+enum ResStaticMesh
 {
 	RES_SM_CUBE,
 	RES_SM_FLOOR,
@@ -28,17 +30,26 @@ enum Res_StaticMesh
 	RES_SM_COUNT
 };
 
-enum Res_DynamicMesh
+enum ResDynamicMesh
 {
 	RES_DM_DEFAULT, // To keep count higher than 0. Remove when resource is added.
 	RES_DM_COUNT
 };
 
 
-
 struct Resource
 {
 	UINT test;
+};
+
+struct SpriteResource : public Resource
+{
+	UINT textureIndex = 0;
+
+	SpriteResource( UINT textureIndex_ )
+	{
+		textureIndex = textureIndex_;
+	}
 };
 
 struct StaticMeshResource : public Resource
@@ -57,22 +68,17 @@ struct StaticMeshResource : public Resource
 
 struct RI_Sprite
 {
-	DirectX::XMFLOAT4X4 transform;
-	UINT textureID = 0;
+	DirectX::XMFLOAT4 position; // X, Y, Width, Height
 };
 
 struct RI_StaticMesh
 {
 	DirectX::XMFLOAT4X4 transform;
-	UINT meshID;
-	UINT textureID;
 };
 
 struct RI_DynamicMesh
 {
 	DirectX::XMFLOAT4X4 transform;
-	UINT meshID;
-	UINT textureID;
 };
 
 struct RI_PointLight

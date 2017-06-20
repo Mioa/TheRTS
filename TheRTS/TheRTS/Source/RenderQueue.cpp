@@ -16,51 +16,57 @@ HRESULT	RenderQueue::Initialize()
 
 	sprites = new RI_Sprite*[RES_SP_COUNT];
 	for( UINT i = 0; i < RES_SP_COUNT; i++ )
+	{
 		sprites[i] = new RI_Sprite[RQ_MAX_SPRITE];
+		ZeroMemory( sprites[i], sizeof( RI_Sprite ) * RQ_MAX_SPRITE );
+	}
 
 	staticMeshes = new RI_StaticMesh*[RES_SM_COUNT];
 	for( UINT i = 0; i < RES_SM_COUNT; i++ )
+	{
 		staticMeshes[i] = new RI_StaticMesh[RQ_MAX_STATIC_MESH];
+		ZeroMemory( staticMeshes[i], sizeof( RI_StaticMesh ) * RQ_MAX_STATIC_MESH );
+	}
 
 	dynamicMeshes = new RI_DynamicMesh*[RES_DM_COUNT];
 	for( UINT i = 0; i < RES_DM_COUNT; i++ )
+	{
 		dynamicMeshes[i] = new RI_DynamicMesh[RQ_MAX_DYNAMIC_MESH];
+		ZeroMemory( dynamicMeshes[i], sizeof( RI_DynamicMesh ) * RQ_MAX_DYNAMIC_MESH );
+	}
 
 	pointLights = new RI_PointLight[RQ_MAX_POINT_LIGHT];
 	dirLights = new RI_DirLight[RQ_MAX_DIRECTIONAL_LIGHT];
+
+	ZeroMemory( pointLights, sizeof( RI_PointLight ) * RQ_MAX_POINT_LIGHT );
+	ZeroMemory( dirLights, sizeof( RI_DirLight ) * RQ_MAX_DIRECTIONAL_LIGHT );
 
 	return S_OK;
 }
 
 void RenderQueue::Release()
 {
-	delete spriteCount;
-	delete staticMeshCount;
-	delete dynamicMeshCount;
+	delete[] spriteCount;
+	delete[] staticMeshCount;
+	delete[] dynamicMeshCount;
 
 	for( UINT i = 0; i < RES_SP_COUNT; i++ )
 		delete sprites[i];
+	delete[] sprites;
 	for( UINT i = 0; i < RES_SM_COUNT; i++ )
 		delete staticMeshes[i];
+	delete[] staticMeshes;
 	for( UINT i = 0; i < RES_DM_COUNT; i++ )
 		delete dynamicMeshes[i];
+	delete[] dynamicMeshes;
 	
 	delete pointLights;
 	delete dirLights;
 }
 
-void RenderQueue::RenderSprite( UINT resourceID_, XMFLOAT4 pos_, XMFLOAT4 rot_, XMFLOAT4 scale_ )
+void RenderQueue::RenderSprite( UINT resourceID_, XMFLOAT4 pos_ )
 {
-	XMMATRIX transformation = XMMatrixTransformation(
-		XMVectorSet( 0.0f, 0.0f, 0.0f, 1.0f ),
-		XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f ),
-		XMLoadFloat4( &scale_ ),
-		XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f ),
-		XMLoadFloat4( &rot_ ),
-		XMLoadFloat4( &pos_ )
-	);
-
-	XMStoreFloat4x4( &sprites[resourceID_][spriteCount[resourceID_]].transform, DirectX::XMMatrixTranspose( transformation ) );
+	sprites[resourceID_][spriteCount[resourceID_]].position = pos_;
 
 	spriteCount[resourceID_]++;
 }

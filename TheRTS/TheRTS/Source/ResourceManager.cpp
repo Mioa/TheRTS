@@ -7,7 +7,8 @@ HRESULT	ResourceManager::Initialize( ID3D11Device* device_ )
 {
 	ZeroMemory( meshes, sizeof( StaticMeshBuffer ) * ASSET_COUNT );
 	ZeroMemory( textures, sizeof( ID3D11ShaderResourceView* ) * ASSET_COUNT );
-	ZeroMemory( resources, sizeof( Resource* ) * ( RES_SP_COUNT + RES_SM_COUNT + RES_DM_COUNT ) );
+	ZeroMemory( spResources, sizeof( SpriteResource* ) * RES_SP_COUNT );
+	ZeroMemory( smResources, sizeof( StaticMeshResource* ) * RES_SM_COUNT );
 
 	device = device_;
 
@@ -24,8 +25,11 @@ void ResourceManager::Release()
 	for( UINT i = 0; i < ASSET_COUNT; i++ )
 		if( textures[i] ) textures[i]->Release();
 
-	for( UINT i = 0; i < RES_SP_COUNT + RES_SM_COUNT + RES_DM_COUNT; i++ )
-		if( resources[i] != nullptr ) delete resources[i];
+	for( UINT i = 0; i < RES_SP_COUNT; i++ )
+		if( spResources[i] != nullptr ) delete spResources[i];
+
+	for( UINT i = 0; i < RES_SM_COUNT; i++ )
+		if( smResources[i] != nullptr ) delete smResources[i];
 }
 
 ResourceManager::ResourceManager()
@@ -75,9 +79,14 @@ void ResourceManager::LoadTexture( UINT textureIndex_, std::string filePath_ )
 		}
 }
 
+void ResourceManager::CreateSprite( UINT resourceIndex_, UINT textureIndex_ )
+{
+	spResources[resourceIndex_] = new SpriteResource( textureIndex_ );
+}
+
 void ResourceManager::CreateStaticMesh( UINT resourceIndex_, UINT meshIndex_, UINT textureIndex_ )
 {
-	resources[resourceIndex_] = new StaticMeshResource( meshIndex_, textureIndex_ );
+	smResources[resourceIndex_] = new StaticMeshResource( meshIndex_, textureIndex_ );
 }
 
 void ResourceManager::InitDefaultData()

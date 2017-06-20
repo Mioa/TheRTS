@@ -100,5 +100,8 @@
     <Text Include="Shaders\defaultShaders.hlsl">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="Shaders\spriteShaders.hlsl">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

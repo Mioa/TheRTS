@@ -45,6 +45,12 @@ HRESULT System::Initialize( HINSTANCE hInstance_, int nCmdShow_ )
 void System::Release()
 {
 	game.Release();
+
+	RenderQueue::GetInstance()->Release();
+	delete RenderQueue::GetInstance();
+
+	Input::GetInstance()->Release();
+	delete Input::GetInstance();
 }
 
 System::System()

@@ -34,6 +34,7 @@ class EntityManager
 		C_Transform*		transform	= nullptr;
 		C_Mesh*				mesh		= nullptr;
 		C_PlayerInput*		playerInput	= nullptr;
+		C_Texture*			texture		= nullptr;
 
 		PlayerKeystates keyStates;
 
@@ -61,6 +62,7 @@ class EntityManager
 		HRESULT AddComponent( UINT entityIndex_, CI_Transform info_ );
 		HRESULT	AddComponent( UINT entityIndex_, CI_Mesh info_ );
 		HRESULT AddComponent( UINT entityIndex_, CI_PlayerInput info_ );
+		HRESULT AddComponent( UINT entityIndex_, CI_Texture info_ );
 
 	private:
 };

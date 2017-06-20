@@ -55,4 +55,4 @@ float4 PS_main( VS_OUT input ) : SV_Target
 	float4 outputColor = dot(normalize(input.Normal), normalize(dirLight)) * albedoTex.Sample( linearSamp, input.UV );
 
 	return outputColor;
-};
+}
