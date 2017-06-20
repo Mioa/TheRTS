@@ -14,6 +14,13 @@ enum InputLayouts
 	IL_COUNT
 };
 
+enum Pipelines
+{
+	PIPELINE_SPRITE,
+	PIPELINE_STATIC_MESH,
+	PIPELINE_COUNT
+};
+
 enum ShaderFlags
 {
 	SHADERFLAG_V	= 1,

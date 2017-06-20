@@ -4,6 +4,9 @@
 // General
 #define MAX_PLAYERS 8
 
+// Graphics
+#define GR_MAX_SPRITES_BUFFER 200
+
 // EntityManager
 #define EM_MAX_ENTITIES	10000
 
