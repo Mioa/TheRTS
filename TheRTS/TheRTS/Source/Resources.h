@@ -17,7 +17,8 @@ enum Assets
 
 enum ResSprite
 {
-	RES_SP_DEFAULT, // To keep count higher than 0. Remove when resource is added.
+	RES_SP_DEFAULT,
+	RES_SP_FLOWER,
 	RES_SP_COUNT
 };
 

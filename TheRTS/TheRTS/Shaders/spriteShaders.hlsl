@@ -19,17 +19,6 @@ struct Vertex
 	float2 UV;
 };
 
-//static const Vertex vertices[4] = {
-//	-1.0f, 1.0f, 0.0f, 1.0f,
-//	0.0f, 0.0f,
-//	1.0f, 1.0f, 0.0f, 1.0f,
-//	1.0f, 0.0f,
-//	-1.0f, -1.0f, 0.0f, 1.0f,
-//	0.0f, 1.0f,
-//	1.0f, -1.0f, 0.0f, 1.0f,
-//	1.0f, 1.0f,
-//};
-
 static const Vertex vertices[6] = {
 	-1.0f, 1.0f, 0.0f, 1.0f,
 	0.0f, 0.0f,
@@ -62,21 +51,18 @@ VS_OUT VS_main( uint id : SV_VertexID )
 	sPos.w /= windowHeight;
 	sPos *= 2.0f;
 
-	output.Pos = vertices[vertexID].Pos;
-	output.Pos.x += sPos.x;
-	output.Pos.y -= sPos.y;
+	float4 returns[6];
+	for( int i = 0; i < 6; i++ )
+		returns[i] = vertices[vertexID].Pos + float4( sPos.x, -sPos.y, 0.0f, 0.0f );
+	returns[1].x += sPos.z;
+	returns[2].x += sPos.z;
+	returns[2].y -= sPos.w;
+	returns[3].x += sPos.z;
+	returns[3].y -= sPos.w;
+	returns[4].y -= sPos.w;
 
-	if( vertexID == 1 )
-		output.Pos.x += sPos.z;
-	if( vertexID == 2 || vertexID == 3 )
-	{
-		output.Pos.x += sPos.z;
-		output.Pos.y -= sPos.w;
-	}
-	if( vertexID == 4 )
-		output.Pos.y -= sPos.w;
-
-	output.UV = vertices[id % 6].UV;
+	output.Pos	= returns[vertexID];
+	output.UV	= vertices[id % 6].UV;
 
 	return output;
 }

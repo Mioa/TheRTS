@@ -31,6 +31,12 @@ void EntityManager::Release()
 	delete[] mesh;
 	delete[] playerInput;
 	delete[] texture;
+
+	for( UINT i = 0; i < updateSignatures.size(); i++ )
+		if( updateSignatures[i] ) delete updateSignatures[i];
+
+	for( UINT i = 0; i < renderSignatures.size(); i++ )
+		if( renderSignatures[i] ) delete renderSignatures[i];
 }
 
 EntityManager::EntityManager()

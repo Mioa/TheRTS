@@ -46,16 +46,19 @@ HRESULT	RenderQueue::Initialize()
 
 void RenderQueue::Release()
 {
-	delete spriteCount;
-	delete staticMeshCount;
-	delete dynamicMeshCount;
+	delete[] spriteCount;
+	delete[] staticMeshCount;
+	delete[] dynamicMeshCount;
 
 	for( UINT i = 0; i < RES_SP_COUNT; i++ )
 		delete sprites[i];
+	delete[] sprites;
 	for( UINT i = 0; i < RES_SM_COUNT; i++ )
 		delete staticMeshes[i];
+	delete[] staticMeshes;
 	for( UINT i = 0; i < RES_DM_COUNT; i++ )
 		delete dynamicMeshes[i];
+	delete[] dynamicMeshes;
 	
 	delete pointLights;
 	delete dirLights;
