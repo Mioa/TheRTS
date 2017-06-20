@@ -161,14 +161,21 @@ HRESULT Network::ReceiveData()
 					iPos	+= nData;
 				} while( nLeft > 0 );
 
-				receiveMsgBuffer = wzRec;
-				//std::string message = wzRec;
-				ZeroMemory( wzRec, sizeof( wzRec ) );
+				if( nData > 0 )
+				{
+					receiveMsgBuffer.resize( nData );
+					memcpy( &receiveMsgBuffer[0], wzRec, sizeof( char ) * nData ); 
+					//std::string message = wzRec;
+					ZeroMemory( wzRec, sizeof( wzRec ) );
+				}
 
 				//std::cout << "Message from " << i << ": " << message.c_str() << '\n';
 
 				if( receiveMsgBuffer[0] == NE_MSG_WELCOME )
-					mySocketIndex = (int)receiveMsgBuffer[1];
+				{
+					mySocketIndex = receiveMsgBuffer[1];
+					numConnections++;
+				}
 
 			}
 	return S_OK;
@@ -186,7 +193,7 @@ HRESULT Network::SendData()
 				int		iPos	= 0;
 				int		nData	= 0;
 
-				strcpy( wzRec, msgBuffer.c_str() );
+				memcpy( wzRec, &sendMsgBuffer[0], sizeof( char ) * sendMsgBuffer.length() );
 
 				do
 				{
@@ -216,7 +223,7 @@ HRESULT Network::SendWelcomeMessage( UINT socketIndex_ )
 	int		nData	= 0;
 
 	std::string mess = "";
-	mess += (char)NE_MES_WELCOME;
+	mess += (char)NE_MSG_WELCOME;
 	mess += (char)socketIndex_;
 
 	strcpy( wzRec, mess.c_str() );

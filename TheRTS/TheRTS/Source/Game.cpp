@@ -40,8 +40,6 @@ void Game::Release()
 
 Game::Game()
 {
-	ZeroMemory( playerFrameReceived, sizeof( playerFrameReceived ) );
-	ZeroMemory( playerInputData, sizeof( playerInputData ) );
 }
 
 Game::~Game()
@@ -51,63 +49,24 @@ Game::~Game()
 
 void Game::Update( float deltaTime )
 {
-	accumulatedTime += deltaTime;
-	if( accumulatedTime > EM_TIME_STEP )
-	{
-		accumulatedTime -= EM_TIME_STEP;
-		Input::GetInstance()->Update();
-		Input::GetInstance()->Clear();
+	Input::GetInstance()->Update();
+	Input::GetInstance()->Clear();
 
-		// Temporary
-		entityManager->keyStates.keyDown[0][I_KEY::W] = Input_KeyDown(I_KEY::W);
-		entityManager->keyStates.keyDown[0][I_KEY::A] = Input_KeyDown(I_KEY::A);
-		entityManager->keyStates.keyDown[0][I_KEY::S] = Input_KeyDown(I_KEY::S);
-		entityManager->keyStates.keyDown[0][I_KEY::D] = Input_KeyDown(I_KEY::D);
-		graphicsManager->UpdateCamera( DirectX::XMFLOAT4(
-			( Input_KeyDown( I_KEY::ARROW_RIGHT ) ? cameraSpeed : 0.0f ) - ( Input_KeyDown( I_KEY::ARROW_LEFT ) ? cameraSpeed : 0.0f ),
-			0.0f,
-			( Input_KeyDown( I_KEY::ARROW_UP ) ? cameraSpeed : 0.0f ) - ( Input_KeyDown( I_KEY::ARROW_DOWN ) ? cameraSpeed : 0.0f ),
-			0.0f
-			) );
-		//
+	// Temporary
+	entityManager->keyStates.keyDown[0][I_KEY::W] = Input_KeyDown(I_KEY::W);
+	entityManager->keyStates.keyDown[0][I_KEY::A] = Input_KeyDown(I_KEY::A);
+	entityManager->keyStates.keyDown[0][I_KEY::S] = Input_KeyDown(I_KEY::S);
+	entityManager->keyStates.keyDown[0][I_KEY::D] = Input_KeyDown(I_KEY::D);
 
-		entityManager->Update();
+	graphicsManager->UpdateCamera( DirectX::XMFLOAT4(
+		( Input_KeyDown( I_KEY::ARROW_RIGHT ) ? cameraSpeed : 0.0f ) - ( Input_KeyDown( I_KEY::ARROW_LEFT ) ? cameraSpeed : 0.0f ),
+		0.0f,
+		( Input_KeyDown( I_KEY::ARROW_UP ) ? cameraSpeed : 0.0f ) - ( Input_KeyDown( I_KEY::ARROW_DOWN ) ? cameraSpeed : 0.0f ),
+		0.0f
+		) );
+	//
 
-		if( Input_KeyPressed( I_KEY::H ) && !isGameHost && !isSyncingNetwork )
-		{
-			hostThread			= std::thread( &Network::StartHostSession, network );
-			isGameHost			= true;
-			isSyncingNetwork	= true;
-		}
-
-		if( Input_KeyPressed( I_KEY::J ) && !isSyncingNetwork )
-		{
-			network->AddConnection();
-			isSyncingNetwork = true;
-		}
-
-
-	}
-	//if( receiveThread.joinable() )
-	//	receiveThread.join();
-	//else
-	if( isSyncingNetwork )
-		accumulatedNetworkTime += deltaTime;
-
-	if( isSyncingNetwork && accumulatedNetworkTime > GA_NET_SYNC_TIME )
-	{
-		accumulatedNetworkTime -= GA_NET_SYNC_TIME;
-		if( !network->receiveThreadRunning )
-			receiveThread = std::thread( &Network::ReceiveData, network );
-
-		if( sendThread.joinable() )
-			sendThread.join();
-		else
-		{
-			network->sendMsgBuffer	= std::to_string( currentSyncedFrame );
-			sendThread				= std::thread( &Network::SendData, network );
-		}
-	}
+	entityManager->Update();
 }
 
 void Game::Render()
@@ -134,10 +93,15 @@ void Game::CreateResources()
 
 void Game::CreateEntities()
 {
-	UINT player = entityManager->AddEntity();
-	entityManager->AddComponent( player, CI_Transform{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );
-	entityManager->AddComponent( player, CI_Mesh{ RES_SM_SPHERE } );
-	entityManager->AddComponent( player, CI_PlayerInput{ 0 } );
+	UINT player0 = entityManager->AddEntity();
+	entityManager->AddComponent( player0, CI_Transform{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );
+	entityManager->AddComponent( player0, CI_Mesh{ RES_SM_SPHERE } );
+	entityManager->AddComponent( player0, CI_PlayerInput{ 0 } );
+
+	UINT player1 = entityManager->AddEntity();
+	entityManager->AddComponent( player1, CI_Transform{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );
+	entityManager->AddComponent( player1, CI_Mesh{ RES_SM_SPHERE } );
+	entityManager->AddComponent( player1, CI_PlayerInput{ 1 } );
 
 	UINT floor = entityManager->AddEntity();
 	entityManager->AddComponent( floor, CI_Transform{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );

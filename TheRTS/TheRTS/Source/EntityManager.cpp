@@ -13,9 +13,11 @@ HRESULT EntityManager::Initialize()
 	ZeroMemory( mesh, sizeof( C_Mesh ) * EM_MAX_ENTITIES );
 	playerInput	= new C_PlayerInput[EM_MAX_ENTITIES];
 	ZeroMemory( playerInput, sizeof( C_PlayerInput ) * EM_MAX_ENTITIES );
+	ZeroMemory( &keyStates, sizeof( PlayerKeystates ) );
 
 	renderSignatures.push_back( new SR_RenderMesh( this ) );
 	updateSignatures.push_back( new SU_MovePlayer( this ) );
+
 
 	return S_OK;
 }
