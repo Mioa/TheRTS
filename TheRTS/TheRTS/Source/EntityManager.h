@@ -34,7 +34,7 @@ class EntityManager
 		C_Transform*		transform	= nullptr;
 		C_Mesh*				mesh		= nullptr;
 		C_PlayerInput*		playerInput	= nullptr;
-		C_Texture*			texture	= nullptr;
+		C_Texture*			texture		= nullptr;
 
 		PlayerKeystates keyStates;
 
@@ -54,7 +54,7 @@ class EntityManager
 				EntityManager();
 				~EntityManager();
 	public:
-		void	Update( float deltaTime );
+		void	Update();
 		void	Render();
 
 		int		AddEntity();

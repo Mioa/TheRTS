@@ -15,10 +15,12 @@ HRESULT EntityManager::Initialize()
 	ZeroMemory( playerInput, sizeof( C_PlayerInput ) * EM_MAX_ENTITIES );
 	texture		= new C_Texture[EM_MAX_ENTITIES];
 	ZeroMemory( texture, sizeof( C_Texture ) * EM_MAX_ENTITIES );
+	ZeroMemory( &keyStates, sizeof( PlayerKeystates ) );
 
 	renderSignatures.push_back( new SR_RenderMesh( this ) );
 	renderSignatures.push_back( new SR_RenderSprite( this ) );
 	updateSignatures.push_back( new SU_MovePlayer( this ) );
+
 
 	return S_OK;
 }
@@ -49,7 +51,7 @@ EntityManager::~EntityManager()
 
 }
 
-void EntityManager::Update( float deltaTime )
+void EntityManager::Update()
 {
 	for( int i = 0; i < updateSignatures.size(); i++ )
 		updateSignatures[i]->Function();
