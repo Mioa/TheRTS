@@ -114,8 +114,7 @@ void Game::CreateEntities()
 		}
 	}
 
-	// In progress TODO!
-	for( UINT i = 0; i < 200; i++)
+	for( UINT i = 0; i < 201; i++)
 	{
 		UINT sprite = entityManager->AddEntity();
 		entityManager->AddComponent( sprite, CI_Position{ DirectX::XMFLOAT4( i * 4.8f, 550.0f, 3.0f, 50.0f ) } );
