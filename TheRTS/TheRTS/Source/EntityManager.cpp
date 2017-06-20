@@ -17,6 +17,7 @@ HRESULT EntityManager::Initialize()
 	ZeroMemory( texture, sizeof( C_Texture ) * EM_MAX_ENTITIES );
 
 	renderSignatures.push_back( new SR_RenderMesh( this ) );
+	renderSignatures.push_back( new SR_RenderSprite( this ) );
 	updateSignatures.push_back( new SU_MovePlayer( this ) );
 
 	return S_OK;

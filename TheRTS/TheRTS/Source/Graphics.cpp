@@ -267,7 +267,7 @@ void Graphics::DrawSprites()
 	for( UINT type = 0; type < RES_SP_COUNT; type++ )
 	{
 		UINT counter = RenderQueue::GetInstance()->spriteCount[type];
-		deviceContext->PSSetShaderResources( 0, 1, &resourceManager->textures[((SpriteResource*)(resourceManager->resources[type]))->textureIndex] );
+		deviceContext->PSSetShaderResources( 0, 1, &resourceManager->textures[resourceManager->spResources[type]->textureIndex] );
 
 		while( counter > 0 )
 		{
@@ -277,8 +277,8 @@ void Graphics::DrawSprites()
 				spriteCB, 
 				0, 
 				nullptr, 
-				&RenderQueue::GetInstance()->staticMeshes[type][RenderQueue::GetInstance()->spriteCount[type] - counter], 
-				sizeof ( DirectX::XMFLOAT4X4 ) * numSprites,
+				&RenderQueue::GetInstance()->sprites[type][RenderQueue::GetInstance()->spriteCount[type] - counter], 
+				sizeof ( DirectX::XMFLOAT4 ) * numSprites,
 				0
 				); 
 
@@ -297,8 +297,8 @@ void Graphics::DrawStaticMeshes()
 
 		if( count > 0)
 		{
-			deviceContext->IASetVertexBuffers( 0, 1, &resourceManager->meshes[((StaticMeshResource*)(resourceManager->resources[type]))->meshIndex].buffer, &vSize_POS3_NOR3_UV2, &offset );
-			deviceContext->PSSetShaderResources( 0, 1, &resourceManager->textures[((StaticMeshResource*)(resourceManager->resources[type]))->textureIndex] );
+			deviceContext->IASetVertexBuffers( 0, 1, &resourceManager->meshes[resourceManager->smResources[type]->meshIndex].buffer, &vSize_POS3_NOR3_UV2, &offset );
+			deviceContext->PSSetShaderResources( 0, 1, &resourceManager->textures[resourceManager->smResources[type]->textureIndex] );
 
 			for( UINT index = 0; index < count; index++ )
 			{
@@ -306,7 +306,7 @@ void Graphics::DrawStaticMeshes()
 				deviceContext->UpdateSubresource( objectCB, 0, nullptr, &RenderQueue::GetInstance()->staticMeshes[type][index].transform, sizeof ( DirectX::XMFLOAT4X4 ), 0 ); 
 				deviceContext->VSSetConstantBuffers( 1, 1, &objectCB );
 		
-				deviceContext->Draw( resourceManager->meshes[((StaticMeshResource*)(resourceManager->resources[type]))->meshIndex].vertexCount, 0 );
+				deviceContext->Draw( resourceManager->meshes[resourceManager->smResources[type]->meshIndex].vertexCount, 0 );
 			}
 		}
 	}

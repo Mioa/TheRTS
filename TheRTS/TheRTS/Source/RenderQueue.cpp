@@ -16,18 +16,30 @@ HRESULT	RenderQueue::Initialize()
 
 	sprites = new RI_Sprite*[RES_SP_COUNT];
 	for( UINT i = 0; i < RES_SP_COUNT; i++ )
+	{
 		sprites[i] = new RI_Sprite[RQ_MAX_SPRITE];
+		ZeroMemory( sprites[i], sizeof( RI_Sprite ) * RQ_MAX_SPRITE );
+	}
 
 	staticMeshes = new RI_StaticMesh*[RES_SM_COUNT];
 	for( UINT i = 0; i < RES_SM_COUNT; i++ )
+	{
 		staticMeshes[i] = new RI_StaticMesh[RQ_MAX_STATIC_MESH];
+		ZeroMemory( staticMeshes[i], sizeof( RI_StaticMesh ) * RQ_MAX_STATIC_MESH );
+	}
 
 	dynamicMeshes = new RI_DynamicMesh*[RES_DM_COUNT];
 	for( UINT i = 0; i < RES_DM_COUNT; i++ )
+	{
 		dynamicMeshes[i] = new RI_DynamicMesh[RQ_MAX_DYNAMIC_MESH];
+		ZeroMemory( dynamicMeshes[i], sizeof( RI_DynamicMesh ) * RQ_MAX_DYNAMIC_MESH );
+	}
 
 	pointLights = new RI_PointLight[RQ_MAX_POINT_LIGHT];
 	dirLights = new RI_DirLight[RQ_MAX_DIRECTIONAL_LIGHT];
+
+	ZeroMemory( pointLights, sizeof( RI_PointLight ) * RQ_MAX_POINT_LIGHT );
+	ZeroMemory( dirLights, sizeof( RI_DirLight ) * RQ_MAX_DIRECTIONAL_LIGHT );
 
 	return S_OK;
 }
@@ -49,9 +61,9 @@ void RenderQueue::Release()
 	delete dirLights;
 }
 
-void RenderQueue::RenderSprite( UINT resourceID_, XMFLOAT4 rect_ )
+void RenderQueue::RenderSprite( UINT resourceID_, XMFLOAT4 pos_ )
 {
-	sprites[resourceID_][spriteCount[resourceID_]].rect = rect_;
+	sprites[resourceID_][spriteCount[resourceID_]].position = pos_;
 
 	spriteCount[resourceID_]++;
 }

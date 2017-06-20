@@ -48,9 +48,9 @@ struct SR_RenderMesh : public SignatureFunction
 	}
 };
 
-struct SR_RenderTexture : public SignatureFunction
+struct SR_RenderSprite : public SignatureFunction
 {
-	SR_RenderTexture( EntityManager* manager_ )
+	SR_RenderSprite( EntityManager* manager_ )
 	{
 		manager					= manager_;
 		signature[C_POSITION]	= true;
@@ -70,7 +70,7 @@ struct SR_RenderTexture : public SignatureFunction
 
 			macRenderQueue->RenderSprite( 
 				manager->texture[entID].resource, 
-				manager->transform[entID].position
+				manager->position[entID].position
 				);
 		}
 	}

@@ -11,8 +11,8 @@ class ResourceManager
 		ID3D11ShaderResourceView*	textures[ASSET_COUNT];
 		StaticMeshBuffer			meshes[ASSET_COUNT];
 
-		static const UINT resourceCount = RES_SP_COUNT + RES_SM_COUNT + RES_DM_COUNT;
-		Resource* resources[resourceCount];
+		StaticMeshResource* smResources[RES_SM_COUNT];
+		SpriteResource* spResources[RES_SP_COUNT];
 
 	private:
 		ID3D11Device* device;
