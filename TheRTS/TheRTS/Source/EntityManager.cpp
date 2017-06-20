@@ -19,6 +19,7 @@ HRESULT EntityManager::Initialize()
 
 	renderSignatures.push_back( new SR_RenderMesh( this ) );
 	renderSignatures.push_back( new SR_RenderSprite( this ) );
+	updateSignatures.push_back( new SU_HUDClicked( this ) );
 	updateSignatures.push_back( new SU_MovePlayer( this ) );
 
 

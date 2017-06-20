@@ -21,6 +21,8 @@ namespace I_KEY
 		ARROW_RIGHT,
 		ARROW_DOWN,
 		ARROW_UP,
+		MOUSE_LEFT,
+		MOUSE_RIGHT,
 		COUNT
 	};
 }
@@ -33,6 +35,8 @@ class Input
 		bool releaseFrame[I_KEY::COUNT];
 		bool currentFrame[I_KEY::COUNT];
 		bool previousFrame[I_KEY::COUNT];
+		int mousePos[2];
+
 	private:
 
 	//Functions

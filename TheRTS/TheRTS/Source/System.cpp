@@ -3,6 +3,7 @@
 
 HRESULT System::Initialize( HINSTANCE hInstance_, int nCmdShow_ )
 {
+	
 	windowWidth		= 960;
 	windowHeight	= 600;
 
@@ -82,6 +83,11 @@ int	System::Run()
 			float deltaTime = (float)timer.GetTime(); 
 			timer.Start();
 
+			std::string text = std::to_string(Input::GetInstance()->mousePos[0]);
+			text += " - ";
+			text += std::to_string(Input::GetInstance()->mousePos[1]);
+			SetWindowTextA(windowHandle, text.c_str());
+
 			game.Update( deltaTime );
 			game.Render();
 		}
@@ -127,6 +133,28 @@ LRESULT CALLBACK System::WndProc( HWND hWnd_, UINT uMsg_, WPARAM wParam_, LPARAM
 				case VK_UP		: Input::GetInstance()->releaseFrame[I_KEY::ARROW_UP]		= true; break;
 			}
 			break;
+		case WM_LBUTTONDOWN:
+			{
+				Input::GetInstance()->pressFrame[I_KEY::MOUSE_LEFT] = true; break;
+			}
+		case WM_LBUTTONUP:
+			{
+				Input::GetInstance()->releaseFrame[I_KEY::MOUSE_LEFT] = true; break;
+			}
+		case WM_RBUTTONDOWN:
+			{
+				Input::GetInstance()->pressFrame[I_KEY::MOUSE_RIGHT] = true; break;
+			}
+		case WM_RBUTTONUP:
+			{
+				Input::GetInstance()->releaseFrame[I_KEY::MOUSE_RIGHT] = true; break;
+			}
+		case WM_MOUSEMOVE: 
+			{
+				Input::GetInstance()->mousePos[0] = GET_X_LPARAM(lParam_);
+				Input::GetInstance()->mousePos[1] = GET_Y_LPARAM(lParam_);
+				break;
+			}
 		case WM_DESTROY:
 			PostQuitMessage( 0 );
 			break;		

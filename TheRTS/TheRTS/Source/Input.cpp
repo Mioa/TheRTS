@@ -6,6 +6,10 @@ HRESULT Input::Initialize()
 	ZeroMemory( releaseFrame, sizeof( bool ) * I_KEY::COUNT );
 	ZeroMemory( currentFrame, sizeof( bool ) * I_KEY::COUNT );
 	ZeroMemory( previousFrame, sizeof( bool ) * I_KEY::COUNT );
+
+	mousePos[0]	= 0;
+	mousePos[1]	= 0;
+
 	return S_OK;
 }
 

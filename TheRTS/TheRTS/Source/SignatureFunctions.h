@@ -79,6 +79,39 @@ struct SR_RenderSprite : public SignatureFunction
 	}
 };
 
+struct SU_HUDClicked : public SignatureFunction
+{
+	SU_HUDClicked( EntityManager* manager_ )
+	{
+		manager					= manager_;
+		signature[C_POSITION]	= true;
+		signature[C_TEXTURE]	= true;
+		states					= STATE_GAME;
+	}
+	void Function()
+	{
+		if( Input_KeyDown(I_KEY::MOUSE_LEFT) )
+		{
+			numActive = 0;
+
+			for( UINT entID = 0; entID < EM_MAX_ENTITIES; entID++ )
+				if( manager->entity[entID].active && ( signature & manager->entity[entID].signature ) == signature )
+					currentActive[numActive++] = entID;
+
+			int mousePos[2] = { Input::GetInstance()->mousePos[0], Input::GetInstance()->mousePos[1] };
+
+			for( UINT i = 0; i < numActive; i++ )
+			{
+				UINT entID = currentActive[i];
+				DirectX::XMFLOAT4 pos = manager->position[entID].position;
+
+				if ( mousePos[0] > pos.x && mousePos[0] < pos.x + pos.z && mousePos[1] > pos.y && mousePos[1] < pos.y + pos.w )
+					manager->texture[entID].resource = RES_SP_FLOWER;
+			}
+		}
+	}
+};
+
 struct SU_MovePlayer : public SignatureFunction
 {
 	SU_MovePlayer( EntityManager* manager_ )
