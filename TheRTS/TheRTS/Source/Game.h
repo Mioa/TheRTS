@@ -16,6 +16,8 @@ class Game
 		EntityManager*	entityManager;
 		Graphics*		graphicsManager;
 
+		UINT gameState;
+		UINT nextGameState;
 		float cameraSpeed;
 
 	//Functions

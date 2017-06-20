@@ -14,6 +14,9 @@ HRESULT Game::Initialize( HWND windowHandle_, LONG windowWidth_, LONG windowHeig
 	graphicsManager = new Graphics;
 	graphicsManager->Initialize( windowHandle, windowWidth, windowHeight );
 
+	gameState		= STATE_GAME;
+	nextGameState	= STATE_GAME;
+
 	cameraSpeed = 0.005f;
 
 	LoadAssets();
@@ -58,13 +61,23 @@ void Game::Update( float deltaTime )
 		) );
 	//
 
-	entityManager->Update( deltaTime );
+	if( gameState != nextGameState )
+	{
+		gameState = nextGameState;
+		entityManager->EntityStateChange( gameState );
+	}
+
+	// Input::GetInstance()->Update();
+	// networkManager->Update();
+	// networkManager->UpdateLockstep();
+	 entityManager->Update( gameState );
+	// entityManager->Render( gameState ); DONE IN Game::Render()
 }
 
 void Game::Render()
 {
 	graphicsManager->BeginScene();
-	entityManager->Render();
+	entityManager->Render( gameState );
 	graphicsManager->EndScene();
 }
 
@@ -79,7 +92,7 @@ void Game::LoadAssets()
 
 void Game::CreateResources()
 {
-	macResourceManager->CreateStaticMesh( RES_SM_CUBE, ASSET_MESH_DEFAULT, ASSET_TEXTURE_DEFAULT );
+	macResourceManager->CreateStaticMesh( RES_SM_CUBE, ASSET_MESH_DEFAULT, ASSET_TEXTURE_GUI );
 	macResourceManager->CreateStaticMesh( RES_SM_FLOOR, ASSET_MESH_FLOOR, ASSET_TEXTURE_SPHERE );
 	macResourceManager->CreateStaticMesh( RES_SM_SPHERE, ASSET_MESH_SPHERE, ASSET_TEXTURE_DEFAULT );
 	macResourceManager->CreateSprite( RES_SP_DEFAULT, ASSET_TEXTURE_DEFAULT );

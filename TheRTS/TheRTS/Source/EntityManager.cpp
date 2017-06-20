@@ -49,16 +49,24 @@ EntityManager::~EntityManager()
 
 }
 
-void EntityManager::Update( float deltaTime )
+void EntityManager::EntityStateChange( UINT gameState_ )
 {
-	for( int i = 0; i < updateSignatures.size(); i++ )
-		updateSignatures[i]->Function();
+	for( UINT i = 0; i < EM_MAX_ENTITIES; i++ )
+		entity[i].resting = (( entity[i].states & gameState_ ) == gameState_) ? false : true;
 }
 
-void EntityManager::Render()
+void EntityManager::Update( UINT gameState_ )
+{
+	for( int i = 0; i < updateSignatures.size(); i++ )
+		if( ( updateSignatures[i]->states & gameState_ ) == gameState_ )
+			updateSignatures[i]->Function();
+}
+
+void EntityManager::Render( UINT gameState_ )
 {
 	for( int i = 0; i < renderSignatures.size(); i++ )
-		renderSignatures[i]->Function();
+		if( ( renderSignatures[i]->states & gameState_ ) == gameState_ )
+			renderSignatures[i]->Function();
 }
 
 int EntityManager::AddEntity()

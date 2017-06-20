@@ -234,10 +234,10 @@ void Graphics::SetPipeline( UINT pipeline_ )
 
 			deviceContext->PSSetSamplers( 0, 1, &linearSamp );
 
-			deviceContext->IASetVertexBuffers(0, 0, NULL, 0, 0);
-			deviceContext->IASetVertexBuffers(1, 0, NULL, 0, 0);
-			deviceContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
-			deviceContext->IASetInputLayout(NULL);
+			deviceContext->IASetVertexBuffers( 0, 0, NULL, 0, 0 );
+			deviceContext->IASetVertexBuffers( 1, 0, NULL, 0, 0 );
+			deviceContext->IASetIndexBuffer( NULL, DXGI_FORMAT_R32_UINT, 0 );
+			deviceContext->IASetInputLayout( NULL );
 
 			break;
 		}
@@ -284,7 +284,7 @@ void Graphics::DrawSprites()
 
 			counter -= numSprites;
 
-			deviceContext->Draw(6 * numSprites, 0 );
+			deviceContext->Draw( 6 * numSprites, 0 );
 		}
 	}
 }

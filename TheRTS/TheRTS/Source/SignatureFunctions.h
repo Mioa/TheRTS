@@ -11,6 +11,7 @@ struct SignatureFunction
 {
 	EntityManager*			manager;
 	std::bitset<C_COUNT>	signature;
+	UINT					states;
 	
 	UINT					numActive;
 	UINT					currentActive[EM_MAX_ENTITIES];
@@ -25,6 +26,7 @@ struct SR_RenderMesh : public SignatureFunction
 		manager					= manager_;
 		signature[C_TRANSFORM]	= true;
 		signature[C_MESH]		= true;
+		states					= STATE_GAME;
 	}
 	void Function()
 	{
@@ -55,6 +57,7 @@ struct SR_RenderSprite : public SignatureFunction
 		manager					= manager_;
 		signature[C_POSITION]	= true;
 		signature[C_TEXTURE]	= true;
+		states					= STATE_GAME;
 	}
 	void Function()
 	{
@@ -84,6 +87,7 @@ struct SU_MovePlayer : public SignatureFunction
 		signature[C_TRANSFORM]		= true;
 		signature[C_MESH]			= true;
 		signature[C_PLAYERINPUT]	= true;
+		states						= STATE_GAME;
 	}
 	void Function()
 	{

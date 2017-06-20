@@ -24,6 +24,7 @@ class EntityManager
 			bool									active;
 			bool									resting;
 			std::bitset<ComponentTypes::C_COUNT>	signature;
+			UINT									states;
 		};
 
 
@@ -54,8 +55,9 @@ class EntityManager
 				EntityManager();
 				~EntityManager();
 	public:
-		void	Update( float deltaTime );
-		void	Render();
+		void	EntityStateChange( UINT gameState_ );
+		void	Update( UINT gameState_ );
+		void	Render( UINT gameState_ );
 
 		int		AddEntity();
 		HRESULT	AddComponent( UINT entityIndex_, CI_Position info_ );
