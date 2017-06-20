@@ -1,8 +1,12 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "Network.h"
 #include "EntityManager.h"
 #include "Graphics.h"
+#include "Input.h"
+
+
 
 class Game
 {
@@ -15,6 +19,7 @@ class Game
 
 		EntityManager*	entityManager;
 		Graphics*		graphicsManager;
+		Network*		network;
 
 		UINT gameState;
 		UINT nextGameState;

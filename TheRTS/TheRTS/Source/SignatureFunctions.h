@@ -104,7 +104,7 @@ struct SU_MovePlayer : public SignatureFunction
 			// Temporary
 			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::W] )
 				manager->transform[entID].position.z = manager->transform[entID].position.z + 0.005f;
-																								 
+																			 
 			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::A] )	 
 				manager->transform[entID].position.x = manager->transform[entID].position.x - 0.005f;
 																								 

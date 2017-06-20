@@ -10,10 +10,26 @@ class System
 	//Variables
 	public:
 	private:
+		struct Timer
+		{
+			private:
+				LARGE_INTEGER start, stop, elapsed, freq;
+			public:
+			Timer()			{ QueryPerformanceFrequency( &freq ); }
+			void Start()	{ QueryPerformanceCounter( &start ); }
+			void Stop()		{ QueryPerformanceCounter( &stop ); }
+			double GetTime()
+			{
+				elapsed.QuadPart = stop.QuadPart - start.QuadPart;
+				return (double)elapsed.QuadPart / freq.QuadPart;
+			}
+		};
+
 		HWND	windowHandle;
 		LONG	windowWidth;
 		LONG	windowHeight;
 		Game	game;
+		Timer	timer;
 
 	//Functions
 	public:

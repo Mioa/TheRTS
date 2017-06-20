@@ -23,6 +23,9 @@ HRESULT Game::Initialize( HWND windowHandle_, LONG windowWidth_, LONG windowHeig
 	CreateResources();
 	CreateEntities();
 
+	network = new Network;
+	network->Initialize();
+
 	return S_OK;
 }
 
@@ -33,11 +36,13 @@ void Game::Release()
 
 	graphicsManager->Release();
 	delete graphicsManager;
+
+	network->Release();
+	delete network;
 }
 
 Game::Game()
 {
-
 }
 
 Game::~Game()
@@ -47,11 +52,14 @@ Game::~Game()
 
 void Game::Update( float deltaTime )
 {
+	Input::GetInstance()->Update();
+	Input::GetInstance()->Clear();
+
 	// Temporary
-	entityManager->keyStates.keyDown[0][I_KEY::W] = Input_KeyDown( I_KEY::W );
-	entityManager->keyStates.keyDown[0][I_KEY::A] = Input_KeyDown( I_KEY::A );
-	entityManager->keyStates.keyDown[0][I_KEY::S] = Input_KeyDown( I_KEY::S );
-	entityManager->keyStates.keyDown[0][I_KEY::D] = Input_KeyDown( I_KEY::D );
+	entityManager->keyStates.keyDown[0][I_KEY::W] = Input_KeyDown(I_KEY::W);
+	entityManager->keyStates.keyDown[0][I_KEY::A] = Input_KeyDown(I_KEY::A);
+	entityManager->keyStates.keyDown[0][I_KEY::S] = Input_KeyDown(I_KEY::S);
+	entityManager->keyStates.keyDown[0][I_KEY::D] = Input_KeyDown(I_KEY::D);
 
 	graphicsManager->UpdateCamera( DirectX::XMFLOAT4(
 		( Input_KeyDown( I_KEY::ARROW_RIGHT ) ? cameraSpeed : 0.0f ) - ( Input_KeyDown( I_KEY::ARROW_LEFT ) ? cameraSpeed : 0.0f ),
@@ -101,10 +109,15 @@ void Game::CreateResources()
 
 void Game::CreateEntities()
 {
-	UINT player = entityManager->AddEntity();
-	entityManager->AddComponent( player, CI_Transform{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );
-	entityManager->AddComponent( player, CI_Mesh{ RES_SM_SPHERE } );
-	entityManager->AddComponent( player, CI_PlayerInput{ 0 } );
+	UINT player0 = entityManager->AddEntity();
+	entityManager->AddComponent( player0, CI_Transform{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );
+	entityManager->AddComponent( player0, CI_Mesh{ RES_SM_SPHERE } );
+	entityManager->AddComponent( player0, CI_PlayerInput{ 0 } );
+
+	UINT player1 = entityManager->AddEntity();
+	entityManager->AddComponent( player1, CI_Transform{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );
+	entityManager->AddComponent( player1, CI_Mesh{ RES_SM_SPHERE } );
+	entityManager->AddComponent( player1, CI_PlayerInput{ 1 } );
 
 	UINT floor = entityManager->AddEntity();
 	entityManager->AddComponent( floor, CI_Transform{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );

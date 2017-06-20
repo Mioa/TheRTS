@@ -67,6 +67,8 @@ int	System::Run()
 {
 	MSG msg = { 0 };
 
+
+	timer.Start();
 	while( WM_QUIT != msg.message )
 	{
 		if( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
@@ -76,10 +78,11 @@ int	System::Run()
 		}
 		else
 		{
-			Input::GetInstance()->Update();
-			Input::GetInstance()->Clear();
+			timer.Stop();
+			float deltaTime = (float)timer.GetTime(); 
+			timer.Start();
 
-			game.Update( 1.0f );
+			game.Update( deltaTime );
 			game.Render();
 		}
 	}
@@ -95,6 +98,8 @@ LRESULT CALLBACK System::WndProc( HWND hWnd_, UINT uMsg_, WPARAM wParam_, LPARAM
 			{
 				case 'A'		: Input::GetInstance()->pressFrame[I_KEY::A]			= true; break;
 				case 'D'		: Input::GetInstance()->pressFrame[I_KEY::D]			= true; break;
+				case 'H'		: Input::GetInstance()->pressFrame[I_KEY::H]			= true; break;
+				case 'J'		: Input::GetInstance()->pressFrame[I_KEY::J]			= true; break;
 				case 'S'		: Input::GetInstance()->pressFrame[I_KEY::S]			= true; break;
 				case 'W'		: Input::GetInstance()->pressFrame[I_KEY::W]			= true; break;
 				case VK_LEFT	: Input::GetInstance()->pressFrame[I_KEY::ARROW_LEFT]	= true; break;
@@ -112,6 +117,8 @@ LRESULT CALLBACK System::WndProc( HWND hWnd_, UINT uMsg_, WPARAM wParam_, LPARAM
 			{
 				case 'A'		: Input::GetInstance()->releaseFrame[I_KEY::A]				= true; break;
 				case 'D'		: Input::GetInstance()->releaseFrame[I_KEY::D]				= true; break;
+				case 'H'		: Input::GetInstance()->releaseFrame[I_KEY::H]				= true; break;
+				case 'J'		: Input::GetInstance()->releaseFrame[I_KEY::J]				= true; break;
 				case 'S'		: Input::GetInstance()->releaseFrame[I_KEY::S]				= true; break;
 				case 'W'		: Input::GetInstance()->releaseFrame[I_KEY::W]				= true; break;
 				case VK_LEFT	: Input::GetInstance()->releaseFrame[I_KEY::ARROW_LEFT]		= true; break;

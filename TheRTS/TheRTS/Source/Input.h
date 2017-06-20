@@ -13,6 +13,8 @@ namespace I_KEY
 	{
 		A,
 		D,
+		H,
+		J,
 		S,
 		W,
 		ARROW_LEFT,
