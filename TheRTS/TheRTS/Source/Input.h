@@ -32,15 +32,18 @@ class Input
 {
 	//Variables
 	public:
-		bool pressFrame[I_KEY::COUNT];
-		bool releaseFrame[I_KEY::COUNT];
-		bool currentFrame[I_KEY::COUNT];
-		bool previousFrame[I_KEY::COUNT];
-		int mousePos[2];
 		DirectX::XMFLOAT4 cameraPos;
 		DirectX::XMFLOAT4 cameraDir;
+		Camera* camera;
+
+		bool	pressFrame[I_KEY::COUNT];
+		bool	releaseFrame[I_KEY::COUNT];
+		bool	currentFrame[I_KEY::COUNT];
+		bool	previousFrame[I_KEY::COUNT];
+		int		currentMousePos[2];
+		int		previousMousePos[2];
+
 		float cameraSpeed;
-		Camera camera;
 
 	private:
 
@@ -64,9 +67,9 @@ class Input
 	public:
 		void	Update();
 		void	Clear();
-		bool	KeyDown( I_KEY::Keys key );
-		bool	KeyPressed( I_KEY::Keys key );
-		bool	KeyReleased( I_KEY::Keys key );
+		bool	KeyDown( I_KEY::Keys key_ );
+		bool	KeyPressed( I_KEY::Keys key_ );
+		bool	KeyReleased( I_KEY::Keys key_ );
 	private:
 };
 #endif

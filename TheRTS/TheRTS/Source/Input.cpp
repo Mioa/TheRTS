@@ -2,16 +2,16 @@
 
 HRESULT Input::Initialize()
 {
-	ZeroMemory( pressFrame, sizeof( bool ) * I_KEY::COUNT );
-	ZeroMemory( releaseFrame, sizeof( bool ) * I_KEY::COUNT );
-	ZeroMemory( currentFrame, sizeof( bool ) * I_KEY::COUNT );
-	ZeroMemory( previousFrame, sizeof( bool ) * I_KEY::COUNT );
+	ZeroMemory( &pressFrame, sizeof( bool ) * I_KEY::COUNT );
+	ZeroMemory( &releaseFrame, sizeof( bool ) * I_KEY::COUNT );
+	ZeroMemory( &currentFrame, sizeof( bool ) * I_KEY::COUNT );
+	ZeroMemory( &previousFrame, sizeof( bool ) * I_KEY::COUNT );
+	ZeroMemory( &currentMousePos, sizeof( currentMousePos ) );
 
-	mousePos[0]	= 0;
-	mousePos[1]	= 0;
-
-	cameraPos = DirectX::XMFLOAT4( 0.0f, 10.0f, -2.0f, 1.0f );
+	cameraPos = DirectX::XMFLOAT4A( 0.0f, 10.0f, -2.0f, 1.0f );
 	DirectX::XMStoreFloat4( &cameraDir, DirectX::XMVector4Normalize( DirectX::XMVectorSet( 0.0f, -10.0f, 2.0f, 0.0f ) ) );
+	
+	camera = new Camera;
 
 	cameraSpeed = 0.005f;
 
@@ -30,7 +30,7 @@ void Input::Update()
 	{
 		if( pressFrame[i] )
 			currentFrame[i] = true;
-		else if( releaseFrame[i] )
+		if( releaseFrame[i] )
 			currentFrame[i] = false;
 	}
 
@@ -46,21 +46,21 @@ void Input::Update()
 
 void Input::Clear()
 {
-	ZeroMemory( pressFrame, sizeof( bool ) * I_KEY::COUNT );
-	ZeroMemory( releaseFrame, sizeof( bool ) * I_KEY::COUNT );
+	ZeroMemory( &pressFrame, sizeof( bool ) * I_KEY::COUNT );
+	ZeroMemory( &releaseFrame, sizeof( bool ) * I_KEY::COUNT );
 }
 
-bool Input::KeyDown( I_KEY::Keys key )
+bool Input::KeyDown( I_KEY::Keys key_ )
 {
-	return currentFrame[key];
+	return currentFrame[key_];
 }
 
-bool Input::KeyPressed( I_KEY::Keys key )
+bool Input::KeyPressed( I_KEY::Keys key_ )
 {
-	return !previousFrame[key] && currentFrame[key];
+	return !previousFrame[key_] && currentFrame[key_];
 }
 
-bool Input::KeyReleased( I_KEY::Keys key )
+bool Input::KeyReleased( I_KEY::Keys key_ )
 {
-	return previousFrame[key] && !currentFrame[key];
+	return previousFrame[key_] && !currentFrame[key_];
 }

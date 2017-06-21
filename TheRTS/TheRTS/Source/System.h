@@ -31,6 +31,8 @@ class System
 		Game	game;
 		Timer	timer;
 
+		float	fpsValue;
+
 	//Functions
 	public:
 		HRESULT	Initialize( HINSTANCE hInstance_, int nCmdShow_ );

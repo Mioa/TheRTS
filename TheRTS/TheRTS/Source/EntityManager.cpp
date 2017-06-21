@@ -17,7 +17,7 @@ HRESULT EntityManager::Initialize()
 	ZeroMemory( playerInput, sizeof( C_PlayerInput ) * EM_MAX_ENTITIES );
 	texture			= new C_Texture[EM_MAX_ENTITIES];
 	ZeroMemory( texture, sizeof( C_Texture ) * EM_MAX_ENTITIES );
-	ZeroMemory( &keyStates, sizeof( PlayerKeystates ) );
+	//ZeroMemory( &keyStates, sizeof( PlayerKeystates ) );
 
 	renderSignatures.push_back( new SR_RenderMesh( this ) );
 	renderSignatures.push_back( new SR_RenderSprite( this ) );
@@ -69,14 +69,14 @@ void EntityManager::Update( UINT gameState_ )
 	Input* input = Input::GetInstance();
 	
 	float mouseNDC[2] = {
-			( ( (float)input->mousePos[0] / (float)windowWidth ) * 2.0f ) - 1.0f,
-			( ( (float)-input->mousePos[1] / (float)windowHeight ) * 2.0f ) + 1.0f
+			( ( (float)input->currentMousePos[0] / (float)windowWidth ) * 2.0f ) - 1.0f,
+			( ( (float)-input->currentMousePos[1] / (float)windowHeight ) * 2.0f ) + 1.0f
 		};
 	
 	XMVECTOR mouseNear = XMVectorSet( mouseNDC[0], mouseNDC[1], 0.0f, 1.0f );
 	XMVECTOR mouseFar = XMVectorSet( mouseNDC[0], mouseNDC[1], 1.0f, 1.0f );
 	
-	XMMATRIX combinedMtx = XMMatrixTranspose( XMLoadFloat4x4( &input->camera.projection ) * XMLoadFloat4x4( &input->camera.view ) );
+	XMMATRIX combinedMtx = XMMatrixTranspose( XMLoadFloat4x4( &input->camera->projection ) * XMLoadFloat4x4( &input->camera->view ) );
 	XMMATRIX combinedInv = XMMatrixInverse( 0, combinedMtx );
 	
 	XMVECTOR transNear = XMVector3TransformCoord(

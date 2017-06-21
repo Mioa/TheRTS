@@ -9,12 +9,12 @@
 
 struct SignatureFunction; //Forward Declare
 
-struct PlayerKeystates
-{
-	bool keyDown[MAX_PLAYERS][I_KEY::COUNT];
-	bool keyPressed[MAX_PLAYERS][I_KEY::COUNT];
-	bool keyRelease[MAX_PLAYERS][I_KEY::COUNT];
-};
+//struct PlayerKeystates
+//{
+//	bool keyDown[GENERAL_MAX_PLAYERS][I_KEY::COUNT];
+//	bool keyPressed[GENERAL_MAX_PLAYERS][I_KEY::COUNT];
+//	bool keyRelease[GENERAL_MAX_PLAYERS][I_KEY::COUNT];
+//};
 
 class EntityManager
 {
@@ -44,7 +44,7 @@ class EntityManager
 		C_PlayerInput*			playerInput	 = nullptr;
 		C_Texture*				texture		 = nullptr;
 
-		PlayerKeystates keyStates;
+		//PlayerKeystates keyStates;
 		MouseRay mouseRay;
 
 	private:

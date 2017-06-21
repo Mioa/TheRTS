@@ -36,9 +36,9 @@ HRESULT System::Initialize( HINSTANCE hInstance_, int nCmdShow_ )
 	if( windowHandle )
 		ShowWindow( windowHandle, nCmdShow_ );
 
-	game.Initialize( windowHandle, windowWidth, windowHeight );
-
 	Input::GetInstance()->Initialize();
+
+	game.Initialize( windowHandle, windowWidth, windowHeight );
 
 	return S_OK;
 }
@@ -52,6 +52,9 @@ void System::Release()
 
 	Input::GetInstance()->Release();
 	delete Input::GetInstance();
+
+	Lockstep::GetInstance()->Release();
+	delete Lockstep::GetInstance();
 }
 
 System::System()
@@ -68,7 +71,7 @@ int	System::Run()
 {
 	MSG msg = { 0 };
 
-
+	fpsValue = 0.0f;
 	timer.Start();
 	while( WM_QUIT != msg.message )
 	{
@@ -83,10 +86,10 @@ int	System::Run()
 			float deltaTime = (float)timer.GetTime(); 
 			timer.Start();
 
-			std::string text = std::to_string(Input::GetInstance()->mousePos[0]);
-			text += " - ";
-			text += std::to_string(Input::GetInstance()->mousePos[1]);
-			SetWindowTextA(windowHandle, text.c_str());
+			fpsValue = fpsValue * 0.95f + 0.5f/deltaTime;
+
+			std::string title = "TheRTS - FPS: " + std::to_string( fpsValue );
+			SetWindowTextA( windowHandle, title.c_str() );
 
 			game.Update( deltaTime );
 			game.Render();
@@ -151,8 +154,8 @@ LRESULT CALLBACK System::WndProc( HWND hWnd_, UINT uMsg_, WPARAM wParam_, LPARAM
 			}
 		case WM_MOUSEMOVE: 
 			{
-				Input::GetInstance()->mousePos[0] = GET_X_LPARAM(lParam_);
-				Input::GetInstance()->mousePos[1] = GET_Y_LPARAM(lParam_);
+				Input::GetInstance()->currentMousePos[0] = GET_X_LPARAM(lParam_);
+				Input::GetInstance()->currentMousePos[1] = GET_Y_LPARAM(lParam_);
 				break;
 			}
 		case WM_DESTROY:

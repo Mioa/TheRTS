@@ -217,8 +217,8 @@ void Graphics::InitCamera()
 
 	DirectX::XMStoreFloat4x4( &camera.projection, DirectX::XMMatrixTranspose( projection ) );
 
-	Input::GetInstance()->camera.view		= camera.view;
-	Input::GetInstance()->camera.projection = camera.projection;
+	Input::GetInstance()->camera->view			= camera.view;
+	Input::GetInstance()->camera->projection	= camera.projection;
 }
 
 void Graphics::SetPipeline( UINT pipeline_ )
@@ -355,8 +355,8 @@ void Graphics::UpdateCamera()
 
 	deviceContext->UpdateSubresource( frameCB, 0, nullptr, &camera, sizeof ( Camera ), 0 );
 
-	Input::GetInstance()->camera.view		= camera.view;
-	Input::GetInstance()->camera.projection = camera.projection;
+	Input::GetInstance()->camera->view		= camera.view;
+	Input::GetInstance()->camera->projection = camera.projection;
 }
 
 void Graphics::SetViewport( float windowWidth_, float windowHeight_ )

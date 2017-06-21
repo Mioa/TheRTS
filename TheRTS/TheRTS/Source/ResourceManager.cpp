@@ -58,7 +58,7 @@ void ResourceManager::LoadStaticMesh( UINT staticMeshIndex_, std::string filePat
 	meshes[staticMeshIndex_].buffer			= CreateVertexBuffer( sizeof( Vertex_POS3_NOR3_UV2 ) * vertexCount, vertices );
 	meshes[staticMeshIndex_].vertexCount	= vertexCount;
 
-	delete vertices;
+	delete[] vertices;
 }
 
 void ResourceManager::LoadTexture( UINT textureIndex_, std::string filePath_ )
