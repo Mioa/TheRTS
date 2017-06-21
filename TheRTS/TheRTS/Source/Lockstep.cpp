@@ -21,22 +21,24 @@ void Lockstep::Increment()
 	currentFrame = ( currentFrame + 1 ) % GA_SYNC_WINDOW_SIZE;
 }
 
-bool Lockstep::PlayerSubmittedFrame( UINT playerIndex )
+bool Lockstep::PlayerSubmittedFrame( UINT playerIndex_ )
 {
-	return playerHasSubmitted[playerIndex][currentFrame];
+	return playerHasSubmitted[playerIndex_][currentFrame];
 }
 
-bool Lockstep::KeyDown( UINT player, I_KEY::Keys key )
+bool Lockstep::KeyDown( UINT player_, I_KEY::Keys key_ )
 {
-	return playerInputData[player][currentFrame].keyState[key];
+	return playerInputData[player_][currentFrame].keyState[key_];
 }
 
-bool Lockstep::KeyPressed( UINT player, I_KEY::Keys key )
+bool Lockstep::KeyPressed( UINT player_, I_KEY::Keys key_ )
 {
-	return false;
+	return	playerInputData[player_][currentFrame].keyState[key_] && 
+			!playerInputData[player_][( currentFrame + GA_SYNC_WINDOW_SIZE - 1 ) % GA_SYNC_WINDOW_SIZE].keyState[key_];
 }
 
-bool Lockstep::KeyReleased( UINT player, I_KEY::Keys key )
+bool Lockstep::KeyReleased( UINT player_, I_KEY::Keys key_ )
 {
-	return false;
+	return	!playerInputData[player_][currentFrame].keyState[key_] && 
+			playerInputData[player_][( currentFrame + GA_SYNC_WINDOW_SIZE - 1 ) % GA_SYNC_WINDOW_SIZE].keyState[key_];
 }

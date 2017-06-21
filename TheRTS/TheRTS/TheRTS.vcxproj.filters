@@ -64,7 +64,7 @@
       <Filter>Source Files\Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\Lockstep.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -99,7 +99,7 @@
       <Filter>Source Files\Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\Lockstep.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

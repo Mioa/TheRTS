@@ -32,17 +32,17 @@ void Input::Clear()
 	ZeroMemory( releaseFrame, sizeof( bool ) * I_KEY::COUNT );
 }
 
-bool Input::KeyDown( I_KEY::Keys key )
+bool Input::KeyDown( I_KEY::Keys key_ )
 {
-	return currentFrame[key];
+	return currentFrame[key_];
 }
 
-bool Input::KeyPressed( I_KEY::Keys key )
+bool Input::KeyPressed( I_KEY::Keys key_ )
 {
-	return !previousFrame[key] && currentFrame[key];
+	return !previousFrame[key_] && currentFrame[key_];
 }
 
-bool Input::KeyReleased( I_KEY::Keys key )
+bool Input::KeyReleased( I_KEY::Keys key_ )
 {
-	return previousFrame[key] && !currentFrame[key];
+	return previousFrame[key_] && !currentFrame[key_];
 }

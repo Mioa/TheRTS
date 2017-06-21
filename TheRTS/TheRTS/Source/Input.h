@@ -55,9 +55,9 @@ class Input
 	public:
 		void	Update();
 		void	Clear();
-		bool	KeyDown( I_KEY::Keys key );
-		bool	KeyPressed( I_KEY::Keys key );
-		bool	KeyReleased( I_KEY::Keys key );
+		bool	KeyDown( I_KEY::Keys key_ );
+		bool	KeyPressed( I_KEY::Keys key_ );
+		bool	KeyReleased( I_KEY::Keys key_ );
 	private:
 };
 #endif

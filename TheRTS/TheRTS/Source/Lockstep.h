@@ -42,10 +42,10 @@ class Lockstep
 
 	public:
 		void	Increment();
-		bool	PlayerSubmittedFrame( UINT playerIndex );
-		bool	KeyDown( UINT player, I_KEY::Keys key );
-		bool	KeyPressed( UINT player, I_KEY::Keys key );
-		bool	KeyReleased( UINT player, I_KEY::Keys key );
+		bool	PlayerSubmittedFrame( UINT playerIndex_ );
+		bool	KeyDown( UINT player_, I_KEY::Keys key_ );
+		bool	KeyPressed( UINT player_, I_KEY::Keys key_ );
+		bool	KeyReleased( UINT player_, I_KEY::Keys key_ );
 	private:
 };
 #endif
