@@ -51,6 +51,9 @@ void System::Release()
 
 	Input::GetInstance()->Release();
 	delete Input::GetInstance();
+
+	Lockstep::GetInstance()->Release();
+	delete Lockstep::GetInstance();
 }
 
 System::System()
@@ -67,7 +70,7 @@ int	System::Run()
 {
 	MSG msg = { 0 };
 
-
+	fpsValue = 0.0f;
 	timer.Start();
 	while( WM_QUIT != msg.message )
 	{
@@ -81,6 +84,12 @@ int	System::Run()
 			timer.Stop();
 			float deltaTime = (float)timer.GetTime(); 
 			timer.Start();
+
+			fpsValue = fpsValue * 0.95f + 0.5f/deltaTime;
+
+			std::string title = "TheRTS - FPS: " + std::to_string( fpsValue );
+
+			SetWindowTextA( windowHandle, title.c_str() );
 
 			game.Update( deltaTime );
 			game.Render();

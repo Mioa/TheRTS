@@ -14,11 +14,15 @@ HRESULT Game::Initialize( HWND windowHandle_, LONG windowWidth_, LONG windowHeig
 	graphicsManager = new Graphics;
 	graphicsManager->Initialize( windowHandle, windowWidth, windowHeight );
 
+	gameTimeToProcess = 0.0f;
+
 	cameraSpeed = 0.005f;
 
 	LoadAssets();
 	CreateResources();
 	CreateEntities();
+
+	Lockstep::GetInstance()->Initialize();
 
 	network = new Network;
 	network->Initialize();
@@ -52,11 +56,38 @@ void Game::Update( float deltaTime )
 	Input::GetInstance()->Update();
 	Input::GetInstance()->Clear();
 
+	if( !Lockstep::GetInstance()->PlayerSubmittedFrame( TEMP_MY_PLAYER_ID ) )
+	{
+		for( int i = 0; i < I_KEY::COUNT; i++ )
+			Lockstep::GetInstance()->playerInputData[TEMP_MY_PLAYER_ID][Lockstep::GetInstance()->currentFrame].keyState[i] = Input::GetInstance()->currentFrame[i];
+		Lockstep::GetInstance()->playerHasSubmitted[TEMP_MY_PLAYER_ID][Lockstep::GetInstance()->currentFrame] = true;
+	}
+
+	gameTimeToProcess += deltaTime;
+
+	if( gameTimeToProcess > EM_TIME_STEP )
+	{
+		gameTimeToProcess -= EM_TIME_STEP;
+
+		bool frameIsReady = true;
+		for( int i = 0; i < 1; i++ )
+			if( !Lockstep::GetInstance()->PlayerSubmittedFrame( i ) )
+			{
+				frameIsReady = false;
+				break;
+			}
+
+		if( frameIsReady )
+		{
+
+
+			entityManager->Update();
+
+			//std::cout << "Frame: " << Lockstep::GetInstance()->currentFrame << '\n';
+			Lockstep::GetInstance()->Increment();
+		}
+	}
 	// Temporary
-	entityManager->keyStates.keyDown[0][I_KEY::W] = Input_KeyDown(I_KEY::W);
-	entityManager->keyStates.keyDown[0][I_KEY::A] = Input_KeyDown(I_KEY::A);
-	entityManager->keyStates.keyDown[0][I_KEY::S] = Input_KeyDown(I_KEY::S);
-	entityManager->keyStates.keyDown[0][I_KEY::D] = Input_KeyDown(I_KEY::D);
 
 	graphicsManager->UpdateCamera( DirectX::XMFLOAT4(
 		( Input_KeyDown( I_KEY::ARROW_RIGHT ) ? cameraSpeed : 0.0f ) - ( Input_KeyDown( I_KEY::ARROW_LEFT ) ? cameraSpeed : 0.0f ),
@@ -65,8 +96,6 @@ void Game::Update( float deltaTime )
 		0.0f
 		) );
 	//
-
-	entityManager->Update();
 }
 
 void Game::Render()

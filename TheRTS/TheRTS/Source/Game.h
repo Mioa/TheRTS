@@ -5,8 +5,9 @@
 #include "EntityManager.h"
 #include "Graphics.h"
 #include "Input.h"
+#include "Lockstep.h"
 
-
+#define TEMP_MY_PLAYER_ID 0
 
 class Game
 {
@@ -20,6 +21,8 @@ class Game
 		EntityManager*	entityManager;
 		Graphics*		graphicsManager;
 		Network*		network;
+
+		float gameTimeToProcess;
 
 		float cameraSpeed;
 

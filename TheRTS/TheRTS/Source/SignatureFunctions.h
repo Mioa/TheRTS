@@ -4,6 +4,7 @@
 #include "Definitions.h"
 #include "EntityManager.h"
 #include "RenderQueue.h"
+#include "Lockstep.h"
 
 #define macRenderQueue RenderQueue::GetInstance()
 
@@ -93,22 +94,25 @@ struct SU_MovePlayer : public SignatureFunction
 			if( manager->entity[entID].active && ( signature & manager->entity[entID].signature ) == signature )
 				currentActive[numActive++] = entID;
 
+		C_PlayerInput*	pIn			= manager->playerInput;
+		C_Transform*	transform	= manager->transform;
+
 		for( UINT i = 0; i < numActive; i++ )
 		{
 			UINT entID = currentActive[i];
 
 			// Temporary
-			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::W] )
-				manager->transform[entID].position.z = manager->transform[entID].position.z + 0.005f;
+			if( Lockstep_KeyDown( pIn[entID].playerIndex, I_KEY::W ) )
+				transform[entID].position.z = transform[entID].position.z + 0.005f;
 																			 
-			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::A] )	 
-				manager->transform[entID].position.x = manager->transform[entID].position.x - 0.005f;
+			if( Lockstep_KeyDown( pIn[entID].playerIndex, I_KEY::A ) ) 
+				transform[entID].position.x = transform[entID].position.x - 0.005f;
 																								 
-			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::S] )	 
-				manager->transform[entID].position.z = manager->transform[entID].position.z - 0.005f;
+			if( Lockstep_KeyDown( pIn[entID].playerIndex, I_KEY::S ) )	 
+				transform[entID].position.z = transform[entID].position.z - 0.005f;
 																								 
-			if( manager->keyStates.keyDown[manager->playerInput[entID].playerIndex][I_KEY::D] )	 
-				manager->transform[entID].position.x = manager->transform[entID].position.x + 0.005f;
+			if( Lockstep_KeyDown( pIn[entID].playerIndex, I_KEY::D ) )	 
+				transform[entID].position.x = transform[entID].position.x + 0.005f;
 			//
 		}
 	}

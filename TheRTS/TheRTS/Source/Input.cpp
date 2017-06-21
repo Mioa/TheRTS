@@ -21,7 +21,7 @@ void Input::Update()
 	{
 		if( pressFrame[i] )
 			currentFrame[i] = true;
-		else if( releaseFrame[i] )
+		if( releaseFrame[i] )
 			currentFrame[i] = false;
 	}
 }
