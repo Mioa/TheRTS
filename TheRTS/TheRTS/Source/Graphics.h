@@ -39,8 +39,6 @@ class Graphics
 		ResourceManager* resourceManager;
 
 		Camera camera;
-		DirectX::XMFLOAT4 cameraPos;
-		DirectX::XMFLOAT4 cameraFocus;
 
 		float  clearColor[4]		= { 0.2f, 0.2f, 0.2f, 1.0f };
 		UINT32 vSize_POS3			= sizeof( Vertex_POS3 );
@@ -59,7 +57,7 @@ class Graphics
 		void EndScene();
 
 		ResourceManager* GetResourceManager();
-		void UpdateCamera( DirectX::XMFLOAT4 position_ );
+		void UpdateCamera();
 
 	private:
 		HRESULT InitSwapChain();

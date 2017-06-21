@@ -23,7 +23,6 @@ class Game
 
 		UINT gameState;
 		UINT nextGameState;
-		float cameraSpeed;
 
 	//Functions
 	public:

@@ -27,21 +27,31 @@ class EntityManager
 			UINT									states;
 		};
 
+		struct MouseRay
+		{
+			DirectX::XMFLOAT4 origin	= DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f );
+			DirectX::XMFLOAT4 direction	= DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f );
+		};
+
 
 	//Variables
 	public:
-		Entity*				entity		= nullptr;
-		C_Position*			position	= nullptr;
-		C_Transform*		transform	= nullptr;
-		C_Mesh*				mesh		= nullptr;
-		C_PlayerInput*		playerInput	= nullptr;
-		C_Texture*			texture		= nullptr;
+		Entity*					entity		 = nullptr;
+		C_UnitMovement*			unitMovement = nullptr;
+		C_Position*				position	 = nullptr;
+		C_Transform*			transform	 = nullptr;
+		C_Mesh*					mesh		 = nullptr;
+		C_PlayerInput*			playerInput	 = nullptr;
+		C_Texture*				texture		 = nullptr;
 
 		PlayerKeystates keyStates;
+		MouseRay mouseRay;
 
 	private:
 		int				firstAvailableEntityIndex	= 0;
 		UINT			numActiveEntities			= 0;
+		LONG			windowWidth					= 0;
+		LONG			windowHeight				= 0;
 
 		std::vector<SignatureFunction*>	updateSignatures;
 		std::vector<SignatureFunction*>	renderSignatures;
@@ -58,8 +68,10 @@ class EntityManager
 		void	EntityStateChange( UINT gameState_ );
 		void	Update( UINT gameState_ );
 		void	Render( UINT gameState_ );
+		void	UpdateWindowSize( LONG width_, LONG height );
 
 		int		AddEntity();
+		HRESULT	AddComponent( UINT entityIndex_, CI_UnitMovement info_ );
 		HRESULT	AddComponent( UINT entityIndex_, CI_Position info_ );
 		HRESULT AddComponent( UINT entityIndex_, CI_Transform info_ );
 		HRESULT	AddComponent( UINT entityIndex_, CI_Mesh info_ );

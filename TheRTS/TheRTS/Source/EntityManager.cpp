@@ -3,17 +3,19 @@
 
 HRESULT EntityManager::Initialize()
 {
-	entity		= new Entity[EM_MAX_ENTITIES];
+	entity			= new Entity[EM_MAX_ENTITIES];
 	ZeroMemory( entity, sizeof( Entity ) * EM_MAX_ENTITIES );
-	position	= new C_Position[EM_MAX_ENTITIES];
+	unitMovement	= new C_UnitMovement[EM_MAX_ENTITIES];
+	ZeroMemory( unitMovement, sizeof( C_UnitMovement ) * EM_MAX_ENTITIES );
+	position		= new C_Position[EM_MAX_ENTITIES];
 	ZeroMemory( position, sizeof( C_Position ) * EM_MAX_ENTITIES );
-	transform	= new C_Transform[EM_MAX_ENTITIES];
+	transform		= new C_Transform[EM_MAX_ENTITIES];
 	ZeroMemory( transform, sizeof( C_Transform ) * EM_MAX_ENTITIES );
-	mesh		= new C_Mesh[EM_MAX_ENTITIES];
+	mesh			= new C_Mesh[EM_MAX_ENTITIES];
 	ZeroMemory( mesh, sizeof( C_Mesh ) * EM_MAX_ENTITIES );
-	playerInput	= new C_PlayerInput[EM_MAX_ENTITIES];
+	playerInput		= new C_PlayerInput[EM_MAX_ENTITIES];
 	ZeroMemory( playerInput, sizeof( C_PlayerInput ) * EM_MAX_ENTITIES );
-	texture		= new C_Texture[EM_MAX_ENTITIES];
+	texture			= new C_Texture[EM_MAX_ENTITIES];
 	ZeroMemory( texture, sizeof( C_Texture ) * EM_MAX_ENTITIES );
 	ZeroMemory( &keyStates, sizeof( PlayerKeystates ) );
 
@@ -21,6 +23,8 @@ HRESULT EntityManager::Initialize()
 	renderSignatures.push_back( new SR_RenderSprite( this ) );
 	updateSignatures.push_back( new SU_HUDClicked( this ) );
 	updateSignatures.push_back( new SU_MovePlayer( this ) );
+	updateSignatures.push_back( new SU_UnitTargetPosition( this ) );
+	updateSignatures.push_back( new SU_UnitMovePosition( this ) );
 
 
 	return S_OK;
@@ -29,6 +33,7 @@ HRESULT EntityManager::Initialize()
 void EntityManager::Release()
 {
 	delete[] entity;
+	delete[] unitMovement;
 	delete[] position;
 	delete[] transform;
 	delete[] mesh;
@@ -60,6 +65,34 @@ void EntityManager::EntityStateChange( UINT gameState_ )
 
 void EntityManager::Update( UINT gameState_ )
 {
+	// MouseRay
+	Input* input = Input::GetInstance();
+	
+	float mouseNDC[2] = {
+			( ( (float)input->mousePos[0] / (float)windowWidth ) * 2.0f ) - 1.0f,
+			( ( (float)-input->mousePos[1] / (float)windowHeight ) * 2.0f ) + 1.0f
+		};
+	
+	XMVECTOR mouseNear = XMVectorSet( mouseNDC[0], mouseNDC[1], 0.0f, 1.0f );
+	XMVECTOR mouseFar = XMVectorSet( mouseNDC[0], mouseNDC[1], 1.0f, 1.0f );
+	
+	XMMATRIX combinedMtx = XMMatrixTranspose( XMLoadFloat4x4( &input->camera.projection ) * XMLoadFloat4x4( &input->camera.view ) );
+	XMMATRIX combinedInv = XMMatrixInverse( 0, combinedMtx );
+	
+	XMVECTOR transNear = XMVector3TransformCoord(
+		mouseNear, 
+		combinedInv
+		);
+
+	XMVECTOR transFar = XMVector3TransformCoord(
+		mouseFar, 
+		combinedInv
+		);
+
+	ToXMF4( mouseRay.origin, transNear );
+	ToXMF4( mouseRay.direction, XMVector3Normalize( transFar - transNear ) );
+
+	// Update
 	for( int i = 0; i < updateSignatures.size(); i++ )
 		if( ( updateSignatures[i]->states & gameState_ ) == gameState_ )
 			updateSignatures[i]->Function();
@@ -70,6 +103,12 @@ void EntityManager::Render( UINT gameState_ )
 	for( int i = 0; i < renderSignatures.size(); i++ )
 		if( ( renderSignatures[i]->states & gameState_ ) == gameState_ )
 			renderSignatures[i]->Function();
+}
+
+void EntityManager::UpdateWindowSize( LONG width_, LONG height )
+{
+	windowWidth  = width_;
+	windowHeight = height;
 }
 
 int EntityManager::AddEntity()
@@ -145,6 +184,17 @@ HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_Texture info_ )
 	entity[entityIndex_].resting				= false;
 	entity[entityIndex_].signature[C_TEXTURE]	= true;
 	texture[entityIndex_].resource				= info_.resource;
+
+	return S_OK;
+}
+
+HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_UnitMovement info_ )
+{
+	entity[entityIndex_].active						= true;
+	entity[entityIndex_].resting					= false;
+	entity[entityIndex_].signature[C_UNITMOVEMENT]	= true;
+	unitMovement[entityIndex_].speed				= info_.speed;
+	unitMovement[entityIndex_].position				= info_.position;
 
 	return S_OK;
 }

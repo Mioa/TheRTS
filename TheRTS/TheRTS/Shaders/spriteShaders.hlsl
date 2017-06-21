@@ -53,7 +53,15 @@ VS_OUT VS_main( uint id : SV_VertexID )
 	sPos.w /= windowHeight;
 	sPos *= 2.0f;
 
-	float4 returns[6] = {float4(0.0f, 0.0f, 0.0f, 0.0f),float4(0.0f, 0.0f, 0.0f, 0.0f),float4(0.0f, 0.0f, 0.0f, 0.0f),float4(0.0f, 0.0f, 0.0f, 0.0f),float4(0.0f, 0.0f, 0.0f, 0.0f),float4(0.0f, 0.0f, 0.0f, 0.0f)};
+	float4 returns[6] = { 
+		float4( 0.0f, 0.0f, 0.0f, 0.0f ),
+		float4( 0.0f, 0.0f, 0.0f, 0.0f ),
+		float4( 0.0f, 0.0f, 0.0f, 0.0f ),
+		float4( 0.0f, 0.0f, 0.0f, 0.0f ),
+		float4( 0.0f, 0.0f, 0.0f, 0.0f ),
+		float4( 0.0f, 0.0f, 0.0f, 0.0f ) 
+		};
+
 	[unroll]
 	for( int i = 0; i < 6; i++ )
 		returns[i] = vertices[vertexID].Pos + float4( sPos.x, -sPos.y, 0.0f, 0.0f );

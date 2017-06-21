@@ -2,6 +2,7 @@
 #define INPUT_H
 
 #include <Windows.h>
+#include "Datastructures.h"
 
 #define Input_KeyDown( key ) Input::GetInstance()->KeyDown( key )
 #define Input_KeyPressed( key ) Input::GetInstance()->KeyPressed( key )
@@ -36,6 +37,10 @@ class Input
 		bool currentFrame[I_KEY::COUNT];
 		bool previousFrame[I_KEY::COUNT];
 		int mousePos[2];
+		DirectX::XMFLOAT4 cameraPos;
+		DirectX::XMFLOAT4 cameraDir;
+		float cameraSpeed;
+		Camera camera;
 
 	private:
 
