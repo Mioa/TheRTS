@@ -35,14 +35,16 @@ static const Vertex vertices[6] = {
 };
 
 VS_OUT VS_main( uint id : SV_VertexID )
-{
+{	
 	VS_OUT output = (VS_OUT)0;
 
 	float windowWidth	= 960;
 	float windowHeight	= 600;
+	int vertexID = 0;
+	int spriteID = 0;
 
-	int vertexID = id % 6;
-	int spriteID = id / 6;
+	vertexID = id % 6;
+	spriteID = id / 6;
 
 	float4 sPos = spritePos[spriteID];
 	sPos.x /= windowWidth;
@@ -51,9 +53,19 @@ VS_OUT VS_main( uint id : SV_VertexID )
 	sPos.w /= windowHeight;
 	sPos *= 2.0f;
 
-	float4 returns[6];
+	float4 returns[6] = { 
+		float4( 0.0f, 0.0f, 0.0f, 0.0f ),
+		float4( 0.0f, 0.0f, 0.0f, 0.0f ),
+		float4( 0.0f, 0.0f, 0.0f, 0.0f ),
+		float4( 0.0f, 0.0f, 0.0f, 0.0f ),
+		float4( 0.0f, 0.0f, 0.0f, 0.0f ),
+		float4( 0.0f, 0.0f, 0.0f, 0.0f ) 
+		};
+
+	[unroll]
 	for( int i = 0; i < 6; i++ )
 		returns[i] = vertices[vertexID].Pos + float4( sPos.x, -sPos.y, 0.0f, 0.0f );
+
 	returns[1].x += sPos.z;
 	returns[2].x += sPos.z;
 	returns[2].y -= sPos.w;
@@ -61,8 +73,9 @@ VS_OUT VS_main( uint id : SV_VertexID )
 	returns[3].y -= sPos.w;
 	returns[4].y -= sPos.w;
 
+
 	output.Pos	= returns[vertexID];
-	output.UV	= vertices[id % 6].UV;
+	output.UV	= vertices[vertexID].UV;
 
 	return output;
 }

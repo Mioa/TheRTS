@@ -32,10 +32,19 @@ enum ResStaticMesh
 
 enum ResDynamicMesh
 {
-	RES_DM_DEFAULT, // To keep count higher than 0. Remove when resource is added.
+	RES_DM_DEFAULT, // To keep count higher than 0. Replace when resource is added.
 	RES_DM_COUNT
 };
 
+//########################################################################################
+//##								 ResourceManager									##
+//########################################################################################
+
+struct StaticMeshBuffer
+{
+	ID3D11Buffer* buffer;
+	UINT vertexCount;
+};
 
 struct Resource
 {
@@ -64,7 +73,9 @@ struct StaticMeshResource : public Resource
 	}
 };
 
-
+//########################################################################################
+//##								 RenderQueue										##
+//########################################################################################
 
 struct RI_Sprite
 {

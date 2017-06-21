@@ -6,12 +6,27 @@
 
 enum ComponentTypes
 {
+	C_UNITMOVEMENT,
 	C_POSITION,
 	C_TRANSFORM,
 	C_MESH,
 	C_PLAYERINPUT,
 	C_TEXTURE,
 	C_COUNT
+};
+
+
+struct C_UnitMovement
+{
+	bool moving = false;
+	float speed = 0.0f;
+	DirectX::XMFLOAT4 position;
+};
+
+struct CI_UnitMovement
+{
+	float speed;
+	DirectX::XMFLOAT4 position;
 };
 
 
@@ -24,6 +39,8 @@ struct CI_Position
 {
 	DirectX::XMFLOAT4 position;
 };
+
+
 
 struct C_Transform
 {

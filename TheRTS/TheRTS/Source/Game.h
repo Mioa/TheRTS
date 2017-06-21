@@ -21,7 +21,8 @@ class Game
 		Graphics*		graphicsManager;
 		Network*		network;
 
-		float cameraSpeed;
+		UINT gameState;
+		UINT nextGameState;
 
 	//Functions
 	public:
