@@ -53,6 +53,7 @@ class EntityManager
 		LONG			windowWidth					= 0;
 		LONG			windowHeight				= 0;
 
+		std::vector<SignatureFunction*>	lockstepSignatures;
 		std::vector<SignatureFunction*>	updateSignatures;
 		std::vector<SignatureFunction*>	renderSignatures;
 
@@ -66,7 +67,8 @@ class EntityManager
 				~EntityManager();
 	public:
 		void	EntityStateChange( UINT gameState_ );
-		void	Update( UINT gameState_ );
+		void	UpdateLockstep( UINT gameState_ );
+		void	UpdateUnlocked( UINT gameState_ );
 		void	Render( UINT gameState_ );
 		void	UpdateWindowSize( LONG width_, LONG height );
 

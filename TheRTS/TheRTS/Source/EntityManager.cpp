@@ -19,12 +19,14 @@ HRESULT EntityManager::Initialize()
 	ZeroMemory( texture, sizeof( C_Texture ) * EM_MAX_ENTITIES );
 	//ZeroMemory( &keyStates, sizeof( PlayerKeystates ) );
 
+	lockstepSignatures.push_back( new SL_MovePlayer( this ) );
+	lockstepSignatures.push_back( new SL_UnitTargetPosition( this ) );
+	lockstepSignatures.push_back( new SL_UnitMovePosition( this ) );
+
 	renderSignatures.push_back( new SR_RenderMesh( this ) );
 	renderSignatures.push_back( new SR_RenderSprite( this ) );
+
 	updateSignatures.push_back( new SU_HUDClicked( this ) );
-	updateSignatures.push_back( new SU_MovePlayer( this ) );
-	updateSignatures.push_back( new SU_UnitTargetPosition( this ) );
-	updateSignatures.push_back( new SU_UnitMovePosition( this ) );
 
 
 	return S_OK;
@@ -39,6 +41,9 @@ void EntityManager::Release()
 	delete[] mesh;
 	delete[] playerInput;
 	delete[] texture;
+
+	for( UINT i = 0; i < lockstepSignatures.size(); i++ )
+		if( lockstepSignatures[i] ) delete lockstepSignatures[i];
 
 	for( UINT i = 0; i < updateSignatures.size(); i++ )
 		if( updateSignatures[i] ) delete updateSignatures[i];
@@ -63,7 +68,15 @@ void EntityManager::EntityStateChange( UINT gameState_ )
 		entity[i].resting = (( entity[i].states & gameState_ ) == gameState_) ? false : true;
 }
 
-void EntityManager::Update( UINT gameState_ )
+void EntityManager::UpdateLockstep( UINT gameState_ )
+{
+	// Update
+	for( int i = 0; i < lockstepSignatures.size(); i++ )
+		if( ( lockstepSignatures[i]->states & gameState_ ) == gameState_ )
+			lockstepSignatures[i]->Function();
+}
+
+void EntityManager::UpdateUnlocked( UINT gameState_ )
 {
 	// MouseRay
 	Input* input = Input::GetInstance();

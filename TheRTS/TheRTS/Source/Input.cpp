@@ -20,7 +20,7 @@ HRESULT Input::Initialize()
 
 void Input::Release()
 {
-
+	delete camera;
 }
 
 void Input::Update()

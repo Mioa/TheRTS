@@ -89,17 +89,16 @@ void Game::Update( float deltaTime )
 			// Input::GetInstance()->Update();
 			// networkManager->Update();
 			// networkManager->UpdateLockstep();
-			entityManager->Update( gameState );
+			entityManager->UpdateLockstep( gameState );
 			// entityManager->Render( gameState ); DONE IN Game::Render()
 
 			//std::cout << "Frame: " << Lockstep::GetInstance()->currentFrame << '\n';
 			Lockstep::GetInstance()->Increment();
 		}
 	}
-	// Temporary
 
+	entityManager->UpdateUnlocked( gameState );
 	graphicsManager->UpdateCamera();
-	//
 }
 
 void Game::Render()

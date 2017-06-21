@@ -22,6 +22,39 @@ struct SignatureFunction
 	virtual void Function() = 0;
 };
 
+struct SU_HUDClicked : public SignatureFunction
+{
+	SU_HUDClicked( EntityManager* manager_ )
+	{
+		manager					= manager_;
+		signature[C_POSITION]	= true;
+		signature[C_TEXTURE]	= true;
+		states					= STATE_GAME;
+	}
+	void Function()
+	{
+		if( Input_KeyDown(I_KEY::MOUSE_LEFT) )
+		{
+			numActive = 0;
+
+			for( UINT entID = 0; entID < EM_MAX_ENTITIES; entID++ )
+				if( manager->entity[entID].active && ( signature & manager->entity[entID].signature ) == signature )
+					currentActive[numActive++] = entID;
+
+			int mousePos[2] = { Input::GetInstance()->currentMousePos[0], Input::GetInstance()->currentMousePos[1] };
+
+			for( UINT i = 0; i < numActive; i++ )
+			{
+				UINT entID = currentActive[i];
+				XMFLOAT4 pos = manager->position[entID].position;
+
+				if ( mousePos[0] >= pos.x && mousePos[0] <= pos.x + pos.z && mousePos[1] >= pos.y && mousePos[1] <= pos.y + pos.w )
+					manager->texture[entID].resource = RES_SP_FLOWER;
+			}
+		}
+	}
+};
+
 struct SR_RenderMesh : public SignatureFunction
 {
 	SR_RenderMesh( EntityManager* manager_ )
@@ -82,42 +115,9 @@ struct SR_RenderSprite : public SignatureFunction
 	}
 };
 
-struct SU_HUDClicked : public SignatureFunction
+struct SL_MovePlayer : public SignatureFunction
 {
-	SU_HUDClicked( EntityManager* manager_ )
-	{
-		manager					= manager_;
-		signature[C_POSITION]	= true;
-		signature[C_TEXTURE]	= true;
-		states					= STATE_GAME;
-	}
-	void Function()
-	{
-		if( Input_KeyPressed(I_KEY::MOUSE_LEFT) )
-		{
-			numActive = 0;
-
-			for( UINT entID = 0; entID < EM_MAX_ENTITIES; entID++ )
-				if( manager->entity[entID].active && ( signature & manager->entity[entID].signature ) == signature )
-					currentActive[numActive++] = entID;
-
-			int mousePos[2] = { Input::GetInstance()->currentMousePos[0], Input::GetInstance()->currentMousePos[1] };
-
-			for( UINT i = 0; i < numActive; i++ )
-			{
-				UINT entID = currentActive[i];
-				XMFLOAT4 pos = manager->position[entID].position;
-
-				if ( mousePos[0] >= pos.x && mousePos[0] <= pos.x + pos.z && mousePos[1] >= pos.y && mousePos[1] <= pos.y + pos.w )
-					manager->texture[entID].resource = RES_SP_FLOWER;
-			}
-		}
-	}
-};
-
-struct SU_MovePlayer : public SignatureFunction
-{
-	SU_MovePlayer( EntityManager* manager_ )
+	SL_MovePlayer( EntityManager* manager_ )
 	{
 		manager						= manager_;
 		signature[C_TRANSFORM]		= true;
@@ -157,9 +157,9 @@ struct SU_MovePlayer : public SignatureFunction
 	}
 };
 
-struct SU_UnitTargetPosition : public SignatureFunction
+struct SL_UnitTargetPosition : public SignatureFunction
 {
-	SU_UnitTargetPosition( EntityManager* manager_ )
+	SL_UnitTargetPosition( EntityManager* manager_ )
 	{
 		manager						= manager_;
 		signature[C_TRANSFORM]		= true;
@@ -196,9 +196,9 @@ struct SU_UnitTargetPosition : public SignatureFunction
 	}
 };
 
-struct SU_UnitMovePosition : public SignatureFunction
+struct SL_UnitMovePosition : public SignatureFunction
 {
-	SU_UnitMovePosition( EntityManager* manager_ )
+	SL_UnitMovePosition( EntityManager* manager_ )
 	{
 		manager								= manager_;
 		signature[C_TRANSFORM]				= true;
