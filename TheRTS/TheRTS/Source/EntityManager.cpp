@@ -17,6 +17,10 @@ HRESULT EntityManager::Initialize()
 	ZeroMemory( playerInput, sizeof( C_PlayerInput ) * EM_MAX_ENTITIES );
 	texture			= new C_Texture[EM_MAX_ENTITIES];
 	ZeroMemory( texture, sizeof( C_Texture ) * EM_MAX_ENTITIES );
+	button	= new C_Button[EM_MAX_ENTITIES];
+	ZeroMemory( button, sizeof( C_Button ) * EM_MAX_ENTITIES );
+	stateTransition	= new C_StateTransition[EM_MAX_ENTITIES];
+	ZeroMemory( stateTransition, sizeof( C_StateTransition ) * EM_MAX_ENTITIES );
 	//ZeroMemory( &keyStates, sizeof( PlayerKeystates ) );
 
 	lockstepSignatures.push_back( new SL_MovePlayer( this ) );
@@ -26,7 +30,7 @@ HRESULT EntityManager::Initialize()
 	renderSignatures.push_back( new SR_RenderMesh( this ) );
 	renderSignatures.push_back( new SR_RenderSprite( this ) );
 
-	updateSignatures.push_back( new SU_HUDClicked( this ) );
+	updateSignatures.push_back( new SU_MenuButton( this ) );
 
 
 	return S_OK;
@@ -41,6 +45,8 @@ void EntityManager::Release()
 	delete[] mesh;
 	delete[] playerInput;
 	delete[] texture;
+	delete[] button;
+	delete[] stateTransition;
 
 	for( UINT i = 0; i < lockstepSignatures.size(); i++ )
 		if( lockstepSignatures[i] ) delete lockstepSignatures[i];
@@ -65,7 +71,9 @@ EntityManager::~EntityManager()
 void EntityManager::EntityStateChange( UINT gameState_ )
 {
 	for( UINT i = 0; i < EM_MAX_ENTITIES; i++ )
+	{
 		entity[i].resting = (( entity[i].states & gameState_ ) == gameState_) ? false : true;
+	}
 }
 
 void EntityManager::UpdateLockstep( UINT gameState_ )
@@ -124,13 +132,14 @@ void EntityManager::UpdateWindowSize( LONG width_, LONG height )
 	windowHeight = height;
 }
 
-int EntityManager::AddEntity()
+int EntityManager::AddEntity( UINT gameState_)
 {
 	int localRet = -1;
 	if( firstAvailableEntityIndex >= 0 )
 	{
 
 		entity[firstAvailableEntityIndex].active = true;
+		entity[firstAvailableEntityIndex].states = gameState_;
 		numActiveEntities++;
 		localRet = firstAvailableEntityIndex;
 
@@ -208,6 +217,29 @@ HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_UnitMovement info_ )
 	entity[entityIndex_].signature[C_UNITMOVEMENT]	= true;
 	unitMovement[entityIndex_].speed				= info_.speed;
 	unitMovement[entityIndex_].position				= info_.position;
+
+	return S_OK;
+}
+
+HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_Button info_ )
+{
+	entity[entityIndex_].active					= true;
+	entity[entityIndex_].resting				= false;
+	entity[entityIndex_].signature[C_BUTTON]	= true;
+	button[entityIndex_].action					= info_.action;
+	button[entityIndex_].resourceClicked		= info_.resourceClicked;
+	button[entityIndex_].resourceHover			= info_.resourceHover;
+	button[entityIndex_].resourceDefault		= info_.resourceDefault;
+
+	return S_OK;
+}
+
+HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_StateTransition info_ )
+{
+	entity[entityIndex_].active							= true;
+	entity[entityIndex_].resting						= false;
+	entity[entityIndex_].signature[C_STATE_TRANSITION]	= true;
+	stateTransition[entityIndex_].stateReference		= info_.stateReference;
 
 	return S_OK;
 }

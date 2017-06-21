@@ -36,13 +36,15 @@ class EntityManager
 
 	//Variables
 	public:
-		Entity*					entity		 = nullptr;
-		C_UnitMovement*			unitMovement = nullptr;
-		C_Position*				position	 = nullptr;
-		C_Transform*			transform	 = nullptr;
-		C_Mesh*					mesh		 = nullptr;
-		C_PlayerInput*			playerInput	 = nullptr;
-		C_Texture*				texture		 = nullptr;
+		Entity*					entity			= nullptr;
+		C_UnitMovement*			unitMovement	= nullptr;
+		C_Position*				position		= nullptr;
+		C_Transform*			transform		= nullptr;
+		C_Mesh*					mesh			= nullptr;
+		C_PlayerInput*			playerInput		= nullptr;
+		C_Texture*				texture			= nullptr;
+		C_Button*				button	= nullptr;
+		C_StateTransition*		stateTransition = nullptr;
 
 		//PlayerKeystates keyStates;
 		MouseRay mouseRay;
@@ -72,13 +74,15 @@ class EntityManager
 		void	Render( UINT gameState_ );
 		void	UpdateWindowSize( LONG width_, LONG height );
 
-		int		AddEntity();
+		int		AddEntity( UINT gameState_ );
 		HRESULT	AddComponent( UINT entityIndex_, CI_UnitMovement info_ );
 		HRESULT	AddComponent( UINT entityIndex_, CI_Position info_ );
 		HRESULT AddComponent( UINT entityIndex_, CI_Transform info_ );
 		HRESULT	AddComponent( UINT entityIndex_, CI_Mesh info_ );
 		HRESULT AddComponent( UINT entityIndex_, CI_PlayerInput info_ );
 		HRESULT AddComponent( UINT entityIndex_, CI_Texture info_ );
+		HRESULT AddComponent( UINT entityIndex_, CI_Button info_ );
+		HRESULT AddComponent( UINT entityIndex_, CI_StateTransition info_ );
 
 	private:
 };

@@ -12,12 +12,24 @@
 
 enum GameStates
 {
-	STATE_LOBBY	= 1,
+	STATE_MAIN_MENU	= 1,
 	STATE_GAME	= 2,
-	STATE_MENU	= 4,
+	STATE_GAME_MENU	= 4,
 	STATE_PAUSE	= 8,
 	STATE_EXIT	= 16
 };
+
+enum MainMenuAction
+{
+	MAIN_MENU_ACTION_NEWGAME	= 1,
+	MAIN_MENU_ACTION_QUIT		= 2
+};
+
+enum GameMenuAction
+{
+	GAME_MENU_ACTION_QUIT	= 1
+};
+
 
 struct Camera
 {

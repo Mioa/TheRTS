@@ -12,6 +12,8 @@ enum ComponentTypes
 	C_MESH,
 	C_PLAYERINPUT,
 	C_TEXTURE,
+	C_BUTTON,
+	C_STATE_TRANSITION,
 	C_COUNT
 };
 
@@ -87,6 +89,34 @@ struct C_Texture
 struct CI_Texture
 {
 	UINT resource;
+};
+
+
+struct C_Button
+{
+	UINT action;
+	UINT resourceClicked;
+	UINT resourceHover;
+	UINT resourceDefault;
+};
+
+struct CI_Button
+{
+	UINT action;
+	UINT resourceClicked;
+	UINT resourceHover;
+	UINT resourceDefault;
+};
+
+
+struct C_StateTransition
+{
+	UINT* stateReference;
+};
+
+struct CI_StateTransition
+{
+	UINT* stateReference;
 };
 
 #endif

@@ -24,6 +24,7 @@ namespace I_KEY
 		ARROW_UP,
 		MOUSE_LEFT,
 		MOUSE_RIGHT,
+		ESC,
 		COUNT
 	};
 }
