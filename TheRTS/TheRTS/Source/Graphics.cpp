@@ -1,4 +1,5 @@
 #include "Graphics.h"
+#include "Input.h"
 
 HRESULT Graphics::Initialize( HWND windowHandle_, LONG windowWidth_, LONG windowHeight_ )
 {
@@ -194,13 +195,14 @@ HRESULT Graphics::InitSamplers()
 
 void Graphics::InitCamera()
 {
-	cameraPos	= DirectX::XMFLOAT4( 0.0f, 10.0f, -2.0f, 1.0f );
-	cameraFocus = DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f );
+	using namespace DirectX;
+	DirectX::XMVECTOR cameraPos	= DirectX::XMLoadFloat4( &Input::GetInstance()->cameraPos );
+	DirectX::XMVECTOR cameraDir	= DirectX::XMLoadFloat4( &Input::GetInstance()->cameraDir );
 
 	// View
 	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(
-		DirectX::XMLoadFloat4( &cameraPos ),
-		DirectX::XMLoadFloat4( &cameraFocus ),
+		cameraPos,
+		cameraPos + cameraDir,
 		DirectX::XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f )
 		);
 
@@ -214,6 +216,9 @@ void Graphics::InitCamera()
 		2000.0f);
 
 	DirectX::XMStoreFloat4x4( &camera.projection, DirectX::XMMatrixTranspose( projection ) );
+
+	Input::GetInstance()->camera->view			= camera.view;
+	Input::GetInstance()->camera->projection	= camera.projection;
 }
 
 void Graphics::SetPipeline( UINT pipeline_ )
@@ -234,10 +239,10 @@ void Graphics::SetPipeline( UINT pipeline_ )
 
 			deviceContext->PSSetSamplers( 0, 1, &linearSamp );
 
-			deviceContext->IASetVertexBuffers(0, 0, NULL, 0, 0);
-			deviceContext->IASetVertexBuffers(1, 0, NULL, 0, 0);
-			deviceContext->IASetIndexBuffer(NULL, DXGI_FORMAT_R32_UINT, 0);
-			deviceContext->IASetInputLayout(NULL);
+			deviceContext->IASetVertexBuffers( 0, 0, NULL, 0, 0 );
+			deviceContext->IASetVertexBuffers( 1, 0, NULL, 0, 0 );
+			deviceContext->IASetIndexBuffer( NULL, DXGI_FORMAT_R32_UINT, 0 );
+			deviceContext->IASetInputLayout( NULL );
 
 			break;
 		}
@@ -284,7 +289,7 @@ void Graphics::DrawSprites()
 
 			counter -= numSprites;
 
-			deviceContext->Draw(6 * numSprites, 0 );
+			deviceContext->Draw( 6 * numSprites, 0 );
 		}
 	}
 }
@@ -334,20 +339,24 @@ ResourceManager* Graphics::GetResourceManager()
 	return resourceManager;
 }
 
-void Graphics::UpdateCamera( DirectX::XMFLOAT4 position_ )
+void Graphics::UpdateCamera()
 {
-	DirectX::XMStoreFloat4(&cameraPos, DirectX::XMVectorAdd( DirectX::XMLoadFloat4( &cameraPos ), DirectX::XMLoadFloat4( &position_ ) ));
-	DirectX::XMStoreFloat4(&cameraFocus, DirectX::XMVectorAdd( DirectX::XMLoadFloat4( &cameraFocus ), DirectX::XMLoadFloat4( &position_ ) ));
+	using namespace DirectX;
+	DirectX::XMVECTOR cameraPos	= DirectX::XMLoadFloat4( &Input::GetInstance()->cameraPos );
+	DirectX::XMVECTOR cameraDir	= DirectX::XMLoadFloat4( &Input::GetInstance()->cameraDir );
 
 	DirectX::XMMATRIX view = DirectX::XMMatrixLookAtLH(
-		DirectX::XMLoadFloat4( &cameraPos ),
-		DirectX::XMLoadFloat4( &cameraFocus ),
+		cameraPos,
+		cameraPos + cameraDir,
 		DirectX::XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f )
 		);
 
 	DirectX::XMStoreFloat4x4( &camera.view, DirectX::XMMatrixTranspose( view ) );
 
-	deviceContext->UpdateSubresource( frameCB, 0, nullptr, &camera, sizeof ( Camera ), 0 ); 
+	deviceContext->UpdateSubresource( frameCB, 0, nullptr, &camera, sizeof ( Camera ), 0 );
+
+	Input::GetInstance()->camera->view		= camera.view;
+	Input::GetInstance()->camera->projection = camera.projection;
 }
 
 void Graphics::SetViewport( float windowWidth_, float windowHeight_ )

@@ -10,13 +10,15 @@ HRESULT Game::Initialize( HWND windowHandle_, LONG windowWidth_, LONG windowHeig
 
 	entityManager = new EntityManager;
 	entityManager->Initialize();
+	entityManager->UpdateWindowSize( windowWidth, windowHeight );
 
 	graphicsManager = new Graphics;
 	graphicsManager->Initialize( windowHandle, windowWidth, windowHeight );
 
 	gameTimeToProcess = 0.0f;
 
-	cameraSpeed = 0.005f;
+	gameState		= STATE_GAME;
+	nextGameState	= STATE_GAME;
 
 	LoadAssets();
 	CreateResources();
@@ -55,6 +57,11 @@ void Game::Update( float deltaTime )
 {
 	Input::GetInstance()->Update();
 	Input::GetInstance()->Clear();
+	if( gameState != nextGameState )
+	{
+		gameState = nextGameState;
+		entityManager->EntityStateChange( gameState );
+	}
 
 	if( !Lockstep::GetInstance()->PlayerSubmittedFrame( TEMP_MY_PLAYER_ID ) )
 	{
@@ -79,9 +86,11 @@ void Game::Update( float deltaTime )
 
 		if( frameIsReady )
 		{
-
-
-			entityManager->Update();
+			// Input::GetInstance()->Update();
+			// networkManager->Update();
+			// networkManager->UpdateLockstep();
+			entityManager->Update( gameState );
+			// entityManager->Render( gameState ); DONE IN Game::Render()
 
 			//std::cout << "Frame: " << Lockstep::GetInstance()->currentFrame << '\n';
 			Lockstep::GetInstance()->Increment();
@@ -89,19 +98,14 @@ void Game::Update( float deltaTime )
 	}
 	// Temporary
 
-	graphicsManager->UpdateCamera( DirectX::XMFLOAT4(
-		( Input_KeyDown( I_KEY::ARROW_RIGHT ) ? cameraSpeed : 0.0f ) - ( Input_KeyDown( I_KEY::ARROW_LEFT ) ? cameraSpeed : 0.0f ),
-		0.0f,
-		( Input_KeyDown( I_KEY::ARROW_UP ) ? cameraSpeed : 0.0f ) - ( Input_KeyDown( I_KEY::ARROW_DOWN ) ? cameraSpeed : 0.0f ),
-		0.0f
-		) );
+	graphicsManager->UpdateCamera();
 	//
 }
 
 void Game::Render()
 {
 	graphicsManager->BeginScene();
-	entityManager->Render();
+	entityManager->Render( gameState );
 	graphicsManager->EndScene();
 }
 
@@ -116,7 +120,7 @@ void Game::LoadAssets()
 
 void Game::CreateResources()
 {
-	macResourceManager->CreateStaticMesh( RES_SM_CUBE, ASSET_MESH_DEFAULT, ASSET_TEXTURE_DEFAULT );
+	macResourceManager->CreateStaticMesh( RES_SM_CUBE, ASSET_MESH_DEFAULT, ASSET_TEXTURE_GUI );
 	macResourceManager->CreateStaticMesh( RES_SM_FLOOR, ASSET_MESH_FLOOR, ASSET_TEXTURE_SPHERE );
 	macResourceManager->CreateStaticMesh( RES_SM_SPHERE, ASSET_MESH_SPHERE, ASSET_TEXTURE_DEFAULT );
 	macResourceManager->CreateSprite( RES_SP_DEFAULT, ASSET_TEXTURE_DEFAULT );
@@ -129,6 +133,7 @@ void Game::CreateEntities()
 	entityManager->AddComponent( player0, CI_Transform{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );
 	entityManager->AddComponent( player0, CI_Mesh{ RES_SM_SPHERE } );
 	entityManager->AddComponent( player0, CI_PlayerInput{ 0 } );
+	entityManager->AddComponent( player0, CI_UnitMovement{ 0.1f, DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );
 
 	UINT player1 = entityManager->AddEntity();
 	entityManager->AddComponent( player1, CI_Transform{ DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 1.0f ) } );

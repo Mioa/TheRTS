@@ -2,7 +2,7 @@
 #define SYSTEM_H
 
 #include "Game.h"
-#include <Windows.h>
+#include <Windowsx.h>
 #include <iostream>
 
 class System

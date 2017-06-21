@@ -24,7 +24,8 @@ class Game
 
 		float gameTimeToProcess;
 
-		float cameraSpeed;
+		UINT gameState;
+		UINT nextGameState;
 
 	//Functions
 	public:

@@ -3,6 +3,7 @@
 
 HRESULT System::Initialize( HINSTANCE hInstance_, int nCmdShow_ )
 {
+	
 	windowWidth		= 960;
 	windowHeight	= 600;
 
@@ -35,9 +36,9 @@ HRESULT System::Initialize( HINSTANCE hInstance_, int nCmdShow_ )
 	if( windowHandle )
 		ShowWindow( windowHandle, nCmdShow_ );
 
-	game.Initialize( windowHandle, windowWidth, windowHeight );
-
 	Input::GetInstance()->Initialize();
+
+	game.Initialize( windowHandle, windowWidth, windowHeight );
 
 	return S_OK;
 }
@@ -88,7 +89,6 @@ int	System::Run()
 			fpsValue = fpsValue * 0.95f + 0.5f/deltaTime;
 
 			std::string title = "TheRTS - FPS: " + std::to_string( fpsValue );
-
 			SetWindowTextA( windowHandle, title.c_str() );
 
 			game.Update( deltaTime );
@@ -136,6 +136,28 @@ LRESULT CALLBACK System::WndProc( HWND hWnd_, UINT uMsg_, WPARAM wParam_, LPARAM
 				case VK_UP		: Input::GetInstance()->releaseFrame[I_KEY::ARROW_UP]		= true; break;
 			}
 			break;
+		case WM_LBUTTONDOWN:
+			{
+				Input::GetInstance()->pressFrame[I_KEY::MOUSE_LEFT] = true; break;
+			}
+		case WM_LBUTTONUP:
+			{
+				Input::GetInstance()->releaseFrame[I_KEY::MOUSE_LEFT] = true; break;
+			}
+		case WM_RBUTTONDOWN:
+			{
+				Input::GetInstance()->pressFrame[I_KEY::MOUSE_RIGHT] = true; break;
+			}
+		case WM_RBUTTONUP:
+			{
+				Input::GetInstance()->releaseFrame[I_KEY::MOUSE_RIGHT] = true; break;
+			}
+		case WM_MOUSEMOVE: 
+			{
+				Input::GetInstance()->currentMousePos[0] = GET_X_LPARAM(lParam_);
+				Input::GetInstance()->currentMousePos[1] = GET_Y_LPARAM(lParam_);
+				break;
+			}
 		case WM_DESTROY:
 			PostQuitMessage( 0 );
 			break;		

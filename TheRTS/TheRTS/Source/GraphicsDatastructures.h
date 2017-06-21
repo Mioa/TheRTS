@@ -45,12 +45,6 @@ struct Vertex_POS3_NOR3_UV2
 	DirectX::XMFLOAT2 uv = DirectX::XMFLOAT2( 0.0f, 0.0f );
 };
 
-struct StaticMeshBuffer
-{
-	ID3D11Buffer* buffer;
-	UINT vertexCount;
-};
-
 struct ShaderGroup
 {
 	ID3D11InputLayout*		inputLayout		= nullptr;
