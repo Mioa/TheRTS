@@ -9,13 +9,13 @@ class RenderQueue
 {
 	//Variables
 	public:
-		UINT* spriteCount;
+		UINT** spriteCount;
 		UINT* staticMeshCount;
 		UINT* dynamicMeshCount;
 		UINT  pointLightCount;
 		UINT  dirLightCount;
 		
-		RI_Sprite**			sprites;
+		RI_Sprite***		sprites;
 		RI_StaticMesh**		staticMeshes;
 		RI_DynamicMesh**	dynamicMeshes;
 		RI_PointLight*		pointLights;
@@ -43,7 +43,8 @@ class RenderQueue
 	public:
 		void RenderSprite( 
 			UINT resourceID_, 
-			DirectX::XMFLOAT4 pos_ = DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f )
+			UINT depth_				= SP_DEPTH_0,
+			DirectX::XMFLOAT4 pos_	= DirectX::XMFLOAT4( 0.0f, 0.0f, 0.0f, 0.0f )
 			);
 
 		void RenderStaticMesh( 

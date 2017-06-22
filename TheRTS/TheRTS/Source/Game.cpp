@@ -136,10 +136,18 @@ void Game::LoadAssets()
 
 void Game::CreateResources()
 {
+	macResourceManager->CreateStaticMesh( RES_SM_SPHERE, ASSET_MESH_SPHERE, ASSET_TEXTURE_DEFAULT_WHITE );
+
 	macResourceManager->CreateStaticMesh( RES_SM_CUBE, ASSET_MESH_DEFAULT, ASSET_TEXTURE_GUI );
 	macResourceManager->CreateStaticMesh( RES_SM_FLOOR, ASSET_MESH_FLOOR, ASSET_TEXTURE_SPHERE );
-	macResourceManager->CreateStaticMesh( RES_SM_SPHERE, ASSET_MESH_SPHERE, ASSET_TEXTURE_DEFAULT );
-	macResourceManager->CreateSprite( RES_SP_DEFAULT, ASSET_TEXTURE_DEFAULT );
+	
+	macResourceManager->CreateSprite( RES_SP_DEFAULT_WHITE, ASSET_TEXTURE_DEFAULT_WHITE );
+	macResourceManager->CreateSprite( RES_SP_DEFAULT_GRAY, ASSET_TEXTURE_DEFAULT_GRAY );
+	macResourceManager->CreateSprite( RES_SP_DEFAULT_BLACK, ASSET_TEXTURE_DEFAULT_BLACK );
+	macResourceManager->CreateSprite( RES_SP_DEFAULT_RED, ASSET_TEXTURE_DEFAULT_RED );
+	macResourceManager->CreateSprite( RES_SP_DEFAULT_GREEN, ASSET_TEXTURE_DEFAULT_GREEN );
+	macResourceManager->CreateSprite( RES_SP_DEFAULT_BLUE, ASSET_TEXTURE_DEFAULT_BLUE );
+	
 	macResourceManager->CreateSprite( RES_SP_FLOWER, ASSET_TEXTURE_GUI );
 
 	macResourceManager->CreateSprite( RES_SP_BUTTON_NEWGAME_CLICKED,	ASSET_TEXTURE_NEWGAME_CLICKED );
@@ -160,13 +168,13 @@ void Game::CreateEntities()
 
 	UINT newGameButton = entityManager->AddEntity( STATE_MAIN_MENU );
 	entityManager->AddComponent( newGameButton, CI_Position{ DirectX::XMFLOAT4( 330.0f, 240.0f, 300.0f, 60.0f ) } );
-	entityManager->AddComponent( newGameButton, CI_Texture{ RES_SP_BUTTON_NEWGAME_DEFAULT } );
+	entityManager->AddComponent( newGameButton, CI_SpriteTexture{ RES_SP_BUTTON_NEWGAME_DEFAULT, SP_DEPTH_0 } );
 	entityManager->AddComponent( newGameButton, CI_Button{ MAIN_MENU_ACTION_NEWGAME, RES_SP_BUTTON_NEWGAME_CLICKED, RES_SP_BUTTON_NEWGAME_HOVER, RES_SP_BUTTON_NEWGAME_DEFAULT } );
 	entityManager->AddComponent( newGameButton, CI_StateTransition{ &nextGameState } );
 
 	UINT quitAppButton = entityManager->AddEntity( STATE_MAIN_MENU );
 	entityManager->AddComponent( quitAppButton, CI_Position{ DirectX::XMFLOAT4( 330.0f, 300.0f, 300.0f, 60.0f ) } );
-	entityManager->AddComponent( quitAppButton, CI_Texture{ RES_SP_BUTTON_QUIT_DEFAULT } );
+	entityManager->AddComponent( quitAppButton, CI_SpriteTexture{ RES_SP_BUTTON_QUIT_DEFAULT, SP_DEPTH_0 } );
 	entityManager->AddComponent( quitAppButton, CI_Button{ MAIN_MENU_ACTION_QUIT, RES_SP_BUTTON_QUIT_CLICKED, RES_SP_BUTTON_QUIT_HOVER, RES_SP_BUTTON_QUIT_DEFAULT } );
 	entityManager->AddComponent( quitAppButton, CI_StateTransition{ &nextGameState } );
 
@@ -175,10 +183,13 @@ void Game::CreateEntities()
 	//##									GAME MENU										##
 	//########################################################################################
 
+	UINT gameMenuBG = entityManager->AddEntity( STATE_GAME_MENU );
+	entityManager->AddComponent( gameMenuBG, CI_Position{ DirectX::XMFLOAT4( 305.0f, 120.0f, 350.0f, 360.0f ) } );
+	entityManager->AddComponent( gameMenuBG, CI_SpriteTexture{ RES_SP_DEFAULT_GRAY, SP_DEPTH_4 } );
 
 	UINT quitGameButton = entityManager->AddEntity( STATE_GAME_MENU );
 	entityManager->AddComponent( quitGameButton, CI_Position{ DirectX::XMFLOAT4( 330.0f, 270.0f, 300.0f, 60.0f ) } );
-	entityManager->AddComponent( quitGameButton, CI_Texture{ RES_SP_BUTTON_QUIT_DEFAULT } );
+	entityManager->AddComponent( quitGameButton, CI_SpriteTexture{ RES_SP_BUTTON_QUIT_DEFAULT, SP_DEPTH_0 } );
 	entityManager->AddComponent( quitGameButton, CI_Button{ GAME_MENU_ACTION_QUIT, RES_SP_BUTTON_QUIT_CLICKED, RES_SP_BUTTON_QUIT_HOVER, RES_SP_BUTTON_QUIT_DEFAULT } );
 	entityManager->AddComponent( quitGameButton, CI_StateTransition{ &nextGameState } );
 

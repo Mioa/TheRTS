@@ -64,7 +64,11 @@ VS_OUT VS_main( uint id : SV_VertexID )
 
 	[unroll]
 	for( int i = 0; i < 6; i++ )
+	{
 		returns[i] = vertices[vertexID].Pos + float4( sPos.x, -sPos.y, 0.0f, 0.0f );
+		if ( spriteID == 1 )
+			returns[i].z = 0.5f;
+	}
 
 	returns[1].x += sPos.z;
 	returns[2].x += sPos.z;
@@ -73,6 +77,7 @@ VS_OUT VS_main( uint id : SV_VertexID )
 	returns[3].y -= sPos.w;
 	returns[4].y -= sPos.w;
 
+	
 
 	output.Pos	= returns[vertexID];
 	output.UV	= vertices[vertexID].UV;

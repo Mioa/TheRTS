@@ -42,8 +42,8 @@ class EntityManager
 		C_Transform*			transform		= nullptr;
 		C_Mesh*					mesh			= nullptr;
 		C_PlayerInput*			playerInput		= nullptr;
-		C_Texture*				texture			= nullptr;
-		C_Button*				button	= nullptr;
+		C_SpriteTexture*		spriteTexture	= nullptr;
+		C_Button*				button			= nullptr;
 		C_StateTransition*		stateTransition = nullptr;
 
 		//PlayerKeystates keyStates;
@@ -80,7 +80,7 @@ class EntityManager
 		HRESULT AddComponent( UINT entityIndex_, CI_Transform info_ );
 		HRESULT	AddComponent( UINT entityIndex_, CI_Mesh info_ );
 		HRESULT AddComponent( UINT entityIndex_, CI_PlayerInput info_ );
-		HRESULT AddComponent( UINT entityIndex_, CI_Texture info_ );
+		HRESULT AddComponent( UINT entityIndex_, CI_SpriteTexture info_ );
 		HRESULT AddComponent( UINT entityIndex_, CI_Button info_ );
 		HRESULT AddComponent( UINT entityIndex_, CI_StateTransition info_ );
 

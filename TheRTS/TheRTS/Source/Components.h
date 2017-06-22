@@ -11,7 +11,7 @@ enum ComponentTypes
 	C_TRANSFORM,
 	C_MESH,
 	C_PLAYERINPUT,
-	C_TEXTURE,
+	C_SPRITE_TEXTURE,
 	C_BUTTON,
 	C_STATE_TRANSITION,
 	C_COUNT
@@ -41,7 +41,6 @@ struct CI_Position
 {
 	DirectX::XMFLOAT4 position;
 };
-
 
 
 struct C_Transform
@@ -81,14 +80,16 @@ struct CI_PlayerInput
 };
 
 
-struct C_Texture
+struct C_SpriteTexture
 {
 	UINT resource;
+	UINT depth;
 };
 
-struct CI_Texture
+struct CI_SpriteTexture
 {
 	UINT resource;
+	UINT depth;
 };
 
 

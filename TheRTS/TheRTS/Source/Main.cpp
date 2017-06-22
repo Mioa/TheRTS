@@ -10,7 +10,7 @@ int WINAPI wWinMain( HINSTANCE hInstance_, HINSTANCE hPrevInstance_, LPWSTR lpCm
 {
 	// Temporary
 	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );  
-	//_CrtSetBreakAlloc(247);
+	//_CrtSetBreakAlloc(267);
 	//
 
 	AllocConsole();
