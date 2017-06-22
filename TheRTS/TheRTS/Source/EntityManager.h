@@ -37,14 +37,15 @@ class EntityManager
 	//Variables
 	public:
 		Entity*					entity			= nullptr;
-		C_UnitMovement*			unitMovement	= nullptr;
-		C_Position*				position		= nullptr;
-		C_Transform*			transform		= nullptr;
+
+		C_Button*				button			= nullptr;
 		C_Mesh*					mesh			= nullptr;
 		C_PlayerInput*			playerInput		= nullptr;
+		C_Position*				position		= nullptr;
 		C_SpriteTexture*		spriteTexture	= nullptr;
-		C_Button*				button			= nullptr;
 		C_StateTransition*		stateTransition = nullptr;
+		C_Transform*			transform		= nullptr;
+		C_UnitMovement*			unitMovement	= nullptr;
 
 		//PlayerKeystates keyStates;
 		MouseRay mouseRay;
@@ -56,8 +57,8 @@ class EntityManager
 		LONG			windowHeight				= 0;
 
 		std::vector<SignatureFunction*>	lockstepSignatures;
-		std::vector<SignatureFunction*>	updateSignatures;
 		std::vector<SignatureFunction*>	renderSignatures;
+		std::vector<SignatureFunction*>	updateSignatures;
 
 
 	//Functions
@@ -67,22 +68,24 @@ class EntityManager
 
 				EntityManager();
 				~EntityManager();
+
 	public:
 		void	EntityStateChange( UINT gameState_ );
 		void	UpdateLockstep( UINT gameState_ );
-		void	UpdateUnlocked( UINT gameState_ );
 		void	Render( UINT gameState_ );
+		void	UpdateUnlocked( UINT gameState_ );
 		void	UpdateWindowSize( LONG width_, LONG height );
 
 		int		AddEntity( UINT gameState_ );
-		HRESULT	AddComponent( UINT entityIndex_, CI_UnitMovement info_ );
-		HRESULT	AddComponent( UINT entityIndex_, CI_Position info_ );
-		HRESULT AddComponent( UINT entityIndex_, CI_Transform info_ );
+
+		HRESULT AddComponent( UINT entityIndex_, CI_Button info_ );
 		HRESULT	AddComponent( UINT entityIndex_, CI_Mesh info_ );
 		HRESULT AddComponent( UINT entityIndex_, CI_PlayerInput info_ );
+		HRESULT	AddComponent( UINT entityIndex_, CI_Position info_ );
 		HRESULT AddComponent( UINT entityIndex_, CI_SpriteTexture info_ );
-		HRESULT AddComponent( UINT entityIndex_, CI_Button info_ );
 		HRESULT AddComponent( UINT entityIndex_, CI_StateTransition info_ );
+		HRESULT AddComponent( UINT entityIndex_, CI_Transform info_ );
+		HRESULT	AddComponent( UINT entityIndex_, CI_UnitMovement info_ );
 
 	private:
 };
