@@ -269,36 +269,42 @@ void Graphics::SetPipeline( UINT pipeline_ )
 
 void Graphics::DrawSprites()
 {
-	for( UINT type = 0; type < RES_SP_COUNT; type++ )
-	{
-		UINT counter = RenderQueue::GetInstance()->spriteCount[type];
-		deviceContext->PSSetShaderResources( 0, 1, &resourceManager->textures[resourceManager->spResources[type]->textureIndex] );
+	UINT numSprites = 0;
+	UINT counter = 0;
 
-		while( counter > 0 )
+	for( UINT depth = 0; depth < SP_DEPTH_COUNT; depth++ )
+		for( UINT type = 0; type < RES_SP_COUNT; type++ )
 		{
-			UINT numSprites = min(counter, GR_MAX_SPRITES_BUFFER);
+			counter = RenderQueue::GetInstance()->spriteCount[depth][type];
+			deviceContext->PSSetShaderResources( 0, 1, &resourceManager->textures[resourceManager->spResources[type]->textureIndex] );
+
+			while( counter > 0 )
+			{
+				numSprites = min(counter, GR_MAX_SPRITES_BUFFER);
 			
-			deviceContext->UpdateSubresource( 
-				spriteCB, 
-				0, 
-				nullptr, 
-				&RenderQueue::GetInstance()->sprites[type][RenderQueue::GetInstance()->spriteCount[type] - counter], 
-				sizeof ( DirectX::XMFLOAT4 ) * numSprites,
-				0
-				); 
+				deviceContext->UpdateSubresource( 
+					spriteCB, 
+					0, 
+					nullptr, 
+					&RenderQueue::GetInstance()->sprites[depth][type][RenderQueue::GetInstance()->spriteCount[depth][type] - counter], 
+					sizeof ( DirectX::XMFLOAT4 ) * numSprites,
+					0
+					); 
 
-			counter -= numSprites;
+				counter -= numSprites;
 
-			deviceContext->Draw( 6 * numSprites, 0 );
+				deviceContext->Draw( 6 * numSprites, 0 );
+			}
 		}
-	}
 }
 
 void Graphics::DrawStaticMeshes()
 {
+	UINT count = 0;
+
 	for( UINT type = 0; type < RES_SM_COUNT; type++ )
 	{
-		UINT count = RenderQueue::GetInstance()->staticMeshCount[type];
+		count = RenderQueue::GetInstance()->staticMeshCount[type];
 
 		if( count > 0)
 		{

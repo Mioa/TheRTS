@@ -30,6 +30,15 @@ enum GameMenuAction
 	GAME_MENU_ACTION_QUIT	= 1
 };
 
+enum SpriteDepths
+{
+	SP_DEPTH_0,
+	SP_DEPTH_1,
+	SP_DEPTH_2,
+	SP_DEPTH_3,
+	SP_DEPTH_4,
+	SP_DEPTH_COUNT
+};
 
 struct Camera
 {

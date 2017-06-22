@@ -15,9 +15,9 @@ HRESULT EntityManager::Initialize()
 	ZeroMemory( mesh, sizeof( C_Mesh ) * EM_MAX_ENTITIES );
 	playerInput		= new C_PlayerInput[EM_MAX_ENTITIES];
 	ZeroMemory( playerInput, sizeof( C_PlayerInput ) * EM_MAX_ENTITIES );
-	texture			= new C_Texture[EM_MAX_ENTITIES];
-	ZeroMemory( texture, sizeof( C_Texture ) * EM_MAX_ENTITIES );
-	button	= new C_Button[EM_MAX_ENTITIES];
+	spriteTexture	= new C_SpriteTexture[EM_MAX_ENTITIES];
+	ZeroMemory( spriteTexture, sizeof( C_SpriteTexture ) * EM_MAX_ENTITIES );
+	button			= new C_Button[EM_MAX_ENTITIES];
 	ZeroMemory( button, sizeof( C_Button ) * EM_MAX_ENTITIES );
 	stateTransition	= new C_StateTransition[EM_MAX_ENTITIES];
 	ZeroMemory( stateTransition, sizeof( C_StateTransition ) * EM_MAX_ENTITIES );
@@ -44,7 +44,7 @@ void EntityManager::Release()
 	delete[] transform;
 	delete[] mesh;
 	delete[] playerInput;
-	delete[] texture;
+	delete[] spriteTexture;
 	delete[] button;
 	delete[] stateTransition;
 
@@ -200,12 +200,13 @@ HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_PlayerInput info_ )
 	return S_OK;
 }
 
-HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_Texture info_ )
+HRESULT EntityManager::AddComponent( UINT entityIndex_, CI_SpriteTexture info_ )
 {
-	entity[entityIndex_].active					= true;
-	entity[entityIndex_].resting				= false;
-	entity[entityIndex_].signature[C_TEXTURE]	= true;
-	texture[entityIndex_].resource				= info_.resource;
+	entity[entityIndex_].active							= true;
+	entity[entityIndex_].resting						= false;
+	entity[entityIndex_].signature[C_SPRITE_TEXTURE]	= true;
+	spriteTexture[entityIndex_].resource				= info_.resource;
+	spriteTexture[entityIndex_].depth					= info_.depth;
 
 	return S_OK;
 }

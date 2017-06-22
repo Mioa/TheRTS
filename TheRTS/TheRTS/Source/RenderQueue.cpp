@@ -4,21 +4,31 @@ using namespace DirectX;
 
 HRESULT	RenderQueue::Initialize()
 {
-	spriteCount			= new UINT[RES_SP_COUNT];
+	spriteCount = new UINT*[SP_DEPTH_COUNT];
+	for( UINT i = 0; i < SP_DEPTH_COUNT; i++ )
+	{
+		spriteCount[i] = new UINT[RES_SP_COUNT];
+		ZeroMemory( spriteCount[i], sizeof( UINT ) * RES_SP_COUNT );
+	}
+
 	staticMeshCount		= new UINT[RES_SM_COUNT];
 	dynamicMeshCount	= new UINT[RES_DM_COUNT];
 
-	ZeroMemory( spriteCount, sizeof( UINT ) * RES_SP_COUNT );
 	ZeroMemory( staticMeshCount, sizeof( UINT ) * RES_SM_COUNT );
 	ZeroMemory( dynamicMeshCount, sizeof( UINT ) * RES_DM_COUNT );
+
 	pointLightCount = 0;
 	dirLightCount   = 0;
 
-	sprites = new RI_Sprite*[RES_SP_COUNT];
-	for( UINT i = 0; i < RES_SP_COUNT; i++ )
+	sprites = new RI_Sprite**[SP_DEPTH_COUNT];
+	for( UINT depth = 0; depth < SP_DEPTH_COUNT; depth++ )
 	{
-		sprites[i] = new RI_Sprite[RQ_MAX_SPRITE];
-		ZeroMemory( sprites[i], sizeof( RI_Sprite ) * RQ_MAX_SPRITE );
+		sprites[depth] = new RI_Sprite*[RES_SP_COUNT];
+		for( UINT i = 0; i < RES_SP_COUNT; i++ )
+		{
+			sprites[depth][i] = new RI_Sprite[RQ_MAX_SPRITE];
+			ZeroMemory( sprites[depth][i], sizeof( RI_Sprite ) * RQ_MAX_SPRITE );
+		}
 	}
 
 	staticMeshes = new RI_StaticMesh*[RES_SM_COUNT];
@@ -46,16 +56,25 @@ HRESULT	RenderQueue::Initialize()
 
 void RenderQueue::Release()
 {
+	for( UINT depth = 0; depth < SP_DEPTH_COUNT; depth++ )
+		delete spriteCount[depth];
 	delete[] spriteCount;
+
 	delete[] staticMeshCount;
 	delete[] dynamicMeshCount;
 
-	for( UINT i = 0; i < RES_SP_COUNT; i++ )
-		delete sprites[i];
+	for (UINT depth = 0; depth < SP_DEPTH_COUNT; depth++ )
+	{
+		for( UINT i = 0; i < RES_SP_COUNT; i++ )
+			delete sprites[depth][i];
+		delete[] sprites[depth];
+	}
 	delete[] sprites;
+
 	for( UINT i = 0; i < RES_SM_COUNT; i++ )
 		delete staticMeshes[i];
 	delete[] staticMeshes;
+
 	for( UINT i = 0; i < RES_DM_COUNT; i++ )
 		delete dynamicMeshes[i];
 	delete[] dynamicMeshes;
@@ -64,11 +83,11 @@ void RenderQueue::Release()
 	delete dirLights;
 }
 
-void RenderQueue::RenderSprite( UINT resourceID_, XMFLOAT4 pos_ )
+void RenderQueue::RenderSprite( UINT resourceID_, UINT depth_, XMFLOAT4 pos_ )
 {
-	sprites[resourceID_][spriteCount[resourceID_]].position = pos_;
+	sprites[depth_][resourceID_][spriteCount[depth_][resourceID_]].position = pos_;
 
-	spriteCount[resourceID_]++;
+	spriteCount[depth_][resourceID_]++;
 }
 
 void RenderQueue::RenderStaticMesh( UINT resourceID_, XMFLOAT4 pos_, XMFLOAT4 rot_, XMFLOAT4 scale_ )
@@ -122,9 +141,12 @@ void RenderQueue::RenderDirLight( XMFLOAT4 direction_, XMFLOAT4 color_	)
 
 void RenderQueue::ResetQueue()
 {
-	ZeroMemory( spriteCount, sizeof( UINT ) * RES_SP_COUNT );
+	for( UINT depth = 0; depth < SP_DEPTH_COUNT; depth++ )
+		ZeroMemory( spriteCount[depth], sizeof( UINT ) * RES_SP_COUNT );
+
 	ZeroMemory( staticMeshCount, sizeof( UINT ) * RES_SM_COUNT );
 	ZeroMemory( dynamicMeshCount, sizeof( UINT ) * RES_DM_COUNT );
+
 	pointLightCount = 0;
 	dirLightCount   = 0;
 }

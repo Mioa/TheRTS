@@ -91,9 +91,11 @@ void ResourceManager::CreateStaticMesh( UINT resourceIndex_, UINT meshIndex_, UI
 
 void ResourceManager::InitDefaultData()
 {
-	// Texture
+	// Textures
+
 	UINT color = 0xFFFFFFFF;
 	ID3D11Texture2D* texture;
+	HRESULT hr;
 
 	D3D11_TEXTURE2D_DESC texDesc;
 	ZeroMemory( &texDesc, sizeof( D3D11_TEXTURE2D_DESC ) );
@@ -111,16 +113,40 @@ void ResourceManager::InitDefaultData()
 	subDesc.pSysMem = &color;
 	subDesc.SysMemPitch = sizeof( UINT );
 
-	HRESULT hr = device->CreateTexture2D(&texDesc, &subDesc, &texture);
-
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 	ZeroMemory( &srvDesc, sizeof( D3D11_SHADER_RESOURCE_VIEW_DESC ) );
 	srvDesc.Format						= texDesc.Format;
 	srvDesc.ViewDimension				= D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels			= 1;
 
-	hr = device->CreateShaderResourceView(texture, &srvDesc, &textures[ASSET_TEXTURE_DEFAULT]);
+	color	= 0xFFFFFF;
+	hr		= device->CreateTexture2D(&texDesc, &subDesc, &texture);
+	hr		= device->CreateShaderResourceView(texture, &srvDesc, &textures[ASSET_TEXTURE_DEFAULT_WHITE]);
+	texture->Release();
 
+	color	= 0xFF333333;
+	hr		= device->CreateTexture2D(&texDesc, &subDesc, &texture);
+	hr		= device->CreateShaderResourceView(texture, &srvDesc, &textures[ASSET_TEXTURE_DEFAULT_GRAY]);
+	texture->Release();
+
+	color	= 0xFF000000;
+	hr		= device->CreateTexture2D(&texDesc, &subDesc, &texture);
+	hr		= device->CreateShaderResourceView(texture, &srvDesc, &textures[ASSET_TEXTURE_DEFAULT_BLACK]);
+	texture->Release();
+
+	color	= 0xFFFF0000;
+	hr		= device->CreateTexture2D(&texDesc, &subDesc, &texture);
+	hr		= device->CreateShaderResourceView(texture, &srvDesc, &textures[ASSET_TEXTURE_DEFAULT_RED]);
+	texture->Release();
+
+	color	= 0xFF00FF00;
+	hr		= device->CreateTexture2D(&texDesc, &subDesc, &texture);
+	hr		= device->CreateShaderResourceView(texture, &srvDesc, &textures[ASSET_TEXTURE_DEFAULT_GREEN]);
+	texture->Release();
+
+	color	= 0xFF0000FF;
+	hr		= device->CreateTexture2D(&texDesc, &subDesc, &texture);
+	hr		= device->CreateShaderResourceView(texture, &srvDesc, &textures[ASSET_TEXTURE_DEFAULT_BLUE]);
 	texture->Release();
 
 	// Static mesh

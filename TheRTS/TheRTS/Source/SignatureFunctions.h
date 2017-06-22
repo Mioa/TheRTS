@@ -184,7 +184,7 @@ struct SR_RenderSprite : public SignatureFunction
 	{
 		manager					= manager_;
 		signature[C_POSITION]	= true;
-		signature[C_TEXTURE]	= true;
+		signature[C_SPRITE_TEXTURE]	= true;
 		states					= STATE_MAIN_MENU | STATE_GAME | STATE_GAME_MENU | STATE_PAUSE;
 	}
 	void Function()
@@ -200,7 +200,8 @@ struct SR_RenderSprite : public SignatureFunction
 			UINT entID = currentActive[i];
 
 			macRenderQueue->RenderSprite( 
-				manager->texture[entID].resource, 
+				manager->spriteTexture[entID].resource, 
+				manager->spriteTexture[entID].depth,
 				manager->position[entID].position
 				);
 		}
@@ -213,7 +214,7 @@ struct SU_MenuButton : public SignatureFunction
 	{
 		manager					= manager_;
 		signature[C_POSITION]	= true;
-		signature[C_TEXTURE]	= true;
+		signature[C_SPRITE_TEXTURE]	= true;
 		signature[C_BUTTON]		= true;
 		states					= STATE_MAIN_MENU | STATE_GAME_MENU;
 	}
@@ -235,14 +236,14 @@ struct SU_MenuButton : public SignatureFunction
 			XMFLOAT4 pos						= manager->position[entID].position;
 
 			C_Button* button					= &manager->button[entID];
-			C_Texture* texture					= &manager->texture[entID];
+			C_SpriteTexture* spriteTexture		= &manager->spriteTexture[entID];
 			C_StateTransition* stateTransition	= &manager->stateTransition[entID];
 
 			if ( mousePos[0] >= pos.x && mousePos[0] <= pos.x + pos.z && mousePos[1] >= pos.y && mousePos[1] <= pos.y + pos.w )
 			{
 				if( lmbReleased )
 				{				
-					texture->resource = button->resourceDefault;
+					spriteTexture->resource = button->resourceDefault;
 					if( ( manager->entity[entID].states & STATE_MAIN_MENU ) == STATE_MAIN_MENU )
 					{
 						switch( button->action )
@@ -273,16 +274,16 @@ struct SU_MenuButton : public SignatureFunction
 				}
 				else if( lmbDown )
 				{
-					texture->resource = button->resourceClicked;
+					spriteTexture->resource = button->resourceClicked;
 				}
 				else
 				{
-					texture->resource = button->resourceHover;
+					spriteTexture->resource = button->resourceHover;
 				}
 			}
 			else
 			{
-				texture->resource = button->resourceDefault;
+				spriteTexture->resource = button->resourceDefault;
 			}
 		}
 	}
