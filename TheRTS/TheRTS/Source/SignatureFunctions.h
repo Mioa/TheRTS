@@ -22,99 +22,6 @@ struct SignatureFunction
 	virtual void Function() = 0;
 };
 
-struct SU_HUDClicked : public SignatureFunction
-{
-	SU_HUDClicked( EntityManager* manager_ )
-	{
-		manager					= manager_;
-		signature[C_POSITION]	= true;
-		signature[C_TEXTURE]	= true;
-		states					= STATE_GAME;
-	}
-	void Function()
-	{
-		if( Input_KeyDown(I_KEY::MOUSE_LEFT) )
-		{
-			numActive = 0;
-
-			for( UINT entID = 0; entID < EM_MAX_ENTITIES; entID++ )
-				if( manager->entity[entID].active && ( signature & manager->entity[entID].signature ) == signature )
-					currentActive[numActive++] = entID;
-
-			int mousePos[2] = { Input::GetInstance()->currentMousePos[0], Input::GetInstance()->currentMousePos[1] };
-
-			for( UINT i = 0; i < numActive; i++ )
-			{
-				UINT entID = currentActive[i];
-				XMFLOAT4 pos = manager->position[entID].position;
-
-				if ( mousePos[0] >= pos.x && mousePos[0] <= pos.x + pos.z && mousePos[1] >= pos.y && mousePos[1] <= pos.y + pos.w )
-					manager->texture[entID].resource = RES_SP_FLOWER;
-			}
-		}
-	}
-};
-
-struct SR_RenderMesh : public SignatureFunction
-{
-	SR_RenderMesh( EntityManager* manager_ )
-	{
-		manager					= manager_;
-		signature[C_TRANSFORM]	= true;
-		signature[C_MESH]		= true;
-		states					= STATE_GAME;
-	}
-	void Function()
-	{
-		numActive = 0;
-
-		for( UINT entID = 0; entID < EM_MAX_ENTITIES; entID++ )
-			if( manager->entity[entID].active && ( signature & manager->entity[entID].signature ) == signature )
-				currentActive[numActive++] = entID;
-
-		for( UINT i = 0; i < numActive; i++ )
-		{
-			UINT entID = currentActive[i];
-
-			macRenderQueue->RenderStaticMesh( 
-				manager->mesh[entID].resource, 
-				manager->transform[entID].position,
-				manager->transform[entID].rotation,
-				manager->transform[entID].scale
-				);
-		}
-	}
-};
-
-struct SR_RenderSprite : public SignatureFunction
-{
-	SR_RenderSprite( EntityManager* manager_ )
-	{
-		manager					= manager_;
-		signature[C_POSITION]	= true;
-		signature[C_TEXTURE]	= true;
-		states					= STATE_GAME;
-	}
-	void Function()
-	{
-		numActive = 0;
-
-		for( UINT entID = 0; entID < EM_MAX_ENTITIES; entID++ )
-			if( manager->entity[entID].active && ( signature & manager->entity[entID].signature ) == signature )
-				currentActive[numActive++] = entID;
-
-		for( UINT i = 0; i < numActive; i++ )
-		{
-			UINT entID = currentActive[i];
-
-			macRenderQueue->RenderSprite( 
-				manager->texture[entID].resource, 
-				manager->position[entID].position
-				);
-		}
-	}
-};
-
 struct SL_MovePlayer : public SignatureFunction
 {
 	SL_MovePlayer( EntityManager* manager_ )
@@ -130,7 +37,7 @@ struct SL_MovePlayer : public SignatureFunction
 		numActive = 0;
 
 		for( UINT entID = 0; entID < EM_MAX_ENTITIES; entID++ )
-			if( manager->entity[entID].active && ( signature & manager->entity[entID].signature ) == signature )
+			if( manager->entity[entID].active && !manager->entity[entID].resting && ( signature & manager->entity[entID].signature ) == signature )
 				currentActive[numActive++] = entID;
 
 		C_PlayerInput*	pIn			= manager->playerInput;
@@ -174,7 +81,7 @@ struct SL_UnitTargetPosition : public SignatureFunction
 			numActive = 0;
 
 			for( UINT entID = 0; entID < EM_MAX_ENTITIES; entID++ )
-				if( manager->entity[entID].active && ( signature & manager->entity[entID].signature ) == signature )
+				if( manager->entity[entID].active && !manager->entity[entID].resting && ( signature & manager->entity[entID].signature ) == signature )
 					currentActive[numActive++] = entID;
 
 			for( UINT i = 0; i < numActive; i++ )
@@ -204,14 +111,14 @@ struct SL_UnitMovePosition : public SignatureFunction
 		signature[C_TRANSFORM]				= true;
 		signature[C_PLAYERINPUT]			= true;
 		signature[C_UNITMOVEMENT]			= true;
-		states								= STATE_GAME;
+		states								= STATE_GAME | STATE_GAME_MENU;
 	}
 	void Function()
 	{
 		numActive = 0;
 
 		for( UINT entID = 0; entID < EM_MAX_ENTITIES; entID++ )
-			if( manager->entity[entID].active && ( signature & manager->entity[entID].signature ) == signature )
+			if( manager->entity[entID].active && !manager->entity[entID].resting && ( signature & manager->entity[entID].signature ) == signature )
 				currentActive[numActive++] = entID;
 
 		C_UnitMovement* mov = manager->unitMovement;
@@ -234,6 +141,148 @@ struct SL_UnitMovePosition : public SignatureFunction
 					XMVECTOR movement = XMVector3Normalize( diffVec ) * manager->unitMovement[entID].speed;
 					XMStoreFloat4( &transform[entID].position, XMLoadFloat4( &transform[entID].position ) + movement );
 				}
+			}
+		}
+	}
+};
+
+
+struct SR_RenderMesh : public SignatureFunction
+{
+	SR_RenderMesh( EntityManager* manager_ )
+	{
+		manager					= manager_;
+		signature[C_TRANSFORM]	= true;
+		signature[C_MESH]		= true;
+		states					= STATE_GAME | STATE_GAME_MENU | STATE_PAUSE;
+	}
+	void Function()
+	{
+		numActive = 0;
+
+		for( UINT entID = 0; entID < EM_MAX_ENTITIES; entID++ )
+			if( manager->entity[entID].active && !manager->entity[entID].resting && ( signature & manager->entity[entID].signature ) == signature )
+				currentActive[numActive++] = entID;
+
+		for( UINT i = 0; i < numActive; i++ )
+		{
+			UINT entID = currentActive[i];
+
+			macRenderQueue->RenderStaticMesh( 
+				manager->mesh[entID].resource, 
+				manager->transform[entID].position,
+				manager->transform[entID].rotation,
+				manager->transform[entID].scale
+				);
+		}
+	}
+};
+
+struct SR_RenderSprite : public SignatureFunction
+{
+	SR_RenderSprite( EntityManager* manager_ )
+	{
+		manager					= manager_;
+		signature[C_POSITION]	= true;
+		signature[C_TEXTURE]	= true;
+		states					= STATE_MAIN_MENU | STATE_GAME | STATE_GAME_MENU | STATE_PAUSE;
+	}
+	void Function()
+	{
+		numActive = 0;
+
+		for( UINT entID = 0; entID < EM_MAX_ENTITIES; entID++ )
+			if( manager->entity[entID].active && !manager->entity[entID].resting && ( signature & manager->entity[entID].signature ) == signature )
+				currentActive[numActive++] = entID;
+
+		for( UINT i = 0; i < numActive; i++ )
+		{
+			UINT entID = currentActive[i];
+
+			macRenderQueue->RenderSprite( 
+				manager->texture[entID].resource, 
+				manager->position[entID].position
+				);
+		}
+	}
+};
+
+struct SU_MenuButton : public SignatureFunction
+{
+	SU_MenuButton( EntityManager* manager_ )
+	{
+		manager					= manager_;
+		signature[C_POSITION]	= true;
+		signature[C_TEXTURE]	= true;
+		signature[C_BUTTON]		= true;
+		states					= STATE_MAIN_MENU | STATE_GAME_MENU;
+	}
+	void Function()
+	{
+		numActive = 0;
+
+		for( UINT entID = 0; entID < EM_MAX_ENTITIES; entID++ )
+			if( manager->entity[entID].active && !manager->entity[entID].resting && ( signature & manager->entity[entID].signature ) == signature )
+				currentActive[numActive++] = entID;
+
+		bool lmbDown = Input_KeyDown(I_KEY::MOUSE_LEFT);
+		bool lmbReleased = Input_KeyReleased(I_KEY::MOUSE_LEFT);
+		int mousePos[2] = { Input::GetInstance()->currentMousePos[0], Input::GetInstance()->currentMousePos[1] };
+
+		for( UINT i = 0; i < numActive; i++ )
+		{
+			UINT entID							= currentActive[i];
+			XMFLOAT4 pos						= manager->position[entID].position;
+
+			C_Button* button					= &manager->button[entID];
+			C_Texture* texture					= &manager->texture[entID];
+			C_StateTransition* stateTransition	= &manager->stateTransition[entID];
+
+			if ( mousePos[0] >= pos.x && mousePos[0] <= pos.x + pos.z && mousePos[1] >= pos.y && mousePos[1] <= pos.y + pos.w )
+			{
+				if( lmbReleased )
+				{				
+					texture->resource = button->resourceDefault;
+					if( ( manager->entity[entID].states & STATE_MAIN_MENU ) == STATE_MAIN_MENU )
+					{
+						switch( button->action )
+						{
+							case MAIN_MENU_ACTION_NEWGAME:
+							{
+								*stateTransition->stateReference = STATE_GAME;
+								break;
+							}
+							case MAIN_MENU_ACTION_QUIT:
+							{
+								*stateTransition->stateReference = STATE_EXIT;
+								break;
+							}
+						}
+					}
+					else if( ( manager->entity[entID].states & STATE_GAME_MENU ) == STATE_GAME_MENU )
+					{
+						switch( button->action )
+						{
+							case GAME_MENU_ACTION_QUIT:
+							{
+								*stateTransition->stateReference = STATE_MAIN_MENU;
+								break;
+							}
+						}
+					}
+				}
+				else if( lmbDown )
+				{
+					texture->resource = button->resourceClicked;
+				}
+				else
+				{
+					texture->resource = button->resourceHover;
+				}
+			}
+			else
+			{
+				texture->resource = button->resourceDefault;
 			}
 		}
 	}

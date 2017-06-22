@@ -18,7 +18,7 @@ int WINAPI wWinMain( HINSTANCE hInstance_, HINSTANCE hPrevInstance_, LPWSTR lpCm
 	HWND hDesktop = GetDesktopWindow();
 	RECT desktop;
 	GetWindowRect(hDesktop,&desktop);
-	SetWindowPos(hConsole, 0, 960, 0, desktop.right - 960, desktop.bottom, SWP_NOSENDCHANGING );
+	SetWindowPos(hConsole, 0, 1000, 0, desktop.right - 1100, desktop.bottom - 100, SWP_DRAWFRAME );
 	
 	freopen("CONIN$", "r", stdin );
 	freopen("CONOUT$", "w", stdout );
